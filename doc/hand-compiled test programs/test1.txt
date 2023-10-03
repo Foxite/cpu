@@ -1,14 +1,6 @@
+# increment A forever.
+
 A = 0 # data 0x0000
-A = 1 # data 0x0000
-A = 2 # data 0x0000
-A = 3 # data 0x0000
-
-0     # ALU x=0 y=0 op=add write=0 ; 1000 01 01 00000 000 ; 0x8500
-
-A + 0 # ALU x=A y=0 op=add write=0 ; 1000 00 01 00000 000 ; 0x8100
-
-A + 1 # ALU x=A y=1 op=add write=0 ; 1000 00 10 00000 000 ; 0x8200
-
-B = 0 # ALU x=0 y=0 op=add write=B ; 1000 01 01 00000 010 ; 0x8502
-
-A > 0 JMP B # JMP x=A op=gt to=B   ; 10010 0000000 0 001  ; 0x9001
+B = 2 # ALU x=2 y=1 op=add write=B     ; 1000 10 10 00000 010 ; 0x8A02
+A = A + 1 # ALU x=A y=1 op=add write=A ; 1000 00 10 00000 001 ; 0x8201
+A > 0 JMP B # JMP x=A op=gt to=B       ; 10010 0000000 0 001  ; 0x9001

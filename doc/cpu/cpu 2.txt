@@ -25,8 +25,8 @@ additionally, it has access to the *Ai output of the memory interface, which pro
 bits in an instruction, from MSB to LSB:
 - 15 - data word. if this bit is 0 the instruction value is loaded into A and all other bits are ignored by the control unit.
 - 14 - Ax select. 0 for A register, 1 for B register
-- 13 - ignored
-- 12 - alu operation. if this bit is 0 then the remaining bits are used to control the alu. see below.
+- 13 - alu operation. if this bit is 0 then the remaining bits are used to control the alu. see below.
+- 12 - ignored
 - 11 - jump instruction. as above. see below.
 - 10-01 ignored
 - 00 - break instruction. disables the clock until manually re-enabled.
@@ -35,13 +35,14 @@ bits in an instruction, from MSB to LSB:
 ### alu operation
 the alu operates on 16-bit signed integers.
 
+- 12 - in input selection bits, 0 for X to select A and Y to select B, 1 for vice-versa.
 - 11-10 - X input selection:
-    00 - A register
+    00 - A/B register
     01 - 0
     10 - 1
     11 - *Ax
 - 09-08 - Y input selection:
-    00 - B register
+    00 - B/A register
     01 - 0
     10 - 1
     11 - *Ax
@@ -86,8 +87,8 @@ if the result of the OR operation is 1, the ALU output is 0xFFFF, otherwise it i
 11010 | X == Y
 11011 | X >= Y
 11100 | X <  Y
-11110 | X <= Y
 11101 | X != Y
+11110 | X <= Y
 11111 | output true 0xFFFF
 
 

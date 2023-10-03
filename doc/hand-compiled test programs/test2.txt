@@ -1,0 +1,6 @@
+# compute fibonacci in RAM.
+
+A = 0
+*Ax = 1
+B = 1
+B = *Ax + B
