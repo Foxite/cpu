@@ -1,0 +1,19 @@
+CM1 architecture. a 16-bit architecture, with a 16-bit address space and 16-bit words.
+there are 2^16 (65536) addresses (or 64 "kibiwords", Kiw) for a total of 128 KiB of data in the address space.
+
+
+address space:
+0x0000 - 0x3FFF (16 Kiw): ROM containing the program instructions. the CPU reads instructions directly from ROM, rather than through address space - it is not possible to execute from RAM.
+0x4000 - 0xBFFF (32 Kiw): general-purpose RAM.
+0xC000 - 0xDFFF ( 8 Kiw): reserved for future use. CM1 programs must not use this region. (will be used as video memory.)
+0xE000 - 0xFFFF ( 8 Kiw): expansion range. addresses at this range connect to application-specific devices.
+
+
+
+the cpu has 4 general purpose registers.
+
+an instruction consists of two words. the first word determines the instruction to be executed, and the second word is a parameter. not all instructions use a parameter.
+
+
+
+instruction set:

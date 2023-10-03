@@ -1,0 +1,115 @@
+16 bit address space. each memory address contains 16 bits. this size is called a word.
+
+registers in the cpu are 1 word (16 bits). cpu instructions are 1 word.
+
+this iteration contains general-purpose memory, no multitasking features, and no security features.
+
+
+# memory
+the memory interface takes two addresses at once, Ax and Ai. each address is 1 words (16 bits).
+it also takes an X input.
+
+address Ax is controlled by software. output *Ax is a 1 word value with the value at the memory address. this value is sent to the cpu input to be loaded into a register.
+address Ai is controlled by the program counter. output is a 1 word value that is provided to the instruction input of the cpu.
+
+
+
+
+# cpu
+the cpu contains 2 registers, A and B, and also has access to the *Ax output of the memory interface. these can be used by software.
+additionally, it has access to the *Ai output of the memory interface, which provides the current instruction.
+
+
+## instructions
+
+bits in an instruction, from MSB to LSB:
+- 15 - data word. if this bit is 0 the instruction value is loaded into A and all other bits are ignored by the control unit.
+- 14 - Ax select. 0 for A register, 1 for B register
+- 13 - ignored
+- 12 - alu operation. if this bit is 0 then the remaining bits are used to control the alu. see below.
+- 11 - jump instruction. as above. see below.
+- 10-01 ignored
+- 00 - break instruction. disables the clock until manually re-enabled.
+
+
+### alu operation
+the alu operates on 16-bit signed integers.
+
+- 11-10 - X input selection:
+    00 - A register
+    01 - 0
+    10 - 1
+    11 - *Ax
+- 09-08 - Y input selection:
+    00 - B register
+    01 - 0
+    10 - 1
+    11 - *Ax
+- 07-03 - ALU flags. see below for alu flags.
+- 02 - write ALU output to *Ax
+- 01 - write ALU output to B register
+- 00 - write ALU output to A register
+
+#### alu flags
+43210 | operation
+------+-----------
+arithmetic operations
+00000 | X + Y
+00001 | X - Y
+00010 | X * Y
+00011 | X / Y
+00100 | X << Y
+00101 | X >> Y
+
+bitwise operations
+10000 | X AND  Y
+10001 | X OR   Y
+10010 | ~X
+10011 | ~Y
+10100 | X XOR  Y
+10101 | X XNOR Y
+10110 | X NOR  Y
+10111 | X NAND Y
+
+logical operations
+bits 2-0 control the type of comparison.
+- 2: <
+- 1: ==
+- 0: >
+
+these comparisons are performed and the results are ORed together.
+if a bit in the opcode is 0 then the result of that comparison will be considered 0 for the OR operation.
+if the result of the OR operation is 1, the ALU output is 0xFFFF, otherwise it is 0x0000.
+
+11000 | output false 0x0000
+11001 | X >  Y
+11010 | X == Y
+11011 | X >= Y
+11100 | X <  Y
+11110 | X <= Y
+11101 | X != Y
+11111 | output true 0xFFFF
+
+
+
+
+### jump operation
+a jump operation compares the A or B register to 0 and will conditionally jump based on the result of the comparison.
+
+bits 2-0 specify the comparison mode. multiple modes can be enabled and the result of each comparison will be ORed together. if the final result is true, the instruction pointer will be set to the value in the specified register.
+
+- 03 - which register to examine. 0 for A, 1 for B.
+- 02 - less than 0
+- 01 - equal to 0
+- 00 - greater than 0
+
+therefore the value of bits 2-0 correspond to these logical comparisons:
+  210
+- 000 - false (never jump)
+- 001 - > 0
+- 010 - = 0
+- 011 - >= 0
+- 100 - < 0
+- 101 - != 0
+- 110 - <= 0
+- 111 - true (always jump)

@@ -1,0 +1,31 @@
+# memory
+
+when reading from memory, it is possible to read 4 words at once. the first word is the one at the requested address; the next 3 are the ones after that.
+
+4 words are always returned but they are ignored by the cpu unless the instruction uses them. for example, an instruction to load 1 word into a register will read the 1st word returned by memory and write it into that register with 24 leading 0s.
+
+when writing to memory, a 2-bit value is specified indication how many words to write. this is the operation size.
+00 indicates the operation is a read operation.
+01 indicates write 1 word. the 3 most signficant words in X are ignored and the 8 LSWs are written to A.
+10 indicates write 2 words. the 2 most significant words in X are ignored. the most significant word in the remaining words is written to *Ax, the least significant word is written to *(Ax + 1).
+11 indicates write 4 words. the most significant word in X is written to A. the least significant word is written to *(Ax + 3).
+
+
+
+### memory operation
+bits 11 and 10 are the operation size.
+if bit 12 is 1, the operation size in the instruction is provided to the memory interface. if it is 0, 00 is set as the operation size to the memory interface.
+
+in a write operation, bits 11 and 10 control how many words in the register are sent to the memory interface.
+in a read operation, bits 10 and 11 control which words from *Ax are loaded into the register:
+- 00 is invalid and the result is undefined.
+- 01 means the most significant word from *Ax will be interpreted as the least significant word of the value loaded into the value register (by right-shifting the value by 24 and zeroing the leading bits). the remaining words in *Ax will be ignored.
+- 10 means that the two most significant words from *Ax will be right-shifted by 16 and loaded into the value register.
+- 11 means the value read from *Ax will be loaded into the value register as-is.
+
+- 12 - write operation.
+- 11 - bit 1 of operation size.
+- 10 - bit 0 of operation size.
+- 10 through 02 - ignored
+- 01 - 
+- 00 - which cpu register to use for the address. 0 for A, 1 for B. the other register will be used for the value. for write operations, the value register will be written to *Ax. for read operations, *Ax will be loaded into the value register.

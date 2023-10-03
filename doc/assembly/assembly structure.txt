@@ -1,0 +1,34 @@
+asm source file structure:
+```asm
+#DEFINE constantname constantvalue
+
+#INCLUDE path/to/file.asm
+
+label:
+	command arg
+	macro arg, arg
+	.special arg, arg, arg // comment
+	// comment
+```
+
+whitespace is ignored by the tokenizer.
+indenting code after a label is a personal preference.
+// causes the tokenizer to ignore the remainder of the line.
+
+lines starting with # are interpreted by the preprocessor prior to tokenization. these lines will be removed prior to tokenization.
+
+DEFINE is a preprocessor directive that defines a constant with a numeric value. after tokenization and before lexing, the preprocessor will replace all tokens that match constantname with constantvalue.
+
+INCLUDE is a preprocessor directive that gets replaced with the contents of the specified file, path relative to the incl folder. any labels or constants defined in that file are visible to the outer grammar.
+
+label becomes a hoisted constant with a value equal to its position in the outputted machine code. hoisting means the label can be referenced before it is defined.
+
+command is either a special command, a macro, or an instruction.
+- special commands start with . and are recognized by the code generator.
+- macros are stored in the defs folder and expand to asm grammar. any constants or labels defined within this expansion are not visible to the outer grammar.
+- instructions map to bytes in the machine code output, and are defined by an architecture.
+
+arg is either a label, a register, a numeric value, or a symbol defined by the architecture. as with all tokens it can also be a constant.
+
+a numeric value is either decimal (ie 123), binary (ie 0b01100110) or hexadecimal (ie 0x7f or 0x7F).
+numeric values may contain (consecutive) _ or ' at any point except for the start or the end. these will be ignored by the parser.
