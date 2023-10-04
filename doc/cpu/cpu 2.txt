@@ -99,7 +99,7 @@ a jump operation compares the A or B register to 0 and will conditionally jump b
 
 bits 2-0 specify the comparison mode. multiple modes can be enabled and the result of each comparison will be ORed together. if the final result is true, the instruction pointer will be set to the value in the specified register.
 
-- 03 - which register to examine. 0 for A, 1 for B.
+- 03 - which register to examine. 0 for A, 1 for B. the other register contains the new instruction pointer.
 - 02 - less than 0
 - 01 - equal to 0
 - 00 - greater than 0

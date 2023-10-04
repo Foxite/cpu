@@ -1,4 +1,5 @@
 # increment A forever.
+# Tests data words, ALU to A, ALU to B, jumping.
 
 A = 0        # data 0x0000
 B = 2        # ALU x=1 y=1 op=add write=B  ; 100 0 10 10 00000 010 ; 0x8A02
