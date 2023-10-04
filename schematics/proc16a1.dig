@@ -20,7 +20,7 @@
         </entry>
         <entry>
           <string>Data</string>
-          <data>8502,d104,9202,1,900f</data>
+          <data>0,8a02,8201,a001</data>
         </entry>
       </elementAttributes>
       <pos x="380" y="180"/>
@@ -71,26 +71,6 @@
       <elementName>RS_FF_AS</elementName>
       <elementAttributes/>
       <pos x="-260" y="300"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Button</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>start clock</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-320" y="300"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Button</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>stop clock</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-320" y="460"/>
     </visualElement>
     <visualElement>
       <elementName>Or</elementName>
@@ -637,24 +617,24 @@
         <entry>
           <string>Testdata</string>
           <testData>
-            <dataString>programClock instructionPointer instruction A B mAx
+            <dataString>startClock programClock instructionPointer A B mAx
 
-program(0x0000, 0x8A02, 0x8201, 0x9001)
+program(0x0000, 0x8A02, 0x8201, 0xA001)
 
-0  0x0000  0x0000  X       X       0x0000
-C  0x0001  0x8A02  0x0000  X       0x0000
-C  0x0002  0x8201  0x0000  0x0002  0x0000
-C  0x0003  0x9001  0x0001  0x0002  0x0000
-C  0x0002  0x8201  0x0001  0x0002  0x0000
-C  0x0003  0x9001  0x0002  0x0002  0x0000
-C  0x0002  0x8201  0x0002  0x0002  0x0000
-C  0x0003  0x9001  0x0003  0x0002  0x0000
-C  0x0002  0x8201  0x0003  0x0002  0x0000
-C  0x0003  0x9001  0x0004  0x0002  0x0000
-C  0x0002  0x8201  0x0004  0x0002  0x0000
-C  0x0003  0x9001  0x0005  0x0002  0x0000
-C  0x0002  0x8201  0x0005  0x0002  0x0000
-C  0x0003  0x9001  0x0006  0x0002  0x0000
+1 0  0x0000  X       X       X
+0 C  0x0001  0x0000  X       X
+0 C  0x0002  0x0000  0x0002  0x0000
+0 C  0x0003  0x0001  0x0002  0x0000
+0 C  0x0002  0x0001  0x0002  0x0000
+0 C  0x0003  0x0002  0x0002  0x0000
+0 C  0x0002  0x0002  0x0002  0x0000
+0 C  0x0003  0x0003  0x0002  0x0000
+0 C  0x0002  0x0003  0x0002  0x0000
+0 C  0x0003  0x0004  0x0002  0x0000
+0 C  0x0002  0x0004  0x0002  0x0000
+0 C  0x0003  0x0005  0x0002  0x0000
+0 C  0x0002  0x0005  0x0002  0x0000
+0 C  0x0003  0x0006  0x0002  0x0000
 </dataString>
           </testData>
         </entry>
@@ -682,13 +662,114 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     </visualElement>
     <visualElement>
       <elementName>Testcase</elementName>
-      <elementAttributes/>
-      <pos x="200" y="-40"/>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>fill ram cells with address</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>startClock programClock instructionPointer instruction At mAt
+
+program(0x8502, 0xD104, 0x9202, 0x0001, 0xA00F)
+
+1 0 0x0000  0x8502  0       X
+
+loop(i, 16)
+1 C 0x0001  0xD104  0       X
+1 C 0x0002  0x9202  0       X
+1 C 0x0003  0x0001  0       X
+1 C 0x0004  0xA00F  0       X
+end loop
+
+loop(j, 16)
+1 0 X  X  (j)  (j)
+end loop
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="-20" y="40"/>
     </visualElement>
     <visualElement>
       <elementName>Ground</elementName>
       <elementAttributes/>
       <pos x="860" y="700"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>stopClock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-320" y="460"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>startClock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-320" y="300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>RAMDualAccess</elementName>
+      <elementAttributes>
+        <entry>
+          <string>AddrBits</string>
+          <int>16</int>
+        </entry>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>16</int>
+        </entry>
+      </elementAttributes>
+      <pos x="-40" y="800"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="3"/>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>At</string>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>16</int>
+        </entry>
+      </elementAttributes>
+      <pos x="0" y="660"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>mAt</string>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>16</int>
+        </entry>
+      </elementAttributes>
+      <pos x="-160" y="780"/>
     </visualElement>
   </visualElements>
   <wires>
@@ -781,15 +862,27 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
       <p2 x="240" y="460"/>
     </wire>
     <wire>
-      <p1 x="-320" y="460"/>
-      <p2 x="-300" y="460"/>
-    </wire>
-    <wire>
       <p1 x="-100" y="460"/>
       <p2 x="-80" y="460"/>
     </wire>
     <wire>
+      <p1 x="-320" y="460"/>
+      <p2 x="-300" y="460"/>
+    </wire>
+    <wire>
       <p1 x="40" y="780"/>
+      <p2 x="60" y="780"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="780"/>
+      <p2 x="20" y="780"/>
+    </wire>
+    <wire>
+      <p1 x="-160" y="780"/>
+      <p2 x="-100" y="780"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="780"/>
       <p2 x="240" y="780"/>
     </wire>
     <wire>
@@ -807,6 +900,10 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     <wire>
       <p1 x="500" y="400"/>
       <p2 x="520" y="400"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="720"/>
+      <p2 x="120" y="720"/>
     </wire>
     <wire>
       <p1 x="120" y="720"/>
@@ -929,6 +1026,14 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
       <p2 x="1100" y="800"/>
     </wire>
     <wire>
+      <p1 x="20" y="800"/>
+      <p2 x="80" y="800"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="800"/>
+      <p2 x="0" y="800"/>
+    </wire>
+    <wire>
       <p1 x="880" y="420"/>
       <p2 x="900" y="420"/>
     </wire>
@@ -951,6 +1056,10 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     <wire>
       <p1 x="880" y="740"/>
       <p2 x="900" y="740"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="740"/>
+      <p2 x="60" y="740"/>
     </wire>
     <wire>
       <p1 x="100" y="1060"/>
@@ -993,12 +1102,12 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
       <p2 x="700" y="300"/>
     </wire>
     <wire>
-      <p1 x="-320" y="300"/>
-      <p2 x="-260" y="300"/>
-    </wire>
-    <wire>
       <p1 x="-200" y="300"/>
       <p2 x="-180" y="300"/>
+    </wire>
+    <wire>
+      <p1 x="-320" y="300"/>
+      <p2 x="-260" y="300"/>
     </wire>
     <wire>
       <p1 x="640" y="240"/>
@@ -1033,8 +1142,8 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
       <p2 x="1100" y="880"/>
     </wire>
     <wire>
-      <p1 x="220" y="820"/>
-      <p2 x="480" y="820"/>
+      <p1 x="0" y="820"/>
+      <p2 x="220" y="820"/>
     </wire>
     <wire>
       <p1 x="820" y="820"/>
@@ -1043,6 +1152,10 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     <wire>
       <p1 x="1080" y="820"/>
       <p2 x="1120" y="820"/>
+    </wire>
+    <wire>
+      <p1 x="220" y="820"/>
+      <p2 x="480" y="820"/>
     </wire>
     <wire>
       <p1 x="460" y="500"/>
@@ -1097,12 +1210,24 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
       <p2 x="240" y="760"/>
     </wire>
     <wire>
+      <p1 x="-40" y="760"/>
+      <p2 x="60" y="760"/>
+    </wire>
+    <wire>
       <p1 x="340" y="120"/>
       <p2 x="380" y="120"/>
     </wire>
     <wire>
       <p1 x="900" y="700"/>
       <p2 x="920" y="700"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="700"/>
+      <p2 x="220" y="700"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="700"/>
+      <p2 x="0" y="700"/>
     </wire>
     <wire>
       <p1 x="220" y="700"/>
@@ -1123,6 +1248,14 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     <wire>
       <p1 x="960" y="580"/>
       <p2 x="960" y="620"/>
+    </wire>
+    <wire>
+      <p1 x="0" y="660"/>
+      <p2 x="0" y="700"/>
+    </wire>
+    <wire>
+      <p1 x="0" y="800"/>
+      <p2 x="0" y="820"/>
     </wire>
     <wire>
       <p1 x="900" y="420"/>
@@ -1193,6 +1326,10 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
       <p2 x="80" y="260"/>
     </wire>
     <wire>
+      <p1 x="80" y="760"/>
+      <p2 x="80" y="800"/>
+    </wire>
+    <wire>
       <p1 x="80" y="260"/>
       <p2 x="80" y="440"/>
     </wire>
@@ -1231,6 +1368,10 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     <wire>
       <p1 x="980" y="420"/>
       <p2 x="980" y="560"/>
+    </wire>
+    <wire>
+      <p1 x="20" y="780"/>
+      <p2 x="20" y="800"/>
     </wire>
     <wire>
       <p1 x="920" y="700"/>
@@ -1387,6 +1528,14 @@ C  0x0003  0x9001  0x0006  0x0002  0x0000
     <wire>
       <p1 x="380" y="360"/>
       <p2 x="380" y="620"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="700"/>
+      <p2 x="60" y="740"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="760"/>
+      <p2 x="60" y="780"/>
     </wire>
     <wire>
       <p1 x="-320" y="500"/>
