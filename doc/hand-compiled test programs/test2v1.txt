@@ -1,4 +1,5 @@
 # Fill RAM addresses with the fibonacci sequence.
+# Tests addition, subtraction, reading and writing from RAM, data words, jumping unconditionally.
 
 # initialize fib[0]
 A = 1		# data 0x0001                     ; 0b0000 0000 0000 0001   ; 0x0001
