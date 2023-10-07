@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Assembler;
 
+[Obsolete]
 public class AssemblyAstComparer : IEqualityComparer<IAssemblyAst> {
 	public bool Equals(IAssemblyAst? left, IAssemblyAst? right) {
 		if ((left == null) != (right == null)) {

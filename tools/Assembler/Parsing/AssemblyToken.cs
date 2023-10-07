@@ -81,4 +81,7 @@ public enum AssemblyToken {
 	
 	[Lexeme("(#.*)?\n", isLineEnding: true)]
 	EndOfLine,
+	
+	[Lexeme("[A-z_][A-z0-9_]*")]
+	Symbol,
 }

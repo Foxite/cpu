@@ -6,6 +6,11 @@ using sly.parser.parser;
 namespace Assembler;
 
 public class AssemblyParser {
+	[Production("Statement: Label")]
+	public LabelElement LabelAst(Token<AssemblyToken> label) {
+		return new LabelElement(label.Value[..^1]);
+	}
+	
 	[Production("Number: DecimalInteger")]
 	public ConstantAst DecimalNumber(Token<AssemblyToken> token) {
 		return new ConstantAst(short.Parse(token.Value.Replace("_", "")));
@@ -34,18 +39,23 @@ public class AssemblyParser {
 		return new BooleanAst(token.TokenID == AssemblyToken.True);
 	}
 
-	[Production("Instruction: Register Assign [d] Number")]
-	public IAssemblyInstruction DataWord(CpuRegisterAst register, ConstantAst number) {
-		return new DataWordInstruction(register, number);
+	[Production("Statement: Register Assign [d] Number")]
+	public IStatement DataWord(CpuRegisterAst register, ConstantAst number) {
+		return new DataWordInstruction(register, true, number, null);
 	}
 
-	[Production("Instruction: Register Assign [d] Boolean")]
-	public IAssemblyInstruction DataWord(CpuRegisterAst register, BooleanAst value) {
-		return new DataWordInstruction(register, new ConstantAst((short) (value.Value ? 0xFFFF : 0x0000)));
+	[Production("Statement: Register Assign [d] Symbol")]
+	public IStatement DataWord(CpuRegisterAst register, Token<AssemblyToken> symbol) {
+		return new DataWordInstruction(register, false, null, new SymbolAst(symbol.Value));
 	}
 
-	[Production("Instruction: Register Assign [d] Register")]
-	public IAssemblyInstruction Assign(CpuRegisterAst write, CpuRegisterAst read) {
+	[Production("Statement: Register Assign [d] Boolean")]
+	public IStatement DataWord(CpuRegisterAst register, BooleanAst value) {
+		return new DataWordInstruction(register, true, new ConstantAst((short) (value.Value ? 0xFFFF : 0x0000)), null);
+	}
+
+	[Production("Statement: Register Assign [d] Register")]
+	public IStatement Assign(CpuRegisterAst write, CpuRegisterAst read) {
 		return new AssignInstruction(write, read);
 	}
 	
@@ -67,7 +77,7 @@ public class AssemblyParser {
 		var ret = new List<CpuRegisterAst>();
 		ret.AddRange(many.Select(item => (CpuRegisterAst) item.Value(0)));
 		ret.Add(single);
-		return new AluWriteTarget(ret);
+		return new AluWriteTarget(ret.ToArray());
 	}
 
 	[Production("AluOperand: Register")]
@@ -132,8 +142,8 @@ public class AssemblyParser {
 		});
 	}
 	
-	[Production("Instruction: AluWriteTarget Assign [d] AluOperand AluOperation AluOperand")]
-	public IAssemblyInstruction AluInstruction(AluWriteTarget writeTarget, AluOperand x, AluOperationAst operation, AluOperand y) {
+	[Production("Statement: AluWriteTarget Assign [d] AluOperand AluOperation AluOperand")]
+	public IStatement AluInstruction(AluWriteTarget writeTarget, AluOperand x, AluOperationAst operation, AluOperand y) {
 		return new AluInstruction(writeTarget, x, y, operation);
 	}
 
@@ -159,21 +169,26 @@ public class AssemblyParser {
 		return new Condition(left, compareOperation, right);
 	}
 
-	[Production("Instruction: Condition Jump [d] Register")]
-	public IAssemblyInstruction JumpInstruction(Condition condition, CpuRegisterAst register) {
+	[Production("Statement: Condition Jump [d] Register")]
+	public IStatement JumpInstruction(Condition condition, CpuRegisterAst register) {
 		return new JumpInstruction(true, condition, null, register);
 	}
 
-	[Production("Instruction: Boolean Jump [d] Register")]
-	public IAssemblyInstruction JumpInstruction(BooleanAst value, CpuRegisterAst register) {
+	[Production("Statement: Boolean Jump [d] Register")]
+	public IStatement JumpInstruction(BooleanAst value, CpuRegisterAst register) {
 		return new JumpInstruction(false, null, value, register);
 	}
 
-	[Production("Program: (Instruction EndOfLine [d])* Instruction?")]
-	public ProgramAst Program(List<Group<AssemblyToken, IAssemblyAst>> instructions, ValueOption<IAssemblyAst> last) {
-		var ret = instructions.Select(group => group.Value(0)).Cast<IAssemblyInstruction>().ToList();
+	[Production("LineEnding: EndOfLine+")]
+	public IAssemblyAst? LineEnding(List<Token<AssemblyToken>> ignored) {
+		return null;
+	}
+
+	[Production("Program: LineEnding? (Statement LineEnding)* Statement? LineEnding?")]
+	public ProgramAst Program(ValueOption<IAssemblyAst?> lineEnding1, List<Group<AssemblyToken, IAssemblyAst>> statements, ValueOption<IAssemblyAst> last, ValueOption<IAssemblyAst?> lineEnding2) {
+		var ret = statements.Select(group => group.Value(0)).Cast<IStatement>().ToList();
 		if (last.IsSome) {
-			ret.Add((IAssemblyInstruction) last.Match(i => i, () => throw new InvalidProgramException("OPIERFUAERDS987Y TGQH4WRT897 =MYB-6YH57 8B9N4343ER 890iumt")));
+			ret.Add((IStatement) last.Match(i => i, () => throw new InvalidProgramException("OPIERFUAERDS987Y TGQH4WRT897 =MYB-6YH57 8B9N4343ER 890iumt")));
 		}
 		return new ProgramAst(ret.ToArray());
 	}
