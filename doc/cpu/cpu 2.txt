@@ -66,7 +66,7 @@ bitwise operations
 10000 | X AND  Y
 10001 | X OR   Y
 10010 | ~X
-10011 | ~Y
+10011 | 
 10100 | X XOR  Y
 10101 | X XNOR Y
 10110 | X NOR  Y

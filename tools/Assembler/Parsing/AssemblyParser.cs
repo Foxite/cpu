@@ -146,6 +146,12 @@ public class AssemblyParser {
 	public IStatement AluInstruction(AluWriteTarget writeTarget, AluOperand x, AluOperationAst operation, AluOperand y) {
 		return new AluInstruction(writeTarget, x, y, operation);
 	}
+	
+	// TODO unit test this
+	[Production("Statement: AluWriteTarget Assign [d] BitwiseNot [d] AluOperand")]
+	public IStatement AluBitwiseNot(AluWriteTarget writeTarget, AluOperand x) {
+		return new AluInstruction(writeTarget, x, null, Assembler.AluOperation.BitwiseNot);
+	}
 
 	[Production("CompareOperation: GreaterThan")]
 	[Production("CompareOperation: Equals")]

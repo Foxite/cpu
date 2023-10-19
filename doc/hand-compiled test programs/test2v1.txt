@@ -15,7 +15,7 @@ B = A		# ALU x=A  y=0  op=add   write=B  ; 0b100 0 00 01 00000 010 ; 0x8102
 A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 *A = B		# ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
 
-computeNext:                                  ; label 0x0007
+computeNext: #                                ; label 0x0007
 # A = &&fib[last]
 A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 
