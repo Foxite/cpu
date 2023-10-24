@@ -11,14 +11,14 @@ public abstract class ProgramAssembler {
 		var unsupportedStatements = new Stack<(IStatement statement, int index)>();
 
 		for (int i = 0; i < program.Statements.Length; i++) {
-			IStatement statement = program.Statements[i];
+			ProgramStatementAst statement = program.Statements[i];
 			
-			if (statement is LabelElement labelElement) {
-				symbolDefinitions[labelElement.Name] = (short) i;
+			if (statement.Label != null) {
+				symbolDefinitions[statement.Label] = (short) i;
 			}
 
-			if (!ValidateStatement(statement)) {
-				unsupportedStatements.Push((statement, i));
+			if (!ValidateStatement(statement.Statement)) {
+				unsupportedStatements.Push((statement.Statement, i));
 			}
 		}
 
@@ -26,8 +26,8 @@ public abstract class ProgramAssembler {
 			throw new UnsupportedStatementException(ArchitectureName, unsupportedStatements);
 		}
 
-		foreach (IStatement statement in program.Statements) {
-			yield return ConvertStatement(statement, name => symbolDefinitions[name]);
+		foreach (ProgramStatementAst statement in program.Statements) {
+			yield return ConvertStatement(statement.Statement, name => symbolDefinitions[name]);
 		}
 	}
 

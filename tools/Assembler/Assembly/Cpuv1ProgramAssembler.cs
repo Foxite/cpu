@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Assembler.Assembly; 
 
 public class Cpuv1ProgramAssembler : ProgramAssembler {
@@ -92,10 +90,8 @@ public class Cpuv1ProgramAssembler : ProgramAssembler {
 				}
 
 				return true;
-			case LabelElement:
-				return true;
 			default:
-				throw new NotImplementedException();
+				throw new NotImplementedException(statement.GetType().FullName);
 		}
 	}
 
@@ -110,14 +106,29 @@ public class Cpuv1ProgramAssembler : ProgramAssembler {
 			statement = new AluInstruction(new AluWriteTarget(assignInstruction.Write), new AluOperand(assignInstruction.Read.Register), new AluOperand((short) 0), AluOperation.Add);
 		}
 
-		if (statement is DataWordInstruction { IsConstant: true, Value: { Value: -2 or -1 } val } dwi) {
-			statement = val.Value switch {
-				-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand(1), AluOperation.Subtract),
-				-2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), null, AluOperation.BitwiseNot),
-				_ => throw new NotImplementedException("This should literally never happen"),
-			};
+		{
+			if (statement is DataWordInstruction { IsConstant: true, Value: { Value: -2 or -1 } val } dwi) {
+				statement = val.Value switch {
+					-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand(1), AluOperation.Subtract),
+					-2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), null, AluOperation.BitwiseNot),
+					_ => throw new NotImplementedException("This should literally never happen"),
+				};
+			}
 		}
-		
+
+		{
+			if (statement is DataWordInstruction { IsConstant: true, Register: { Register: not CpuRegister.A }, Value: { Value: >= -2 and <= 2 } val } dwi) {
+				statement = val.Value switch {
+					 2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), new AluOperand(1), AluOperation.Add),
+					 1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), new AluOperand((short) 0), AluOperation.Add), 
+					 0 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand((short) 0), AluOperation.Add),
+					-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand(1), AluOperation.Subtract),
+					-2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), null, AluOperation.BitwiseNot),
+					_ => throw new NotImplementedException("This should literally never happen"),
+				};
+			}
+		}
+
 		switch (statement) {
 			case AluInstruction aluInstruction:
 				SetInstructionBit(15, true);
@@ -252,7 +263,7 @@ public class Cpuv1ProgramAssembler : ProgramAssembler {
 					};
 					
 					const int compareMask = 0b111;
-					instruction = (instruction & ~compareMask) | (compareOpcode << 3);
+					instruction = (instruction & ~compareMask) | compareOpcode;
 				} else {
 					SetInstructionBit(2, jumpInstruction.Value!.Value);
 					SetInstructionBit(1, jumpInstruction.Value!.Value);
@@ -261,7 +272,7 @@ public class Cpuv1ProgramAssembler : ProgramAssembler {
 				
 				break;
 			default:
-				throw new NotImplementedException();
+				throw new NotImplementedException(statement.GetType().FullName);
 		}
 
 		return (ushort) instruction;

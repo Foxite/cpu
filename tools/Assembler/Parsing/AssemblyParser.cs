@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Reflection.Emit;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
@@ -6,11 +7,6 @@ using sly.parser.parser;
 namespace Assembler;
 
 public class AssemblyParser {
-	[Production("Statement: Label")]
-	public LabelElement LabelAst(Token<AssemblyToken> label) {
-		return new LabelElement(label.Value[..^1]);
-	}
-	
 	[Production("Number: DecimalInteger")]
 	public ConstantAst DecimalNumber(Token<AssemblyToken> token) {
 		return new ConstantAst(short.Parse(token.Value.Replace("_", "")));
@@ -189,12 +185,29 @@ public class AssemblyParser {
 	public IAssemblyAst? LineEnding(List<Token<AssemblyToken>> ignored) {
 		return null;
 	}
+	
+	/*
+	[Production("Statement: Label")]
+	public LabelElement LabelAst(Token<AssemblyToken> label) {
+		return new LabelElement(label.Value[..^1]);
+	}
+	 */
 
-	[Production("Program: LineEnding? (Statement LineEnding)* Statement? LineEnding?")]
+	[Production("ProgramStatement: Label? LineEnding? Statement")]
+	public ProgramStatementAst ProgramStatement(Token<AssemblyToken> label, ValueOption<IAssemblyAst?> lineEnding, IStatement statement) {
+		string? labelName = null;
+		if (!label.IsEmpty) {
+			labelName = label.Value[..^1];
+		}
+
+		return new ProgramStatementAst(labelName, statement);
+	}
+
+	[Production("Program: LineEnding? (ProgramStatement LineEnding)* ProgramStatement? LineEnding?")]
 	public ProgramAst Program(ValueOption<IAssemblyAst?> lineEnding1, List<Group<AssemblyToken, IAssemblyAst>> statements, ValueOption<IAssemblyAst> last, ValueOption<IAssemblyAst?> lineEnding2) {
-		var ret = statements.Select(group => group.Value(0)).Cast<IStatement>().ToList();
+		var ret = statements.Select(group => group.Value(0)).Cast<ProgramStatementAst>().ToList();
 		if (last.IsSome) {
-			ret.Add((IStatement) last.Match(i => i, () => throw new InvalidProgramException("OPIERFUAERDS987Y TGQH4WRT897 =MYB-6YH57 8B9N4343ER 890iumt")));
+			ret.Add((ProgramStatementAst) last.Match(i => i, () => throw new InvalidProgramException("OPIERFUAERDS987Y TGQH4WRT897 =MYB-6YH57 8B9N4343ER 890iumt")));
 		}
 		return new ProgramAst(ret.ToArray());
 	}

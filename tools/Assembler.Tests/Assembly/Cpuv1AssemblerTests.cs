@@ -11,11 +11,6 @@ public class Cpuv1AssemblerTests {
 	}
 	
 	public static object[][] ValidationTestCases() => new[] {
-		// label elements do not output bytes and are always valid
-		new object[] { new LabelElement("hey"), true },
-		new object[] { new LabelElement("bla"), true },
-
-		
 		// data word instruction
 		new object[] { new DataWordInstruction(CpuRegister.A, 0), true }, // can assign any positive value to A register as well as -1 or -2 (using the ALU)
 		new object[] { new DataWordInstruction(CpuRegister.A, 1), true },
@@ -126,7 +121,7 @@ public class Cpuv1AssemblerTests {
 		
 		// Left operand must be a cpu register different from the target register
 		new object[] { new JumpInstruction(new Condition(new AluOperand((short) 0), CompareOperation.Equals, new AluOperand(CpuRegister.A)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand((short) 1), CompareOperation.Equals, new AluOperand(CpuRegister.B)), CpuRegister.B), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(1), CompareOperation.Equals, new AluOperand(CpuRegister.B)), CpuRegister.B), false },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.B), true },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.A), true },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.A), false },
@@ -153,11 +148,16 @@ public class Cpuv1AssemblerTests {
 	
 	private static object[][] ConvertInstructionTestCases() => new[] {
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand((short) 0), new AluOperand((short) 0), AluOperation.Add), 0, 0x8502u },
-		new object[] { new DataWordInstruction(CpuRegister.B, 0), 0, 0x0000u },
+		new object[] { new DataWordInstruction(CpuRegister.B, 0), 0, 0x8502u },
+		new object[] { new DataWordInstruction(CpuRegister.B, 1), 0, 0x8902u },
+		new object[] { new DataWordInstruction(CpuRegister.B, 2), 0, 0x8A02u },
+		new object[] { new DataWordInstruction(CpuRegister.B, -1), 0, 0x860Au },
+		new object[] { new DataWordInstruction(CpuRegister.B, -2), 0, 0x8892u },
 		new object[] { new AssignInstruction(CpuRegister.StarB, CpuRegister.B), 0, 0xD104u },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add), 0, 0x9202u },
 		new object[] { new DataWordInstruction(CpuRegister.A, "next"), 1, 0x0001u },
 		new object[] { new JumpInstruction(true, CpuRegister.A), 0, 0xA00Fu },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((short) 0)), CpuRegister.B), 0, 0xA001u },
 	};
 	
 	[Test]

@@ -2,10 +2,10 @@ using System.Text;
 
 namespace Assembler;
 
-public record ProgramAst(params IStatement[] Statements) : IAssemblyAst {
+public record ProgramAst(params ProgramStatementAst[] Statements) : IAssemblyAst {
 	public override string ToString() {
 		var ret = new StringBuilder();
-		foreach (IStatement statement in Statements) {
+		foreach (ProgramStatementAst statement in Statements) {
 			ret.AppendLine(statement.ToString());
 		}
 

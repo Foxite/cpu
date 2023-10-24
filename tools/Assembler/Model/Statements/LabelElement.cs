@@ -1,3 +1,3 @@
 namespace Assembler; 
 
-public record LabelElement(string Name) : IStatement;
+//public record LabelElement(string Name) : IStatement;

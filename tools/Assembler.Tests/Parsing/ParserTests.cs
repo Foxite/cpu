@@ -38,7 +38,7 @@ public class ParserTests {
 			new object[] {
 				"A = 0x0005",
 				new ProgramAst(
-					new DataWordInstruction(CpuRegister.A, 5)
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 5))
 				)
 			},
 			new object[] {
@@ -50,10 +50,10 @@ public class ParserTests {
 				*A = B
 				""",
 				new ProgramAst(
-					new DataWordInstruction(CpuRegister.A, 5),
-					new AssignInstruction(CpuRegister.B, CpuRegister.A),
-					new DataWordInstruction(CpuRegister.A, 0),
-					new AssignInstruction(CpuRegister.StarA, CpuRegister.B)
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 5)),
+					new ProgramStatementAst(null, new AssignInstruction(CpuRegister.B, CpuRegister.A)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0)),
+					new ProgramStatementAst(null, new AssignInstruction(CpuRegister.StarA, CpuRegister.B))
 				)
 			},
 			new object[] {
@@ -65,18 +65,18 @@ public class ParserTests {
 				A > 0 JMP B
 				""",
 				new ProgramAst(
-					new DataWordInstruction(CpuRegister.A, 0),
-					new DataWordInstruction(CpuRegister.B, 2),
-					new AluInstruction(
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.B, 2)),
+					new ProgramStatementAst(null, new AluInstruction(
 						new AluWriteTarget(CpuRegister.A),
 						new AluOperand(CpuRegister.A),
 						new AluOperand(1),
 						AluOperation.Add
-					),
-					new JumpInstruction(
+					)),
+					new ProgramStatementAst(null, new JumpInstruction(
 						new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((short) 0)),
 						CpuRegister.B
-					)
+					))
 				),
 			},
 			new object[] {
@@ -90,12 +90,33 @@ public class ParserTests {
 				true JMP A
 				""",
 				new ProgramAst(
-					new DataWordInstruction(CpuRegister.B, 0),
-					new LabelElement("next"),
-					new AssignInstruction(CpuRegister.StarB, CpuRegister.B),
-					new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add),
-					new DataWordInstruction(CpuRegister.A, "next"),
-					new JumpInstruction(true, CpuRegister.A)
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.B, 0)),
+					//new LabelElement("next"),
+					new ProgramStatementAst("next", new AssignInstruction(CpuRegister.StarB, CpuRegister.B)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, "next")),
+					new ProgramStatementAst(null, new JumpInstruction(true, CpuRegister.A))
+				),
+			},
+			new object[] {
+				"""
+				# fill RAM cells with their addresses.
+
+				B = 0      #      ALU x=0 y=0 op=add write=B   ; 100 0 01 01 00000 010 ; 0x8502
+				next:      # instruction index 1               ;  
+				*B = B     # Ax=B ALU x=B y=0 op=add write=*Ax ; 110 1 00 01 00000 100 ; 0xD104
+				B = B + 1  #      ALU x=B y=1 op=add write=B   ; 100 1 00 10 00000 010 ; 0x9202
+				A = next   # data 0x0001
+				true JMP A #      JMP x=B op=true to=A         ; 10100 0000000 1 111   ; 0xA00F
+
+				""",
+				new ProgramAst(
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.B, 0)),
+					//new LabelElement("next"),
+					new ProgramStatementAst("next", new AssignInstruction(CpuRegister.StarB, CpuRegister.B)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, "next")),
+					new ProgramStatementAst(null, new JumpInstruction(true, CpuRegister.A))
 				),
 			},
 		};
