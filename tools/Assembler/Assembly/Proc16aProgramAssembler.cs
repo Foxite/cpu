@@ -1,7 +1,7 @@
 namespace Assembler.Assembly; 
 
-public class Cpuv1ProgramAssembler : ProgramAssembler {
-	public override string ArchitectureName => "Cpuv1";
+public class Proc16aProgramAssembler : ProgramAssembler {
+	public override string ArchitectureName => "Proc16a";
 
 	protected internal override bool ValidateStatement(IStatement statement) {
 		switch (statement) {

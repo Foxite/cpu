@@ -6,8 +6,8 @@ using sly.parser.generator;
 
 namespace Assembler.Tests.EndToEnd; 
 
-public class Cpuv1E2ETests {
-	private Cpuv1ProgramAssembler m_Assembler;
+public class Proc16aE2ETests {
+	private Proc16aProgramAssembler m_Assembler;
 	private BuildResult<Parser<AssemblyToken, IAssemblyAst>> m_BuildResult;
 	private Parser<AssemblyToken, IAssemblyAst> m_Parser;
 
@@ -21,7 +21,7 @@ public class Cpuv1E2ETests {
 			"Program");
 		m_Parser = m_BuildResult.Result;
 
-		m_Assembler = new Cpuv1ProgramAssembler();
+		m_Assembler = new Proc16aProgramAssembler();
 	}
 	
 	[Test]

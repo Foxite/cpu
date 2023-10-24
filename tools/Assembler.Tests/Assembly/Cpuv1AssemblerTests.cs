@@ -2,12 +2,12 @@ using Assembler.Assembly;
 
 namespace Assembler.Tests; 
 
-public class Cpuv1AssemblerTests {
-	private Cpuv1ProgramAssembler m_Assembler;
+public class Proc16aAssemblerTests {
+	private Proc16aProgramAssembler m_Assembler;
 
 	[SetUp]
 	public void Setup() {
-		m_Assembler = new Cpuv1ProgramAssembler();
+		m_Assembler = new Proc16aProgramAssembler();
 	}
 	
 	public static object[][] ValidationTestCases() => new[] {

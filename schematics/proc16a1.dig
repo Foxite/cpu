@@ -819,6 +819,9 @@ end loop
           <string>Testdata</string>
           <testData>
             <dataString>startClock programClock testRamClock At mAt
+
+program(0x0001, 0x8904, 0x8201, 0x8904, 0x8102, 0x0000, 0x9104, 0x0000, 0x8D01, 0x8D02, 0x8209, 0x8D01, 0x8002, 0x0000, 0x8D01, 0x8201, 0x9104, 0x0000, 0x8E04, 0x0007, 0xA00F)
+
 1 0 0 0 0
 
 # Compute 20 fibonacci numbers (cycle count is not perfect)
@@ -914,12 +917,12 @@ end loop
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>test instrumentation</string>
-        </entry>
-        <entry>
           <string>RectHeight</string>
           <int>19</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>test instrumentation</string>
         </entry>
         <entry>
           <string>RectWidth</string>
@@ -1183,6 +1186,10 @@ end loop
       <p2 x="500" y="480"/>
     </wire>
     <wire>
+      <p1 x="-220" y="480"/>
+      <p2 x="-200" y="480"/>
+    </wire>
+    <wire>
       <p1 x="820" y="480"/>
       <p2 x="1000" y="480"/>
     </wire>
@@ -1420,7 +1427,7 @@ end loop
     </wire>
     <wire>
       <p1 x="-300" y="380"/>
-      <p2 x="-220" y="380"/>
+      <p2 x="-200" y="380"/>
     </wire>
     <wire>
       <p1 x="0" y="660"/>
@@ -1579,6 +1586,10 @@ end loop
       <p2 x="580" y="260"/>
     </wire>
     <wire>
+      <p1 x="-200" y="380"/>
+      <p2 x="-200" y="480"/>
+    </wire>
+    <wire>
       <p1 x="200" y="580"/>
       <p2 x="200" y="840"/>
     </wire>
@@ -1669,10 +1680,6 @@ end loop
     <wire>
       <p1 x="600" y="460"/>
       <p2 x="600" y="500"/>
-    </wire>
-    <wire>
-      <p1 x="-220" y="380"/>
-      <p2 x="-220" y="480"/>
     </wire>
     <wire>
       <p1 x="860" y="340"/>
