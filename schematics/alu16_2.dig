@@ -12,24 +12,10 @@
         </entry>
         <entry>
           <string>Bits</string>
-          <int>13</int>
+          <int>5</int>
         </entry>
       </elementAttributes>
-      <pos x="140" y="120"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Splitter</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Input Splitting</string>
-          <string>13</string>
-        </entry>
-        <entry>
-          <string>Output Splitting</string>
-          <string>1,1,1,5,2,2,1</string>
-        </entry>
-      </elementAttributes>
-      <pos x="200" y="120"/>
+      <pos x="580" y="180"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
@@ -84,28 +70,28 @@
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>A</string>
+          <string>X</string>
         </entry>
         <entry>
           <string>Bits</string>
           <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="0" y="340"/>
+      <pos x="580" y="400"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>B</string>
+          <string>Y</string>
         </entry>
         <entry>
           <string>Bits</string>
           <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="0" y="560"/>
+      <pos x="580" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>Splitter</elementName>
@@ -182,74 +168,6 @@
       <pos x="840" y="720"/>
     </visualElement>
     <visualElement>
-      <elementName>Multiplexer</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Selector Bits</string>
-          <int>2</int>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-        <entry>
-          <string>flipSelPos</string>
-          <boolean>true</boolean>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="360"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Const</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="3"/>
-        </entry>
-        <entry>
-          <string>Value</string>
-          <long>0</long>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-      </elementAttributes>
-      <pos x="260" y="340"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Const</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="3"/>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-      </elementAttributes>
-      <pos x="220" y="340"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Multiplexer</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Selector Bits</string>
-          <int>2</int>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-        <entry>
-          <string>flipSelPos</string>
-          <boolean>true</boolean>
-        </entry>
-      </elementAttributes>
-      <pos x="400" y="580"/>
-    </visualElement>
-    <visualElement>
       <elementName>Out</elementName>
       <elementAttributes>
         <entry>
@@ -282,99 +200,56 @@
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>arithmetic tests</string>
+          <string>procedural tests</string>
         </entry>
         <entry>
           <string>Testdata</string>
           <testData>
-            <dataString>opcode           A       B       R
-# addition
-# RXsYsAluop*AB
-0b0000000000000  0x0000  0x0000  0x0000
-0b0000000000000  0x0001  0x0000  0x0001
-0b0000000000000  0x0000  0x0001  0x0001
-0b0000000000000  0x0001  0x0001  0x0002
-0b0000000000000  0x0002  0x0003  0x0005
+            <dataString>  opcode  X   Y   R
 
-# subtraction
-# RXsYsAluop*AB
-0b0000000001000  0x0000  0x0000  0x0000
-0b0000000001000  0x0001  0x0000  0x0001
-0b0000000001000  0x0001  0x0001  0x0000
-0b0000000001000  0x0002  0x0001  0x0001
-0b0000000001000  0x0002  0x0000  0x0002
-0b0000000001000  0x0001  0x0002  0xFFFF
-0b0000000001000  0x0000  0x0001  0xFFFF
-0b0000000001000  0x0000  0x0002  0xFFFE
+loop(i,50)
+  let x = random(0xFFFF);
+  let y = random(0xFFFF);
 
-# multiplication
-# RXsYsAluop*AB
-0b0000000010000  0x0000  0x0000  0x0000
-0b0000000010000  0x0001  0x0000  0x0000
-0b0000000010000  0x0000  0x0001  0x0000
-0b0000000010000  0x0001  0x0001  0x0001
-0b0000000010000  0x0000  0x0002  0x0000
-0b0000000010000  0x0002  0x0000  0x0000
-0b0000000010000  0x0002  0x0002  0x0004
-0b0000000010000  0x0002  0x0001  0x0002
-0b0000000010000  0x0001  0x0002  0x0002
-0b0000000010000  0xFFFF  0x0002  0xFFFE
-0b0000000010000  0x0002  0xFFFF  0xFFFE
+  0b00000 (x) (y) (x+y)
+  0b00001 (x) (y) (x-y)
+  0b00010 (x) (y) (x*y)
+# division often fails because digital does not use signed division
+#  0b00011 (x) (y) (x/y)
+# shifting done separately with lower X
 
-# division
-# RXsYsAluop*AB
-0b0000000011000  0x0000  0x0000  X
+  0b10000 (x) (y) (x&amp;y)
+  0b10001 (x) (y) (x|y)
+  0b10010 (x) (y) (~x)
+# 0b10011
+  0b10100 (x) (y) (x^y)
+  0b10101 (x) (y) (~(x^y))
+  0b10110 (x) (y) (~(x|y))
+  0b10111 (x) (y) (~(x&amp;y))
 
-0b0000000011000  0x0001  0x0001  0x0001
-0b0000000011000  0x0002  0x0001  0x0002
-0b0000000011000  0x0003  0x0001  0x0003
-0b0000000011000  0x0004  0x0001  0x0004
-0b0000000011000  0x0005  0x0001  0x0005
-0b0000000011000  0x0006  0x0001  0x0006
-0b0000000011000  0x0007  0x0001  0x0007
+# comparison often fails because digital does not do signed comparisons
+  0b11000 (x) (y) 0x0000
+#  0b11001 (x) (y) (ite(x&gt; y, 0xFFFF, 0x0000))
+#  0b11010 (x) (y) (ite(x= y, 0xFFFF, 0x0000))
+#  0b11011 (x) (y) (ite(x&gt;=y, 0xFFFF, 0x0000))
+#  0b11100 (x) (y) (ite(x&lt; y, 0xFFFF, 0x0000))
+#  0b11101 (x) (y) (ite(x!=y, 0xFFFF, 0x0000))
+#  0b11110 (x) (y) (ite(x&lt;=y, 0xFFFF, 0x0000))
+  0b11111 (x) (y) 0xFFFF
+end loop
 
-0b0000000011000  0x0001  0x0002  0x0000
-0b0000000011000  0x0002  0x0002  0x0001
-0b0000000011000  0x0003  0x0002  0x0001
-0b0000000011000  0x0004  0x0002  0x0002
-0b0000000011000  0x0005  0x0002  0x0002
-0b0000000011000  0x0006  0x0002  0x0003
-0b0000000011000  0x0007  0x0002  0x0003
 
-# shift left
-# RXsYsAluop*AB
-0b0000000100000  0x0000  0x0000  0x0000
-0b0000000100000  0x0000  0x0001  0x0000
-0b0000000100000  0x0000  0x0002  0x0000
-0b0000000100000  0x0001  0x0000  0x0001
-0b0000000100000  0x0001  0x0001  0x0002
-0b0000000100000  0x0001  0x0002  0x0004
-0b0000000100000  0x0002  0x0000  0x0002
-0b0000000100000  0x0002  0x0001  0x0004
-0b0000000100000  0x0002  0x0002  0x0008
-0b0000000100000  0x0003  0x0000  0x0003
-0b0000000100000  0x0003  0x0001  0x0006
-0b0000000100000  0x0003  0x0002  0x000C
+loop(j,50)
+  let x = random(0xFFFF);
+  let y = random(16);
 
-# shift right
-# RXsYsAluop*AB
-0b0000000101000  0x0000  0x0000  0x0000
-0b0000000101000  0x0000  0x0001  0x0000
-0b0000000101000  0x0000  0x0002  0x0000
-0b0000000101000  0x0002  0x0000  0x0002
-0b0000000101000  0x0002  0x0001  0x0001
-0b0000000101000  0x0002  0x0002  0x0000
-0b0000000101000  0x0003  0x0000  0x0003
-0b0000000101000  0x0003  0x0001  0x0001
-0b0000000101000  0x0003  0x0002  0x0000
-0b0000000101000  0x0004  0x0000  0x0004
-0b0000000101000  0x0004  0x0001  0x0002
-0b0000000101000  0x0004  0x0002  0x0001
-</dataString>
+  0b00100 (x) (y) (x&lt;&lt;y)
+  0b00101 (x) (y) (x&gt;&gt;y)
+end loop</dataString>
           </testData>
         </entry>
       </elementAttributes>
-      <pos x="600" y="0"/>
+      <pos x="600" y="-200"/>
     </visualElement>
     <visualElement>
       <elementName>BarrelShifter</elementName>
@@ -692,309 +567,6 @@
       <pos x="640" y="1940"/>
     </visualElement>
     <visualElement>
-      <elementName>Testcase</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>bitwise tests</string>
-        </entry>
-        <entry>
-          <string>Testdata</string>
-          <testData>
-            <dataString>opcode            A       B       R
-# bitwise and
-# RXsYsAluop*AB
-0b0000010000000  0x0000  0x0000  0x0000
-0b0000010000000  0x0000  0x0001  0x0000
-0b0000010000000  0x0001  0x0000  0x0000
-0b0000010000000  0x0001  0x0001  0x0001
-0b0000010000000  0x0002  0x0001  0x0000
-0b0000010000000  0x0001  0x0002  0x0000
-0b0000010000000  0x0002  0x0002  0x0002
-0b0000010000000  0x0002  0x0000  0x0000
-0b0000010000000  0x0000  0x0002  0x0000
-0b0000010000000  0x0003  0x0002  0x0002
-
-# bitwise or
-# RXsYsAluop*AB
-0b0000010001000  0x0000  0x0000  0x0000
-0b0000010001000  0x0000  0x0001  0x0001
-0b0000010001000  0x0001  0x0000  0x0001
-0b0000010001000  0x0001  0x0001  0x0001
-0b0000010001000  0x0002  0x0001  0x0003
-0b0000010001000  0x0001  0x0002  0x0003
-0b0000010001000  0x0002  0x0002  0x0002
-0b0000010001000  0x0002  0x0000  0x0002
-0b0000010001000  0x0000  0x0002  0x0002
-0b0000010001000  0x0003  0x0002  0x0003
-
-# bitwise not x
-# RXsYsAluop*AB
-0b0000010010000  0x0000  0x0000  0xFFFF
-0b0000010010000  0x0000  0x0001  0xFFFF
-0b0000010010000  0x0001  0x0000  0xFFFE
-0b0000010010000  0x0001  0x0001  0xFFFE
-0b0000010010000  0x0002  0x0000  0xFFFD
-0b0000010010000  0x0002  0x0001  0xFFFD
-0b0000010010000  0x0003  0x0000  0xFFFC
-0b0000010010000  0x0003  0x0001  0xFFFC
-0b0000010010000  0x0004  0x0000  0xFFFB
-0b0000010010000  0x0004  0x0001  0xFFFB
-
-# bitwise not y
-# RXsYsAluop*AB
-0b0000010011000  0x0000  0x0000  0xFFFF
-0b0000010011000  0x0001  0x0000  0xFFFF
-0b0000010011000  0x0000  0x0001  0xFFFE
-0b0000010011000  0x0001  0x0001  0xFFFE
-0b0000010011000  0x0000  0x0002  0xFFFD
-0b0000010011000  0x0001  0x0002  0xFFFD
-0b0000010011000  0x0000  0x0003  0xFFFC
-0b0000010011000  0x0001  0x0003  0xFFFC
-0b0000010011000  0x0000  0x0004  0xFFFB
-0b0000010011000  0x0001  0x0004  0xFFFB
-
-# bitwise xor
-# RXsYsAluop*AB
-0b0000010100000  0x0000  0x0000  0x0000
-0b0000010100000  0x0001  0x0000  0x0001
-0b0000010100000  0x0000  0x0001  0x0001
-0b0000010100000  0x0001  0x0001  0x0000
-0b0000010100000  0x0000  0x0002  0x0002
-0b0000010100000  0x0001  0x0002  0x0003
-0b0000010100000  0x0000  0x0003  0x0003
-0b0000010100000  0x0001  0x0003  0x0002
-0b0000010100000  0x0000  0x0004  0x0004
-
-# bitwise xnor
-# RXsYsAluop*AB
-0b0000010101000  0x0000  0x0000  0xFFFF
-0b0000010101000  0x0001  0x0000  0xFFFE
-0b0000010101000  0x0000  0x0001  0xFFFE
-0b0000010101000  0x0001  0x0001  0xFFFF
-0b0000010101000  0x0000  0x0002  0xFFFD
-0b0000010101000  0x0001  0x0002  0xFFFC
-0b0000010101000  0x0000  0x0003  0xFFFC
-0b0000010101000  0x0001  0x0003  0xFFFD
-0b0000010101000  0x0000  0x0004  0xFFFB
-
-# bitwise nor
-# RXsYsAluop*AB
-0b0000010110000  0x0000  0x0000  0xFFFF
-0b0000010110000  0x0001  0x0000  0xFFFE
-0b0000010110000  0x0000  0x0001  0xFFFE
-0b0000010110000  0x0001  0x0001  0xFFFE
-0b0000010110000  0x0000  0x0002  0xFFFD
-0b0000010110000  0x0001  0x0002  0xFFFC
-0b0000010110000  0x0000  0x0003  0xFFFC
-0b0000010110000  0x0001  0x0003  0xFFFC
-0b0000010110000  0x0000  0x0004  0xFFFB
-
-# bitwise nand
-# RXsYsAluop*AB
-0b0000010111000  0x0000  0x0000  0xFFFF
-0b0000010111000  0x0001  0x0000  0xFFFF
-0b0000010111000  0x0000  0x0001  0xFFFF
-0b0000010111000  0x0001  0x0001  0xFFFE
-0b0000010111000  0x0000  0x0002  0xFFFF
-0b0000010111000  0x0001  0x0002  0xFFFF
-0b0000010111000  0x0000  0x0003  0xFFFF
-0b0000010111000  0x0001  0x0003  0xFFFE
-0b0000010111000  0x0000  0x0004  0xFFFF
-</dataString>
-          </testData>
-        </entry>
-      </elementAttributes>
-      <pos x="800" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Testcase</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>comparison tests</string>
-        </entry>
-        <entry>
-          <string>Testdata</string>
-          <testData>
-            <dataString>opcode            A       B       R
-# false
-# RXsYsAluop*AB
-0b0000011000000  0x0000  0x0000  0x0000
-0b0000011000000  0x0000  0x0001  0x0000
-0b0000011000000  0x0001  0x0000  0x0000
-0b0000011000000  0x0001  0x0001  0x0000
-0b0000011000000  0x0002  0x0001  0x0000
-0b0000011000000  0x0001  0x0002  0x0000
-0b0000011000000  0x0002  0x0002  0x0000
-0b0000011000000  0x0002  0x0000  0x0000
-0b0000011000000  0x0000  0x0002  0x0000
-0b0000011000000  0x0003  0x0002  0x0000
-
-# greater than
-# RXsYsAluop*AB
-0b0000011001000  0x0000  0x0000  0x0000
-0b0000011001000  0x0000  0x0001  0x0000
-0b0000011001000  0x0001  0x0000  0xFFFF
-0b0000011001000  0x0001  0x0001  0x0000
-0b0000011001000  0x0002  0x0001  0xFFFF
-0b0000011001000  0x0001  0x0002  0x0000
-0b0000011001000  0x0002  0x0002  0x0000
-0b0000011001000  0x0002  0x0000  0xFFFF
-0b0000011001000  0x0000  0x0002  0x0000
-0b0000011001000  0x0003  0x0002  0xFFFF
-
-# equals
-# RXsYsAluop*AB
-0b0000011010000  0x0000  0x0000  0xFFFF
-0b0000011010000  0x0000  0x0001  0x0000
-0b0000011010000  0x0001  0x0000  0x0000
-0b0000011010000  0x0001  0x0001  0xFFFF
-0b0000011010000  0x0002  0x0001  0x0000
-0b0000011010000  0x0001  0x0002  0x0000
-0b0000011010000  0x0002  0x0002  0xFFFF
-0b0000011010000  0x0002  0x0000  0x0000
-0b0000011010000  0x0000  0x0002  0x0000
-0b0000011010000  0x0003  0x0002  0x0000
-
-# greater than or equals
-# RXsYsAluop*AB
-0b0000011011000  0x0000  0x0000  0xFFFF
-0b0000011011000  0x0000  0x0001  0x0000
-0b0000011011000  0x0001  0x0000  0xFFFF
-0b0000011011000  0x0001  0x0001  0xFFFF
-0b0000011011000  0x0002  0x0001  0xFFFF
-0b0000011011000  0x0001  0x0002  0x0000
-0b0000011011000  0x0002  0x0002  0xFFFF
-0b0000011011000  0x0002  0x0000  0xFFFF
-0b0000011011000  0x0000  0x0002  0x0000
-0b0000011011000  0x0003  0x0002  0xFFFF
-
-# less than
-# RXsYsAluop*AB
-0b0000011100000  0x0000  0x0000  0x0000
-0b0000011100000  0x0000  0x0001  0xFFFF
-0b0000011100000  0x0001  0x0000  0x0000
-0b0000011100000  0x0001  0x0001  0x0000
-0b0000011100000  0x0002  0x0001  0x0000
-0b0000011100000  0x0001  0x0002  0xFFFF
-0b0000011100000  0x0002  0x0002  0x0000
-0b0000011100000  0x0002  0x0000  0x0000
-0b0000011100000  0x0000  0x0002  0xFFFF
-0b0000011100000  0x0003  0x0002  0x0000
-
-# less than or equals
-# RXsYsAluop*AB
-0b0000011110000  0x0000  0x0000  0xFFFF
-0b0000011110000  0x0000  0x0001  0xFFFF
-0b0000011110000  0x0001  0x0000  0x0000
-0b0000011110000  0x0001  0x0001  0xFFFF
-0b0000011110000  0x0002  0x0001  0x0000
-0b0000011110000  0x0001  0x0002  0xFFFF
-0b0000011110000  0x0002  0x0002  0xFFFF
-0b0000011110000  0x0002  0x0000  0x0000
-0b0000011110000  0x0000  0x0002  0xFFFF
-0b0000011110000  0x0003  0x0002  0x0000
-
-# not equals
-# RXsYsAluop*AB
-0b0000011101000  0x0000  0x0000  0x0000
-0b0000011101000  0x0000  0x0001  0xFFFF
-0b0000011101000  0x0001  0x0000  0xFFFF
-0b0000011101000  0x0001  0x0001  0x0000
-0b0000011101000  0x0002  0x0001  0xFFFF
-0b0000011101000  0x0001  0x0002  0xFFFF
-0b0000011101000  0x0002  0x0002  0x0000
-0b0000011101000  0x0002  0x0000  0xFFFF
-0b0000011101000  0x0000  0x0002  0xFFFF
-0b0000011101000  0x0003  0x0002  0xFFFF
-</dataString>
-          </testData>
-        </entry>
-      </elementAttributes>
-      <pos x="1000" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Testcase</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>selection tests</string>
-        </entry>
-        <entry>
-          <string>Testdata</string>
-          <testData>
-            <dataString>opcode            A       B       *Ax     R
-# RXsYsAluop*AB
-0b0000000000000  0x0003  0x0005  0x0009  0x0008
-
-0b0010000000000  0x0003  0x0005  0x0009  0x0005
-0b0100000000000  0x0003  0x0005  0x0009  0x0006
-0b0110000000000  0x0003  0x0005  0x0009  0x000E
-
-0b0000100000000  0x0003  0x0005  0x0009  0x0003
-0b0001000000000  0x0003  0x0005  0x0009  0x0004
-0b0001100000000  0x0003  0x0005  0x0009  0x000C
-
-0b0010100000000  0x0003  0x0005  0x0009  0x0000
-0b0011000000000  0x0003  0x0005  0x0009  0x0001
-0b0011100000000  0x0003  0x0005  0x0009  0x0009
-
-0b0100100000000  0x0003  0x0005  0x0009  0x0001
-0b0101000000000  0x0003  0x0005  0x0009  0x0002
-0b0101100000000  0x0003  0x0005  0x0009  0x000A
-
-0b0110100000000  0x0003  0x0005  0x0009  0x0009
-0b0111000000000  0x0003  0x0005  0x0009  0x000A
-0b0111100000000  0x0003  0x0005  0x0009  0x0012
-
-
-0b1000000000000  0x0003  0x0005  0x0009  0x0008
-
-0b1010000000000  0x0003  0x0005  0x0009  0x0003
-0b1100000000000  0x0003  0x0005  0x0009  0x0004
-0b1110000000000  0x0003  0x0005  0x0009  0x000C
-
-0b1000100000000  0x0003  0x0005  0x0009  0x0005
-0b1001000000000  0x0003  0x0005  0x0009  0x0006
-0b1001100000000  0x0003  0x0005  0x0009  0x000E
-
-0b1010100000000  0x0003  0x0005  0x0009  0x0000
-0b1011000000000  0x0003  0x0005  0x0009  0x0001
-0b1011100000000  0x0003  0x0005  0x0009  0x0009
-
-0b1100100000000  0x0003  0x0005  0x0009  0x0001
-0b1101000000000  0x0003  0x0005  0x0009  0x0002
-0b1101100000000  0x0003  0x0005  0x0009  0x000A
-
-0b1110100000000  0x0003  0x0005  0x0009  0x0009
-0b1111000000000  0x0003  0x0005  0x0009  0x000A
-0b1111100000000  0x0003  0x0005  0x0009  0x0012
-</dataString>
-          </testData>
-        </entry>
-      </elementAttributes>
-      <pos x="1220" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="3"/>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>*Ax</string>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-      </elementAttributes>
-      <pos x="180" y="340"/>
-    </visualElement>
-    <visualElement>
       <elementName>NOr</elementName>
       <elementAttributes>
         <entry>
@@ -1133,39 +705,323 @@
       <pos x="880" y="2060"/>
     </visualElement>
     <visualElement>
-      <elementName>Multiplexer</elementName>
+      <elementName>Testcase</elementName>
       <elementAttributes>
         <entry>
-          <string>Bits</string>
-          <int>16</int>
+          <string>Label</string>
+          <string>arithmetic</string>
         </entry>
         <entry>
-          <string>flipSelPos</string>
-          <boolean>true</boolean>
+          <string>Testdata</string>
+          <testData>
+            <dataString>opcode      X       Y       R
+# addition
+0b00000  0x0000  0x0000  0x0000
+0b00000  0x0001  0x0000  0x0001
+0b00000  0x0000  0x0001  0x0001
+0b00000  0x0001  0x0001  0x0002
+0b00000  0x0002  0x0003  0x0005
+
+# subtraction
+0b00001  0x0000  0x0000  0x0000
+0b00001  0x0001  0x0000  0x0001
+0b00001  0x0001  0x0001  0x0000
+0b00001  0x0002  0x0001  0x0001
+0b00001  0x0002  0x0000  0x0002
+0b00001  0x0001  0x0002  0xFFFF
+0b00001  0x0000  0x0001  0xFFFF
+0b00001  0x0000  0x0002  0xFFFE
+
+# multiplication
+0b00010  0x0000  0x0000  0x0000
+0b00010  0x0001  0x0000  0x0000
+0b00010  0x0000  0x0001  0x0000
+0b00010  0x0001  0x0001  0x0001
+0b00010  0x0000  0x0002  0x0000
+0b00010  0x0002  0x0000  0x0000
+0b00010  0x0002  0x0002  0x0004
+0b00010  0x0002  0x0001  0x0002
+0b00010  0x0001  0x0002  0x0002
+0b00010  0xFFFF  0x0002  0xFFFE
+0b00010  0x0002  0xFFFF  0xFFFE
+
+# division
+0b00011  0x0001  0x0001  0x0001
+0b00011  0x0002  0x0001  0x0002
+0b00011  0x0003  0x0001  0x0003
+0b00011  0x0004  0x0001  0x0004
+0b00011  0x0005  0x0001  0x0005
+0b00011  0x0006  0x0001  0x0006
+0b00011  0x0007  0x0001  0x0007
+
+0b00011  0x0001  0x0002  0x0000
+0b00011  0x0002  0x0002  0x0001
+0b00011  0x0003  0x0002  0x0001
+0b00011  0x0004  0x0002  0x0002
+0b00011  0x0005  0x0002  0x0002
+0b00011  0x0006  0x0002  0x0003
+0b00011  0x0007  0x0002  0x0003
+
+# shift left
+0b00100  0x0000  0x0000  0x0000
+0b00100  0x0000  0x0001  0x0000
+0b00100  0x0000  0x0002  0x0000
+0b00100  0x0001  0x0000  0x0001
+0b00100  0x0001  0x0001  0x0002
+0b00100  0x0001  0x0002  0x0004
+0b00100  0x0002  0x0000  0x0002
+0b00100  0x0002  0x0001  0x0004
+0b00100  0x0002  0x0002  0x0008
+0b00100  0x0003  0x0000  0x0003
+0b00100  0x0003  0x0001  0x0006
+0b00100  0x0003  0x0002  0x000C
+
+# shift right
+0b00101  0x0000  0x0000  0x0000
+0b00101  0x0000  0x0001  0x0000
+0b00101  0x0000  0x0002  0x0000
+0b00101  0x0002  0x0000  0x0002
+0b00101  0x0002  0x0001  0x0001
+0b00101  0x0002  0x0002  0x0000
+0b00101  0x0003  0x0000  0x0003
+0b00101  0x0003  0x0001  0x0001
+0b00101  0x0003  0x0002  0x0000
+0b00101  0x0004  0x0000  0x0004
+0b00101  0x0004  0x0001  0x0002
+0b00101  0x0004  0x0002  0x0001
+</dataString>
+          </testData>
         </entry>
       </elementAttributes>
-      <pos x="100" y="340"/>
+      <pos x="600" y="-120"/>
     </visualElement>
     <visualElement>
-      <elementName>Multiplexer</elementName>
+      <elementName>Testcase</elementName>
       <elementAttributes>
         <entry>
-          <string>Bits</string>
-          <int>16</int>
+          <string>Label</string>
+          <string>bitwise</string>
         </entry>
         <entry>
-          <string>flipSelPos</string>
-          <boolean>true</boolean>
+          <string>Testdata</string>
+          <testData>
+            <dataString>opcode   X       Y       R
+# bitwise and
+0b10000  0x0000  0x0000  0x0000
+0b10000  0x0000  0x0001  0x0000
+0b10000  0x0001  0x0000  0x0000
+0b10000  0x0001  0x0001  0x0001
+0b10000  0x0002  0x0001  0x0000
+0b10000  0x0001  0x0002  0x0000
+0b10000  0x0002  0x0002  0x0002
+0b10000  0x0002  0x0000  0x0000
+0b10000  0x0000  0x0002  0x0000
+0b10000  0x0003  0x0002  0x0002
+
+# bitwise or
+0b10001  0x0000  0x0000  0x0000
+0b10001  0x0000  0x0001  0x0001
+0b10001  0x0001  0x0000  0x0001
+0b10001  0x0001  0x0001  0x0001
+0b10001  0x0002  0x0001  0x0003
+0b10001  0x0001  0x0002  0x0003
+0b10001  0x0002  0x0002  0x0002
+0b10001  0x0002  0x0000  0x0002
+0b10001  0x0000  0x0002  0x0002
+0b10001  0x0003  0x0002  0x0003
+
+# bitwise not x
+0b10010  0x0000  0x0000  0xFFFF
+0b10010  0x0000  0x0001  0xFFFF
+0b10010  0x0001  0x0000  0xFFFE
+0b10010  0x0001  0x0001  0xFFFE
+0b10010  0x0002  0x0000  0xFFFD
+0b10010  0x0002  0x0001  0xFFFD
+0b10010  0x0003  0x0000  0xFFFC
+0b10010  0x0003  0x0001  0xFFFC
+0b10010  0x0004  0x0000  0xFFFB
+0b10010  0x0004  0x0001  0xFFFB
+
+# bitwise not y
+0b10011  0x0000  0x0000  0xFFFF
+0b10011  0x0001  0x0000  0xFFFF
+0b10011  0x0000  0x0001  0xFFFE
+0b10011  0x0001  0x0001  0xFFFE
+0b10011  0x0000  0x0002  0xFFFD
+0b10011  0x0001  0x0002  0xFFFD
+0b10011  0x0000  0x0003  0xFFFC
+0b10011  0x0001  0x0003  0xFFFC
+0b10011  0x0000  0x0004  0xFFFB
+0b10011  0x0001  0x0004  0xFFFB
+
+# bitwise xor
+0b10100  0x0000  0x0000  0x0000
+0b10100  0x0001  0x0000  0x0001
+0b10100  0x0000  0x0001  0x0001
+0b10100  0x0001  0x0001  0x0000
+0b10100  0x0000  0x0002  0x0002
+0b10100  0x0001  0x0002  0x0003
+0b10100  0x0000  0x0003  0x0003
+0b10100  0x0001  0x0003  0x0002
+0b10100  0x0000  0x0004  0x0004
+
+# bitwise xnor
+0b10101  0x0000  0x0000  0xFFFF
+0b10101  0x0001  0x0000  0xFFFE
+0b10101  0x0000  0x0001  0xFFFE
+0b10101  0x0001  0x0001  0xFFFF
+0b10101  0x0000  0x0002  0xFFFD
+0b10101  0x0001  0x0002  0xFFFC
+0b10101  0x0000  0x0003  0xFFFC
+0b10101  0x0001  0x0003  0xFFFD
+0b10101  0x0000  0x0004  0xFFFB
+
+# bitwise nor
+0b10110  0x0000  0x0000  0xFFFF
+0b10110  0x0001  0x0000  0xFFFE
+0b10110  0x0000  0x0001  0xFFFE
+0b10110  0x0001  0x0001  0xFFFE
+0b10110  0x0000  0x0002  0xFFFD
+0b10110  0x0001  0x0002  0xFFFC
+0b10110  0x0000  0x0003  0xFFFC
+0b10110  0x0001  0x0003  0xFFFC
+0b10110  0x0000  0x0004  0xFFFB
+
+# bitwise nand
+0b10111  0x0000  0x0000  0xFFFF
+0b10111  0x0001  0x0000  0xFFFF
+0b10111  0x0000  0x0001  0xFFFF
+0b10111  0x0001  0x0001  0xFFFE
+0b10111  0x0000  0x0002  0xFFFF
+0b10111  0x0001  0x0002  0xFFFF
+0b10111  0x0000  0x0003  0xFFFF
+0b10111  0x0001  0x0003  0xFFFE
+0b10111  0x0000  0x0004  0xFFFF
+</dataString>
+          </testData>
         </entry>
       </elementAttributes>
-      <pos x="100" y="560"/>
+      <pos x="600" y="-40"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>comparison</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>opcode   X       Y       R
+# false
+0b11000  0x0000  0x0000  0x0000
+0b11000  0x0000  0x0001  0x0000
+0b11000  0x0001  0x0000  0x0000
+0b11000  0x0001  0x0001  0x0000
+0b11000  0x0002  0x0001  0x0000
+0b11000  0x0001  0x0002  0x0000
+0b11000  0x0002  0x0002  0x0000
+0b11000  0x0002  0x0000  0x0000
+0b11000  0x0000  0x0002  0x0000
+0b11000  0x0003  0x0002  0x0000
+
+# greater than
+0b11001  0x0000  0x0000  0x0000
+0b11001  0x0000  0x0001  0x0000
+0b11001  0x0001  0x0000  0xFFFF
+0b11001  0x0001  0x0001  0x0000
+0b11001  0x0002  0x0001  0xFFFF
+0b11001  0x0001  0x0002  0x0000
+0b11001  0x0002  0x0002  0x0000
+0b11001  0x0002  0x0000  0xFFFF
+0b11001  0x0000  0x0002  0x0000
+0b11001  0x0003  0x0002  0xFFFF
+
+# equals
+0b11010  0x0000  0x0000  0xFFFF
+0b11010  0x0000  0x0001  0x0000
+0b11010  0x0001  0x0000  0x0000
+0b11010  0x0001  0x0001  0xFFFF
+0b11010  0x0002  0x0001  0x0000
+0b11010  0x0001  0x0002  0x0000
+0b11010  0x0002  0x0002  0xFFFF
+0b11010  0x0002  0x0000  0x0000
+0b11010  0x0000  0x0002  0x0000
+0b11010  0x0003  0x0002  0x0000
+
+# greater than or equals
+0b11011  0x0000  0x0000  0xFFFF
+0b11011  0x0000  0x0001  0x0000
+0b11011  0x0001  0x0000  0xFFFF
+0b11011  0x0001  0x0001  0xFFFF
+0b11011  0x0002  0x0001  0xFFFF
+0b11011  0x0001  0x0002  0x0000
+0b11011  0x0002  0x0002  0xFFFF
+0b11011  0x0002  0x0000  0xFFFF
+0b11011  0x0000  0x0002  0x0000
+0b11011  0x0003  0x0002  0xFFFF
+
+# less than
+0b11100  0x0000  0x0000  0x0000
+0b11100  0x0000  0x0001  0xFFFF
+0b11100  0x0001  0x0000  0x0000
+0b11100  0x0001  0x0001  0x0000
+0b11100  0x0002  0x0001  0x0000
+0b11100  0x0001  0x0002  0xFFFF
+0b11100  0x0002  0x0002  0x0000
+0b11100  0x0002  0x0000  0x0000
+0b11100  0x0000  0x0002  0xFFFF
+0b11100  0x0003  0x0002  0x0000
+
+# less than or equals
+0b11110  0x0000  0x0000  0xFFFF
+0b11110  0x0000  0x0001  0xFFFF
+0b11110  0x0001  0x0000  0x0000
+0b11110  0x0001  0x0001  0xFFFF
+0b11110  0x0002  0x0001  0x0000
+0b11110  0x0001  0x0002  0xFFFF
+0b11110  0x0002  0x0002  0xFFFF
+0b11110  0x0002  0x0000  0x0000
+0b11110  0x0000  0x0002  0xFFFF
+0b11110  0x0003  0x0002  0x0000
+
+# not equals
+0b11101  0x0000  0x0000  0x0000
+0b11101  0x0000  0x0001  0xFFFF
+0b11101  0x0001  0x0000  0xFFFF
+0b11101  0x0001  0x0001  0x0000
+0b11101  0x0002  0x0001  0xFFFF
+0b11101  0x0001  0x0002  0xFFFF
+0b11101  0x0002  0x0002  0x0000
+0b11101  0x0002  0x0000  0xFFFF
+0b11101  0x0000  0x0002  0xFFFF
+0b11101  0x0003  0x0002  0xFFFF
+
+# true
+0b11111  0x0000  0x0000  0xFFFF
+0b11111  0x0000  0x0001  0xFFFF
+0b11111  0x0001  0x0000  0xFFFF
+0b11111  0x0001  0x0001  0xFFFF
+0b11111  0x0002  0x0001  0xFFFF
+0b11111  0x0001  0x0002  0xFFFF
+0b11111  0x0002  0x0002  0xFFFF
+0b11111  0x0002  0x0000  0xFFFF
+0b11111  0x0000  0x0002  0xFFFF
+0b11111  0x0003  0x0002  0xFFFF
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="600" y="40"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Probe</elementName>
+      <elementAttributes/>
+      <pos x="940" y="740"/>
     </visualElement>
   </visualElements>
   <wires>
-    <wire>
-      <p1 x="180" y="640"/>
-      <p2 x="400" y="640"/>
-    </wire>
     <wire>
       <p1 x="900" y="640"/>
       <p2 x="920" y="640"/>
@@ -1187,12 +1043,12 @@
       <p2 x="980" y="900"/>
     </wire>
     <wire>
-      <p1 x="700" y="520"/>
-      <p2 x="840" y="520"/>
+      <p1 x="580" y="520"/>
+      <p2 x="700" y="520"/>
     </wire>
     <wire>
-      <p1 x="80" y="520"/>
-      <p2 x="120" y="520"/>
+      <p1 x="700" y="520"/>
+      <p2 x="840" y="520"/>
     </wire>
     <wire>
       <p1 x="960" y="1160"/>
@@ -1211,15 +1067,11 @@
       <p2 x="1220" y="140"/>
     </wire>
     <wire>
-      <p1 x="220" y="400"/>
-      <p2 x="340" y="400"/>
-    </wire>
-    <wire>
       <p1 x="900" y="400"/>
       <p2 x="980" y="400"/>
     </wire>
     <wire>
-      <p1 x="380" y="400"/>
+      <p1 x="580" y="400"/>
       <p2 x="760" y="400"/>
     </wire>
     <wire>
@@ -1275,10 +1127,6 @@
       <p2 x="1100" y="420"/>
     </wire>
     <wire>
-      <p1 x="180" y="420"/>
-      <p2 x="340" y="420"/>
-    </wire>
-    <wire>
       <p1 x="700" y="420"/>
       <p2 x="840" y="420"/>
     </wire>
@@ -1311,14 +1159,6 @@
       <p2 x="840" y="1580"/>
     </wire>
     <wire>
-      <p1 x="80" y="300"/>
-      <p2 x="120" y="300"/>
-    </wire>
-    <wire>
-      <p1 x="120" y="300"/>
-      <p2 x="220" y="300"/>
-    </wire>
-    <wire>
       <p1 x="1340" y="1200"/>
       <p2 x="1360" y="1200"/>
     </wire>
@@ -1327,19 +1167,11 @@
       <p2 x="1200" y="1200"/>
     </wire>
     <wire>
-      <p1 x="0" y="560"/>
-      <p2 x="40" y="560"/>
-    </wire>
-    <wire>
-      <p1 x="40" y="560"/>
-      <p2 x="100" y="560"/>
-    </wire>
-    <wire>
       <p1 x="800" y="180"/>
       <p2 x="1000" y="180"/>
     </wire>
     <wire>
-      <p1 x="220" y="180"/>
+      <p1 x="580" y="180"/>
       <p2 x="780" y="180"/>
     </wire>
     <wire>
@@ -1387,10 +1219,6 @@
       <p2 x="840" y="1220"/>
     </wire>
     <wire>
-      <p1 x="140" y="580"/>
-      <p2 x="400" y="580"/>
-    </wire>
-    <wire>
       <p1 x="760" y="840"/>
       <p2 x="840" y="840"/>
     </wire>
@@ -1409,10 +1237,6 @@
     <wire>
       <p1 x="880" y="2120"/>
       <p2 x="900" y="2120"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="200"/>
-      <p2 x="420" y="200"/>
     </wire>
     <wire>
       <p1 x="1080" y="460"/>
@@ -1463,28 +1287,8 @@
       <p2 x="840" y="1620"/>
     </wire>
     <wire>
-      <p1 x="0" y="340"/>
-      <p2 x="60" y="340"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="340"/>
-      <p2 x="100" y="340"/>
-    </wire>
-    <wire>
-      <p1 x="260" y="600"/>
-      <p2 x="400" y="600"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="600"/>
-      <p2 x="100" y="600"/>
-    </wire>
-    <wire>
       <p1 x="920" y="1240"/>
       <p2 x="960" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="220"/>
-      <p2 x="360" y="220"/>
     </wire>
     <wire>
       <p1 x="760" y="2140"/>
@@ -1531,20 +1335,12 @@
       <p2 x="840" y="740"/>
     </wire>
     <wire>
-      <p1 x="140" y="360"/>
-      <p2 x="340" y="360"/>
+      <p1 x="900" y="740"/>
+      <p2 x="940" y="740"/>
     </wire>
     <wire>
       <p1 x="760" y="620"/>
       <p2 x="840" y="620"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="620"/>
-      <p2 x="400" y="620"/>
-    </wire>
-    <wire>
-      <p1 x="440" y="620"/>
-      <p2 x="700" y="620"/>
     </wire>
     <wire>
       <p1 x="1000" y="620"/>
@@ -1579,16 +1375,16 @@
       <p2 x="1100" y="1520"/>
     </wire>
     <wire>
-      <p1 x="760" y="500"/>
-      <p2 x="840" y="500"/>
-    </wire>
-    <wire>
       <p1 x="1360" y="500"/>
       <p2 x="1380" y="500"/>
     </wire>
     <wire>
       <p1 x="900" y="500"/>
       <p2 x="960" y="500"/>
+    </wire>
+    <wire>
+      <p1 x="760" y="500"/>
+      <p2 x="840" y="500"/>
     </wire>
     <wire>
       <p1 x="700" y="1140"/>
@@ -1607,10 +1403,6 @@
       <p2 x="840" y="1780"/>
     </wire>
     <wire>
-      <p1 x="140" y="120"/>
-      <p2 x="200" y="120"/>
-    </wire>
-    <wire>
       <p1 x="800" y="120"/>
       <p2 x="1320" y="120"/>
     </wire>
@@ -1623,10 +1415,6 @@
       <p2 x="960" y="1400"/>
     </wire>
     <wire>
-      <p1 x="260" y="380"/>
-      <p2 x="340" y="380"/>
-    </wire>
-    <wire>
       <p1 x="1000" y="380"/>
       <p2 x="1040" y="380"/>
     </wire>
@@ -1637,10 +1425,6 @@
     <wire>
       <p1 x="1220" y="380"/>
       <p2 x="1260" y="380"/>
-    </wire>
-    <wire>
-      <p1 x="40" y="380"/>
-      <p2 x="100" y="380"/>
     </wire>
     <wire>
       <p1 x="960" y="680"/>
@@ -1675,12 +1459,28 @@
       <p2 x="1280" y="2120"/>
     </wire>
     <wire>
-      <p1 x="260" y="340"/>
-      <p2 x="260" y="380"/>
+      <p1 x="1120" y="160"/>
+      <p2 x="1120" y="380"/>
     </wire>
     <wire>
-      <p1 x="260" y="380"/>
-      <p2 x="260" y="600"/>
+      <p1 x="1120" y="1120"/>
+      <p2 x="1120" y="1140"/>
+    </wire>
+    <wire>
+      <p1 x="1120" y="1500"/>
+      <p2 x="1120" y="1520"/>
+    </wire>
+    <wire>
+      <p1 x="1120" y="380"/>
+      <p2 x="1120" y="420"/>
+    </wire>
+    <wire>
+      <p1 x="800" y="360"/>
+      <p2 x="800" y="440"/>
+    </wire>
+    <wire>
+      <p1 x="800" y="440"/>
+      <p2 x="800" y="540"/>
     </wire>
     <wire>
       <p1 x="1220" y="140"/>
@@ -1709,102 +1509,6 @@
     <wire>
       <p1 x="840" y="2000"/>
       <p2 x="840" y="2060"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="380"/>
-      <p2 x="1040" y="620"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="1100"/>
-      <p2 x="1040" y="1300"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="620"/>
-      <p2 x="1040" y="840"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="1680"/>
-      <p2 x="1040" y="1960"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="1300"/>
-      <p2 x="1040" y="1480"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="840"/>
-      <p2 x="1040" y="1100"/>
-    </wire>
-    <wire>
-      <p1 x="1040" y="1480"/>
-      <p2 x="1040" y="1680"/>
-    </wire>
-    <wire>
-      <p1 x="1360" y="500"/>
-      <p2 x="1360" y="1200"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="300"/>
-      <p2 x="80" y="520"/>
-    </wire>
-    <wire>
-      <p1 x="1300" y="2160"/>
-      <p2 x="1300" y="2200"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="340"/>
-      <p2 x="220" y="400"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="240"/>
-      <p2 x="220" y="300"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="400"/>
-      <p2 x="220" y="620"/>
-    </wire>
-    <wire>
-      <p1 x="1180" y="480"/>
-      <p2 x="1180" y="880"/>
-    </wire>
-    <wire>
-      <p1 x="1180" y="1200"/>
-      <p2 x="1180" y="1540"/>
-    </wire>
-    <wire>
-      <p1 x="860" y="1980"/>
-      <p2 x="860" y="2060"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="160"/>
-      <p2 x="1120" y="380"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="1120"/>
-      <p2 x="1120" y="1140"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="1500"/>
-      <p2 x="1120" y="1520"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="380"/>
-      <p2 x="1120" y="420"/>
-    </wire>
-    <wire>
-      <p1 x="800" y="360"/>
-      <p2 x="800" y="440"/>
-    </wire>
-    <wire>
-      <p1 x="800" y="440"/>
-      <p2 x="800" y="540"/>
-    </wire>
-    <wire>
-      <p1 x="420" y="200"/>
-      <p2 x="420" y="580"/>
-    </wire>
-    <wire>
-      <p1 x="360" y="220"/>
-      <p2 x="360" y="360"/>
     </wire>
     <wire>
       <p1 x="1000" y="180"/>
@@ -1843,10 +1547,6 @@
       <p2 x="1320" y="1180"/>
     </wire>
     <wire>
-      <p1 x="40" y="380"/>
-      <p2 x="40" y="560"/>
-    </wire>
-    <wire>
       <p1 x="1260" y="2160"/>
       <p2 x="1260" y="2200"/>
     </wire>
@@ -1859,6 +1559,38 @@
       <p2 x="1260" y="2000"/>
     </wire>
     <wire>
+      <p1 x="1040" y="380"/>
+      <p2 x="1040" y="620"/>
+    </wire>
+    <wire>
+      <p1 x="1040" y="1100"/>
+      <p2 x="1040" y="1300"/>
+    </wire>
+    <wire>
+      <p1 x="1040" y="620"/>
+      <p2 x="1040" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="1040" y="1680"/>
+      <p2 x="1040" y="1960"/>
+    </wire>
+    <wire>
+      <p1 x="1040" y="1300"/>
+      <p2 x="1040" y="1480"/>
+    </wire>
+    <wire>
+      <p1 x="1040" y="840"/>
+      <p2 x="1040" y="1100"/>
+    </wire>
+    <wire>
+      <p1 x="1040" y="1480"/>
+      <p2 x="1040" y="1680"/>
+    </wire>
+    <wire>
+      <p1 x="1360" y="500"/>
+      <p2 x="1360" y="1200"/>
+    </wire>
+    <wire>
       <p1 x="880" y="2080"/>
       <p2 x="880" y="2120"/>
     </wire>
@@ -1867,12 +1599,8 @@
       <p2 x="880" y="2060"/>
     </wire>
     <wire>
-      <p1 x="180" y="340"/>
-      <p2 x="180" y="420"/>
-    </wire>
-    <wire>
-      <p1 x="180" y="420"/>
-      <p2 x="180" y="640"/>
+      <p1 x="1300" y="2160"/>
+      <p2 x="1300" y="2200"/>
     </wire>
     <wire>
       <p1 x="760" y="400"/>
@@ -1943,12 +1671,16 @@
       <p2 x="1400" y="460"/>
     </wire>
     <wire>
-      <p1 x="120" y="300"/>
-      <p2 x="120" y="340"/>
+      <p1 x="1180" y="480"/>
+      <p2 x="1180" y="880"/>
     </wire>
     <wire>
-      <p1 x="120" y="520"/>
-      <p2 x="120" y="560"/>
+      <p1 x="1180" y="1200"/>
+      <p2 x="1180" y="1540"/>
+    </wire>
+    <wire>
+      <p1 x="860" y="1980"/>
+      <p2 x="860" y="2060"/>
     </wire>
     <wire>
       <p1 x="700" y="420"/>
@@ -1972,15 +1704,11 @@
     </wire>
     <wire>
       <p1 x="700" y="520"/>
-      <p2 x="700" y="620"/>
+      <p2 x="700" y="660"/>
     </wire>
     <wire>
       <p1 x="700" y="1620"/>
       <p2 x="700" y="1720"/>
-    </wire>
-    <wire>
-      <p1 x="700" y="620"/>
-      <p2 x="700" y="660"/>
     </wire>
     <wire>
       <p1 x="700" y="1140"/>
@@ -2005,10 +1733,6 @@
     <wire>
       <p1 x="700" y="1820"/>
       <p2 x="700" y="2160"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="340"/>
-      <p2 x="60" y="600"/>
     </wire>
   </wires>
   <measurementOrdering/>

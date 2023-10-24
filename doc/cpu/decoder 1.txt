@@ -1,0 +1,40 @@
+cpu:
+inputs:
+- clock
+- *A
+- *PC
+
+outputs:
+- jump (write R to PC)
+- ram write (write R to *Ax)
+- A
+- R
+- stop clock
+
+
+
+decoder:
+inputs:
+- instruction
+
+outputs:
+- ALU opcode (5 bits)
+- ALU A selection (2 bits) (see cpu doc)
+- ALU B selection (2 bits) (see cpu doc)
+- Ax address selection (0: A, 1: B)
+- D selection (2 bits):
+  00 instruction
+  01 ALU
+  10 A
+  11 B
+- write D to *Ax
+- write D to A
+- write D to B
+- compare opcode
+- compare operand (0: A, 1: B)
+- write D to PC if compare true
+- break
+
+
+
+00000 00 00 0 00 0 1 0 0 0 0
