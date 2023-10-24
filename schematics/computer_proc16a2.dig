@@ -33,10 +33,6 @@
           <string>Label</string>
           <string>programClock</string>
         </entry>
-        <entry>
-          <string>Frequency</string>
-          <int>10</int>
-        </entry>
       </elementAttributes>
       <pos x="-40" y="220"/>
     </visualElement>
