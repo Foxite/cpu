@@ -26,6 +26,10 @@ public abstract class ProgramAssembler {
 			throw new UnsupportedStatementException(ArchitectureName, unsupportedStatements);
 		}
 
+		return ConvertStatements(program, symbolDefinitions);
+	}
+
+	private IEnumerable<ushort> ConvertStatements(ProgramAst program, Dictionary<string, short> symbolDefinitions) {
 		foreach (ProgramStatementAst statement in program.Statements) {
 			yield return ConvertStatement(statement.Statement, name => symbolDefinitions[name]);
 		}

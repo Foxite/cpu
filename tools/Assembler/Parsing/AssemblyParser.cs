@@ -1,4 +1,3 @@
-using System.Globalization;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
@@ -6,26 +5,46 @@ using sly.parser.parser;
 namespace Assembler;
 
 public class AssemblyParser {
-	[Production("Number: DecimalInteger")]
-	public ConstantAst DecimalNumber(Token<AssemblyToken> token) {
-		return new ConstantAst(short.Parse(token.Value.Replace("_", "")));
-	}
-	
-	[Production("Number: HexadecimalInteger")]
-	public ConstantAst HexadecimalNumber(Token<AssemblyToken> token) {
-		return new ConstantAst(short.Parse(token.Value["0x".Length..].Replace("_", ""), NumberStyles.AllowHexSpecifier));
-	}
-	
-	[Production("Number: BinaryInteger")]
-	public ConstantAst BinaryNumber(Token<AssemblyToken> token) {
-		string bits = token.Value["0b".Length..];
-		short ret = 0;
-		for (int i = bits.Length - 1; i >= 0; i--) {
-			ret |= (short) (bits[i] == '1' ? 1 : 0);
-			ret <<= 1;
+	private static long ParseNumericLiteral(bool negative, int @base, string basePrefix, string tokenValue, Func<char, int> getDigitValue) {
+		if (!tokenValue.StartsWith(basePrefix)) {
+			throw new FormatException($"Token does not start with expected base prefix {basePrefix}: {tokenValue}");
 		}
 
-		return new ConstantAst(ret);
+		string digits = tokenValue[basePrefix.Length..];
+		
+		int result = 0;
+		for (int i = 0; i < digits.Length; i++) {
+			if (digits[i] == '_') {
+				continue;
+			} else {
+				result = result * @base + getDigitValue(digits[i]);
+			}
+		}
+
+		if (negative) {
+			result = -result;
+		}
+		
+		
+		return result;
+	}
+	
+	[Production("Number: Minus? DecimalInteger")]
+	public ConstantAst DecimalNumber(Token<AssemblyToken> minus, Token<AssemblyToken> token) {
+		return new ConstantAst(ParseNumericLiteral(!minus.IsEmpty, 10, "", token.Value, ch => ch - '0'));
+	}
+	
+	[Production("Number: Minus? HexadecimalInteger")]
+	public ConstantAst HexadecimalNumber(Token<AssemblyToken> minus, Token<AssemblyToken> token) {
+		return new ConstantAst(ParseNumericLiteral(!minus.IsEmpty, 16, "0x", token.Value.ToLower(), ch => ch switch {
+			>= '0' and <= '9' => ch - '0',
+			>= 'a' and <= 'f' => ch - 'a' + 10,
+		}));
+	}
+	
+	[Production("Number: Minus? BinaryInteger")]
+	public ConstantAst BinaryNumber(Token<AssemblyToken> minus, Token<AssemblyToken> token) {
+		return new ConstantAst(ParseNumericLiteral(!minus.IsEmpty, 2, "0b", token.Value, ch => ch == '0' ? 0 : 1));
 	}
 	
 	[Production("Boolean: True")]
@@ -184,19 +203,17 @@ public class AssemblyParser {
 	public IAssemblyAst? LineEnding(List<Token<AssemblyToken>> ignored) {
 		return null;
 	}
-	
-	/*
-	[Production("Statement: Label")]
-	public LabelElement LabelAst(Token<AssemblyToken> label) {
-		return new LabelElement(label.Value[..^1]);
-	}
-	 */
 
-	[Production("ProgramStatement: Label? LineEnding? Statement")]
-	public ProgramStatementAst ProgramStatement(Token<AssemblyToken> label, ValueOption<IAssemblyAst?> lineEnding, IStatement statement) {
+	[Production("OptionalLineEnding: LineEnding?")]
+	public IAssemblyAst? OptionalLineEnding(ValueOption<IAssemblyAst?> ignored) {
+		return null;
+	}
+
+	[Production("ProgramStatement: (Symbol Colon OptionalLineEnding)? Statement")]
+	public ProgramStatementAst ProgramStatement(ValueOption<Group<AssemblyToken, IAssemblyAst>> label, IStatement statement) {
 		string? labelName = null;
-		if (!label.IsEmpty) {
-			labelName = label.Value[..^1];
+		if (label.IsSome) {
+			labelName = label.Match(g => g, () => throw new NotImplementedException()).Token(0).Value;
 		}
 
 		return new ProgramStatementAst(labelName, statement);

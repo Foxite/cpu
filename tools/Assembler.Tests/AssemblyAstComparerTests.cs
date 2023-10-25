@@ -88,7 +88,7 @@ public class AssemblyAstComparerTests {
 				AluOperation.Add
 			)),
 			new ProgramStatementAst(null, new JumpInstruction(
-				new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((short) 0)),
+				new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((long) 0)),
 				CpuRegister.B
 			))
 		);
@@ -104,7 +104,7 @@ public class AssemblyAstComparerTests {
 				AluOperation.Add
 			)),
 			new ProgramStatementAst(null, new JumpInstruction(
-				new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((short) 0)),
+				new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((long) 0)),
 				CpuRegister.B
 			))
 		);

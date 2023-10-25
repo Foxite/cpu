@@ -15,6 +15,9 @@ public enum AssemblyToken {
 	[Lexeme(",")]
 	Comma,
 	
+	[Lexeme(":")]
+	Colon,
+	
 	[Lexeme("\\+")]
 	Plus,
 	[Lexeme("-")]
@@ -63,16 +66,6 @@ public enum AssemblyToken {
 	[Lexeme("=")]
 	Assign,
 	
-	[Lexeme("0b[01_]+")]
-	BinaryInteger,
-	[Lexeme("0x[0-9A-Fa-f_]+")]
-	HexadecimalInteger,
-	[Lexeme("[0-9_]+")]
-	DecimalInteger,
-	
-	[Lexeme("[A-z_]+:")]
-	Label,
-	
 	[Lexeme("JMP")]
 	Jump,
 	
@@ -81,6 +74,13 @@ public enum AssemblyToken {
 	
 	[Lexeme("(#.*)?\n", isLineEnding: true)]
 	EndOfLine,
+	
+	[Lexeme("0b[01_]+")]
+	BinaryInteger,
+	[Lexeme("0x[0-9A-Fa-f_]+")]
+	HexadecimalInteger,
+	[Lexeme("[0-9_]+")]
+	DecimalInteger,
 	
 	[Lexeme("[A-z_][A-z0-9_]*")]
 	Symbol,

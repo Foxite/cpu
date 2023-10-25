@@ -49,21 +49,21 @@ public class Proc16aAssemblerTests {
 		// alu instructions
 		
 		// cannot operate on constants other than 0 or 1
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.A), new AluOperand((short) 0), AluOperation.Add), true },
+		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.A), new AluOperand((long) 0), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.A), new AluOperand(1), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(2), AluOperation.Add), false },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(3), AluOperation.Add), false },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(-1), AluOperation.Add), false },
 		
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand((short) 0), new AluOperand(CpuRegister.A), AluOperation.Add), true },
+		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand((long) 0), new AluOperand(CpuRegister.A), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(CpuRegister.A), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(CpuRegister.B), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(2), new AluOperand(CpuRegister.B), AluOperation.Add), false },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(3), new AluOperand(CpuRegister.B), AluOperation.Add), false },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(-1), new AluOperand(CpuRegister.B), AluOperation.Add), false },
 		
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand((short) 0), new AluOperand((short) 0), AluOperation.Add), true },
+		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand((long) 0), new AluOperand((long) 0), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(1), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(1), AluOperation.Add), true },
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(2), new AluOperand(2), AluOperation.Add), false },
@@ -109,7 +109,7 @@ public class Proc16aAssemblerTests {
 		
 		// jump instruction
 		// right operand must be 0
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.B), true },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), true },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(1)), CpuRegister.B), false },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(-1)), CpuRegister.B), false },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(2)), CpuRegister.B), false },
@@ -120,22 +120,22 @@ public class Proc16aAssemblerTests {
 		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(CpuRegister.StarB)), CpuRegister.B), false },
 		
 		// Left operand must be a cpu register different from the target register
-		new object[] { new JumpInstruction(new Condition(new AluOperand((short) 0), CompareOperation.Equals, new AluOperand(CpuRegister.A)), CpuRegister.B), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand((long) 0), CompareOperation.Equals, new AluOperand(CpuRegister.A)), CpuRegister.B), false },
 		new object[] { new JumpInstruction(new Condition(new AluOperand(1), CompareOperation.Equals, new AluOperand(CpuRegister.B)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.B), true },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.A), true },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.A), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.B), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), true },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), true },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), false },
 		
 		// neither register can be a star register
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.StarA), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.StarA), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.StarB), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.StarB), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarA), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.A), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.A), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarA), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.Equals, new AluOperand((short) 0)), CpuRegister.B), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarA), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarA), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarB), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarB), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarA), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarA), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), false },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), false },
 		
 	};
 		
@@ -147,7 +147,7 @@ public class Proc16aAssemblerTests {
 	
 	
 	private static object[][] ConvertInstructionTestCases() => new[] {
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand((short) 0), new AluOperand((short) 0), AluOperation.Add), 0, 0x8502u },
+		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand((long) 0), new AluOperand((long) 0), AluOperation.Add), 0, 0x8502u },
 		new object[] { new DataWordInstruction(CpuRegister.B, 0), 0, 0x8502u },
 		new object[] { new DataWordInstruction(CpuRegister.B, 1), 0, 0x8902u },
 		new object[] { new DataWordInstruction(CpuRegister.B, 2), 0, 0x8A02u },
@@ -157,7 +157,7 @@ public class Proc16aAssemblerTests {
 		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add), 0, 0x9202u },
 		new object[] { new DataWordInstruction(CpuRegister.A, "next"), 1, 0x0001u },
 		new object[] { new JumpInstruction(true, CpuRegister.A), 0, 0xA00Fu },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((short) 0)), CpuRegister.B), 0, 0xA001u },
+		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((long) 0)), CpuRegister.B), 0, 0xA001u },
 	};
 	
 	[Test]

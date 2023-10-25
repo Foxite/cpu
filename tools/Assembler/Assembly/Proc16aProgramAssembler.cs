@@ -60,6 +60,10 @@ public class Proc16aProgramAssembler : ProgramAssembler {
 				if (dataWordInstruction.Value!.Value < -2) {
 					return false;
 				}
+
+				if (dataWordInstruction.Value!.Value > 0x7FFF) {
+					return false;
+				}
 				
 				return true;
 			case JumpInstruction jumpInstruction:
@@ -103,13 +107,13 @@ public class Proc16aProgramAssembler : ProgramAssembler {
 		}
 
 		if (statement is AssignInstruction assignInstruction) {
-			statement = new AluInstruction(new AluWriteTarget(assignInstruction.Write), new AluOperand(assignInstruction.Read.Register), new AluOperand((short) 0), AluOperation.Add);
+			statement = new AluInstruction(new AluWriteTarget(assignInstruction.Write), new AluOperand(assignInstruction.Read.Register), new AluOperand((long) 0), AluOperation.Add);
 		}
 
 		{
 			if (statement is DataWordInstruction { IsConstant: true, Value: { Value: -2 or -1 } val } dwi) {
 				statement = val.Value switch {
-					-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand(1), AluOperation.Subtract),
+					-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((long) 0), new AluOperand(1), AluOperation.Subtract),
 					-2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), null, AluOperation.BitwiseNot),
 					_ => throw new NotImplementedException("This should literally never happen"),
 				};
@@ -120,9 +124,9 @@ public class Proc16aProgramAssembler : ProgramAssembler {
 			if (statement is DataWordInstruction { IsConstant: true, Register: { Register: not CpuRegister.A }, Value: { Value: >= -2 and <= 2 } val } dwi) {
 				statement = val.Value switch {
 					 2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), new AluOperand(1), AluOperation.Add),
-					 1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), new AluOperand((short) 0), AluOperation.Add), 
-					 0 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand((short) 0), AluOperation.Add),
-					-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((short) 0), new AluOperand(1), AluOperation.Subtract),
+					 1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), new AluOperand((long) 0), AluOperation.Add), 
+					 0 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((long) 0), new AluOperand((long) 0), AluOperation.Add),
+					-1 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand((long) 0), new AluOperand(1), AluOperation.Subtract),
 					-2 => new AluInstruction(new AluWriteTarget(dwi.Register.Register), new AluOperand(1), null, AluOperation.BitwiseNot),
 					_ => throw new NotImplementedException("This should literally never happen"),
 				};
@@ -232,14 +236,31 @@ public class Proc16aProgramAssembler : ProgramAssembler {
 
 				break;
 			case DataWordInstruction dataWordInstruction:
-				short value;
+				ushort word;
 				if (dataWordInstruction.IsConstant) {
-					value = dataWordInstruction.Value!.Value;
+					long astValue = dataWordInstruction.Value!.Value;
+					
+					byte[] astValueBytes = BitConverter.GetBytes(astValue);
+					
+					// Ignore sign of ast value.
+
+					byte msbyte;
+					byte lsbyte;
+
+					if (BitConverter.IsLittleEndian) {
+						msbyte = astValueBytes[1];
+						lsbyte = astValueBytes[0];
+					} else {
+						msbyte = astValueBytes[^2];
+						lsbyte = astValueBytes[^1];
+					}
+
+					word = (ushort) (msbyte << 8 | lsbyte);
 				} else {
-					value = getSymbolValue(dataWordInstruction.Symbol!.Name);
+					word = (ushort) getSymbolValue(dataWordInstruction.Symbol!.Name);
 				}
 
-				instruction = value;
+				instruction = word;
 				
 				SetInstructionBit(15, false);
 				

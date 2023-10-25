@@ -19,11 +19,14 @@ public class CompileOptions {
 	[Option('a', "arch", Required = true, HelpText = "Choose architecture")]
 	public string Architecture { get; set; }
 	
-	[Option('o', "output", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
+	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
 	
-	[Value(0)]
-	public string Filename { get; set; }
+	[Option('o', "output", Default = "-", HelpText = "Filename to output, or - to output to standard output.")]
+	public string Output { get; set; }
+	
+	[Value(0, Default = "-", HelpText = "Input filename, or - to read from standard input.")]
+	public string Input { get; set; }
 }
 
 
@@ -49,12 +52,16 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		Parser<AssemblyToken, IAssemblyAst> parser = buildResult.Result;
 		ParseResult<AssemblyToken, IAssemblyAst> parseResult;
 		string sourceCode;
-
+		
 		try {
-			using StreamReader fs = File.OpenText(opts.Filename);
-			sourceCode = fs.ReadToEnd();
+			if (opts.Input == "-") {
+				sourceCode = Console.In.ReadToEnd();
+			} else {
+				using TextReader readSourceCode = File.OpenText(opts.Input);
+				sourceCode = readSourceCode.ReadToEnd();
+			}
 		} catch (IOException e) {
-			Console.Error.WriteLine("Error reading file: " + e.Message);
+			Console.Error.WriteLine("Error reading input: " + e.Message);
 			return ExitCodes.CompileFileReadError;
 		}
 		
@@ -83,19 +90,27 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCodes.ProgramNotSupported;
 		}
 
-		if (opts.OutputMode == CompileOutputMode.Raw) {
-			Stream stdout = Console.OpenStandardOutput();
-			foreach (ushort word in machineCode) {
-				byte msbyte = (byte) (word >> 8);
-				byte lsbyte = (byte) (word & 0xFF);
+		try {
+			using Stream output = opts.Output == "-" ? Console.OpenStandardOutput() : File.OpenWrite(opts.Output);
 
-				stdout.WriteByte(msbyte);
-				stdout.WriteByte(lsbyte);
+			if (opts.OutputMode == CompileOutputMode.Raw) {
+				foreach (ushort word in machineCode) {
+					byte msbyte = (byte) (word >> 8);
+					byte lsbyte = (byte) (word & 0xFF);
+
+					output.WriteByte(msbyte);
+					output.WriteByte(lsbyte);
+				}
+			} else if (opts.OutputMode == CompileOutputMode.Hex16) {
+				using var outputWriter = new StreamWriter(output);
+				
+				foreach (ushort word in machineCode) {
+					outputWriter.WriteLine($"0x{word:X4}");
+				}
 			}
-		} else if (opts.OutputMode == CompileOutputMode.Hex16) {
-			foreach (ushort word in machineCode) {
-				Console.WriteLine($"0x{word:X4}");
-			}
+		} catch (IOException e) {
+			Console.Error.WriteLine("Error writing output: " + e.Message);
+			return ExitCodes.CompileFileWriteError;
 		}
 
 		return ExitCodes.Success;

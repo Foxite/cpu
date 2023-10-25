@@ -74,7 +74,7 @@ public class ParserTests {
 						AluOperation.Add
 					)),
 					new ProgramStatementAst(null, new JumpInstruction(
-						new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((short) 0)),
+						new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((long) 0)),
 						CpuRegister.B
 					))
 				),
@@ -118,6 +118,54 @@ public class ParserTests {
 					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, "next")),
 					new ProgramStatementAst(null, new JumpInstruction(true, CpuRegister.A))
 				),
+			},
+			new object[] {
+				"A = 0b0011001100110011",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0b0011001100110011)))
+			},
+			new object[] {
+				"A = 0b00110011_00110011",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0b0011001100110011)))
+			},
+			new object[] {
+				"A = 0b0011_0011_0011_0011",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0b0011001100110011)))
+			},
+			new object[] {
+				"A = 0x3532",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0x3532)))
+			},
+			new object[] {
+				"A = -1",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, -1)))
+			},
+			new object[] {
+				"A = -0x0002",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, -2)))
+			},
+			new object[] {
+				"A = -0x00_02",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, -2)))
+			},
+			new object[] {
+				"A = -0b0011",
+				new ProgramAst(new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, -3)))
+			},
+			new object[] {
+				"label: A = 5",
+				new ProgramAst(new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 5)))
+			},
+			new object[] {
+				"labe2l: A = 5",
+				new ProgramAst(new ProgramStatementAst("labe2l", new DataWordInstruction(CpuRegister.A, 5)))
+			},
+			new object[] {
+				"label2: A = 5",
+				new ProgramAst(new ProgramStatementAst("label2", new DataWordInstruction(CpuRegister.A, 5)))
+			},
+			new object[] {
+				"label : A = 5",
+				new ProgramAst(new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 5)))
 			},
 		};
 	}
