@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembler.Tests", "Assemble
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembler.Cli", "Assembler.Cli\Assembler.Cli.csproj", "{D97BA072-31FA-4F67-859A-71C518AA5928}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator", "Emulator\Emulator.csproj", "{78D1B48B-AF16-4E2E-AE01-51F74E8BD10F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator.Tests", "Emulator.Tests\Emulator.Tests.csproj", "{981E1C94-1014-465C-B6A0-940E8E5BFA67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{D97BA072-31FA-4F67-859A-71C518AA5928}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D97BA072-31FA-4F67-859A-71C518AA5928}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D97BA072-31FA-4F67-859A-71C518AA5928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78D1B48B-AF16-4E2E-AE01-51F74E8BD10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78D1B48B-AF16-4E2E-AE01-51F74E8BD10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78D1B48B-AF16-4E2E-AE01-51F74E8BD10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78D1B48B-AF16-4E2E-AE01-51F74E8BD10F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

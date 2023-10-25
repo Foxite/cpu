@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Reflection.Emit;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
