@@ -1,4 +1,5 @@
 # Fill RAM addresses with the fibonacci sequence.
+# Additionally, output the last fibonacci number to a fixed address (0x3FFF).
 # Tests addition, subtraction, reading and writing from RAM, data words, jumping unconditionally.
 
 # initialize fib[0]
@@ -48,6 +49,10 @@ A = A + 1	# ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
 # Update pointer
 A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 *A = *A + 1	# ALU x=*A b=1  op=add   write=*A ; 0b100 0 11 10 00000 100 ; 0x8E04
+
+# Output fib[last] to *(0x3FFF)
+A = 0x3FFF
+*A = B
  
 A = computeNext # data 0x0007                 ; 0b0000 0000 0000 0111   ; 0x0007
 true JMP A  # JMP x=B op=true to=A            ; 0b10100 0000000 1 111   ; 0xA00F
