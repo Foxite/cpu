@@ -1,0 +1,14 @@
+# read the button device connected to 0x6000 and output its value to pixels in video memory at 0x4000, infinitely.
+
+start:
+A = 0x6000
+B = *A
+A = 0x4000
+*A = B
+
+#A = 0x6001
+#*A = 1
+
+
+A = start
+true JMP A
