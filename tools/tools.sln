@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator", "Emulator\Emulat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator.Tests", "Emulator.Tests\Emulator.Tests.csproj", "{981E1C94-1014-465C-B6A0-940E8E5BFA67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembler.Antlr", "Assembler.Antlr\Assembler.Antlr.csproj", "{0104B4FA-98FE-4414-8BDE-676D514A311D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{981E1C94-1014-465C-B6A0-940E8E5BFA67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0104B4FA-98FE-4414-8BDE-676D514A311D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0104B4FA-98FE-4414-8BDE-676D514A311D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0104B4FA-98FE-4414-8BDE-676D514A311D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0104B4FA-98FE-4414-8BDE-676D514A311D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,14 +1,16 @@
+using System.Diagnostics;
 using Assembler;
 using Assembler.Assembly;
-using sly.buildresult;
-using sly.parser;
-using sly.parser.generator;
-
 using CommandLine;
 
 public enum CompileOutputMode {
 	Hex16,
-	Raw
+	Raw,
+}
+
+public enum ParserSelection {
+	Csly,
+	Antlr,
 }
 
 [Verb("compile", HelpText = "Compile an assembly file.")]
@@ -22,6 +24,9 @@ public class CompileOptions {
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
 	
+	[Option('p', "parser", Default = ParserSelection.Csly, HelpText = "Choose parser.")]
+	public ParserSelection Parser { get; set; }
+	
 	[Option('o', "output", Default = "-", HelpText = "Filename to output, or - to output to standard output.")]
 	public string Output { get; set; }
 	
@@ -31,26 +36,14 @@ public class CompileOptions {
 
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
-	public ExitCodes Run(CompileOptions opts) {
+	public ExitCode Run(CompileOptions opts) {
 		ProgramAssembler? assembler = Program.Assemblers.FirstOrDefault(assembler => assembler.ArchitectureName.ToLower() == opts.Architecture);
 
 		if (assembler == null) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
-			return ExitCodes.CommandInvalid;
+			return ExitCode.CommandInvalid;
 		}
 		
-		var parserDefinition = new AssemblyParser();
-		var parserBuilder = new ParserBuilder<AssemblyToken, IAssemblyAst>();
-
-		BuildResult<Parser<AssemblyToken, IAssemblyAst>> buildResult = parserBuilder.BuildParser(parserDefinition, ParserType.EBNF_LL_RECURSIVE_DESCENT, "Program");
-
-		if (buildResult.IsError) {
-			Console.Error.WriteLine("Unable to build parser!");
-			return ExitCodes.InternalError;
-		}
-		
-		Parser<AssemblyToken, IAssemblyAst> parser = buildResult.Result;
-		ParseResult<AssemblyToken, IAssemblyAst> parseResult;
 		string sourceCode;
 		
 		try {
@@ -62,20 +55,15 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			}
 		} catch (IOException e) {
 			Console.Error.WriteLine("Error reading input: " + e.Message);
-			return ExitCodes.CompileFileReadError;
-		}
-		
-		parseResult = parser.Parse(sourceCode);
-
-		if (parseResult.IsError) {
-			Console.Error.WriteLine("Syntax error in source file:");
-			foreach (var error in parseResult.Errors) {
-				Console.Error.WriteLine($"{error.Line}:{error.Column} [{error.ErrorType}] {error.ErrorMessage}");
-			}
-			return ExitCodes.CompileParseError;
+			return ExitCode.CompileFileReadError;
 		}
 
-		var program = (ProgramAst) parseResult.Result;
+		ExitCode exitCode = ParseSourceCode(opts.Parser, sourceCode, out ProgramAst? program);
+		if (exitCode != ExitCode.Success) {
+			return exitCode;
+		}
+
+		Debug.Assert(program != null);
 
 		IEnumerable<ushort> machineCode;
 
@@ -87,7 +75,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 				Console.WriteLine($"Statement {index}: {statement}");
 			}
 			
-			return ExitCodes.ProgramNotSupported;
+			return ExitCode.ProgramNotSupported;
 		}
 
 		try {
@@ -110,9 +98,19 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			}
 		} catch (IOException e) {
 			Console.Error.WriteLine("Error writing output: " + e.Message);
-			return ExitCodes.CompileFileWriteError;
+			return ExitCode.CompileFileWriteError;
 		}
 
-		return ExitCodes.Success;
+		return ExitCode.Success;
+	}
+	
+	private ExitCode ParseSourceCode(ParserSelection parserSelection, string sourceCode, out ProgramAst? program) {
+		var parser = parserSelection switch {
+			ParserSelection.Csly => (IAssemblyParser) new CslyAssemblyParser(),
+			ParserSelection.Antlr => new AntlrAssemblyParser(),
+			_ => throw new ArgumentOutOfRangeException(nameof(parserSelection), parserSelection, null)
+		};
+
+		return parser.Parse(sourceCode, out program);
 	}
 }

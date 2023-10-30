@@ -5,11 +5,11 @@ using CommandLine;
 public class ListArchitectureOptions { }
 
 public class ListArchVerbRunner : VerbRunner<ListArchitectureOptions> {
-	public ExitCodes Run(ListArchitectureOptions opts) {
+	public ExitCode Run(ListArchitectureOptions opts) {
 		foreach (ProgramAssembler assembler in Program.Assemblers) {
 			Console.WriteLine(assembler.ArchitectureName);
 		}
 		
-		return ExitCodes.Success;
+		return ExitCode.Success;
 	}
 }

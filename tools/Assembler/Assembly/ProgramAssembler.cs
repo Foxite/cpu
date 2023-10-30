@@ -10,7 +10,7 @@ public abstract class ProgramAssembler {
 		var symbolDefinitions = new Dictionary<string, short>();
 		var unsupportedStatements = new Stack<(IStatement statement, int index)>();
 
-		for (int i = 0; i < program.Statements.Length; i++) {
+		for (int i = 0; i < program.Statements.Count; i++) {
 			ProgramStatementAst statement = program.Statements[i];
 			
 			if (statement.Label != null) {

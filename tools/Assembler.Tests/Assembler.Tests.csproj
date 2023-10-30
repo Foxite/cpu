@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Assembler.Cli\Assembler.Cli.csproj" />
       <ProjectReference Include="..\Assembler\Assembler.csproj" />
     </ItemGroup>
 

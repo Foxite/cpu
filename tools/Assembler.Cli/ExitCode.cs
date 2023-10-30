@@ -1,4 +1,4 @@
-public enum ExitCodes {
+public enum ExitCode {
 	InternalError = 127,
 	
 	Success = 0,

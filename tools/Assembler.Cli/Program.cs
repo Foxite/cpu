@@ -17,7 +17,7 @@ public class Program {
 			.MapResult(
 				(CompileOptions opts) => new CompileVerbRunner().Run(opts),
 				(ListArchitectureOptions opts) => new ListArchVerbRunner().Run(opts),
-				errors => ExitCodes.CommandInvalid
+				errors => ExitCode.CommandInvalid
 			);
 	}
 }

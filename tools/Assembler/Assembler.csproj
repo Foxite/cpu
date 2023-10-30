@@ -10,4 +10,8 @@
       <PackageReference Include="sly" Version="2.9.6.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Assembler.Antlr\Assembler.Antlr.csproj" />
+    </ItemGroup>
+
 </Project>

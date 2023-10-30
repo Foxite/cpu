@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+        <PackageReference Include="Antlr4BuildTasks" Version="12.3.0" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Antlr4 Include="Grammars\proc16a_grammar.g4">
+          <Package>Assembler.Antlr</Package>
+          <Visitor>true</Visitor>
+      </Antlr4>
+      <Antlr4 Include="Grammars\proc16a_lexer.g4">
+          <Package>Assembler.Antlr</Package>
+          <Visitor>true</Visitor>
+      </Antlr4>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammar.cs" />
+      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarBaseListener.cs" />
+      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarBaseVisitor.cs" />
+      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarListener.cs" />
+      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarVisitor.cs" />
+      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_lexer.cs" />
+    </ItemGroup>
+
+</Project>
