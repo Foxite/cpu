@@ -16,11 +16,9 @@ public class AntlrAssemblyParser : IAssemblyParser {
 		lexer.AddErrorListener(errorListenerLexer);
 		parser.AddErrorListener(errorListenerParser);
 		
-		proc16a_grammar.ProgramContext programContext = parser.program();
-
 		var visitor = new BasicVisitor();
 
-		visitor.VisitProgram(programContext);
+		visitor.Visit(parser.program());
 
 		if (errorListenerLexer.HadError) {
 			Console.WriteLine("Lexer error");
@@ -33,27 +31,19 @@ public class AntlrAssemblyParser : IAssemblyParser {
 			program = null;
 			return ExitCode.CompileParseError;
 		}
-		
-		var statements = new List<ProgramStatementAst>();
 
-		foreach (proc16a_grammar.ProgramStatementContext statementContext in programContext.programStatement()) {
-			Console.WriteLine(statementContext);
-		}
+		program = null!;
 		
-		program = new ProgramAst(statements);
-		return ExitCode.Success;
+		return ExitCode.InternalError;
 	}
 }
 
 public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst?> {
-	private readonly List<ProgramStatementAst> m_Statements;
-
-	public override IAssemblyAst VisitProgram(proc16a_grammar.ProgramContext context) {
-		base.VisitProgram(context);
-		return new ProgramAst(m_Statements);
+	public override IAssemblyAst? VisitProgram(proc16a_grammar.ProgramContext context) {
+		return null;
 	}
 
 	public override IAssemblyAst? VisitProgramStatement(proc16a_grammar.ProgramStatementContext context) {
-		return base.VisitProgramStatement(context);
+		return null;
 	}
 }

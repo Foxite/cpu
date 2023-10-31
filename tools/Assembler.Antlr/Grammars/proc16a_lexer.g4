@@ -8,10 +8,11 @@ COMMENT
 
 WHITESPACE
 	: ('\t' | ' ')+
-	-> channel(HIDDEN);
+	-> skip;
 
 NEWLINE
 	: '\n'
+	| EOF
 	;
 
 NUMBER10
