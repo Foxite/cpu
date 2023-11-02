@@ -3,28 +3,27 @@ lexer grammar proc16a_lexer;
 channels { COMMENT_CHANNEL }
 
 COMMENT
-	: '#' .*? '\n'
+	: ('#' (~'\n')*)
 	-> channel(COMMENT_CHANNEL);
+
+NEWLINE
+	: '\n'
+	;
 
 WHITESPACE
 	: ('\t' | ' ')+
 	-> skip;
 
-NEWLINE
-	: '\n'
-	| EOF
+fragment NUMBER10
+	: '-'? ('0' .. '9' | '_')+
 	;
 
-NUMBER10
-	: ('0' .. '9' | '_')+
+fragment NUMBER16
+	: '-'? '0x' ('0' .. '9' | 'A' .. 'F' | 'a' .. 'f' | '_')+
 	;
 
-NUMBER16
-	: '0x' ('0' .. '9' | 'A' .. 'F' | 'a' .. 'f' | '_')+
-	;
-
-NUMBER2
-	: '0b' ('0' | '1' | '_')+
+fragment NUMBER2
+	: '-'? '0b' ('0' | '1' | '_')+
 	;
 
 NUMBER
@@ -37,16 +36,8 @@ REGISTER
 	: '*'? ('A' | 'B')
 	;
 
-fragment SYMBOLSTART
-	: ('A' .. 'Z' | 'a' .. 'z' | '_')
-	;
-
-fragment SYMBOLPART
-	: (SYMBOLSTART | '0' .. '9')
-	;
-
-SYMBOL
-	: SYMBOLSTART SYMBOLPART*
+JMP
+	: 'JMP'
 	;
 
 BOOLEAN
@@ -54,7 +45,7 @@ BOOLEAN
 	| 'false'
 	;
 
-ALU_BINARY_OPERATION
+BINARY_OPERATION
 	: '+'
 	| '-'
 	| '*'
@@ -69,30 +60,32 @@ ALU_BINARY_OPERATION
 	| 'NOR'
 	| 'NAND'
 	
-	| COMPARE_OPERATION
+	| '>'
+	| '=='
+	| '>='
+	| '<'
+	| '!='
+	| '<='
 	;
 
-ALU_UNARY_OPERATION
-	: '~'
+UNARY_OPERATION
+	: ('NOT' | '~')
 	;
 
-COMPARE_OPERATION
-	: BOOLEAN
-    | '>'
-    | '=='
-    | '>='
-    | '<'
-    | '!='
-    | '<='
-    ;
+fragment SYMBOLSTART
+	: ('A' .. 'Z' | 'a' .. 'z' | '_')
+	;
 
+fragment SYMBOLPART
+	: (SYMBOLSTART | '0' .. '9')
+	;
+
+SYMBOL
+	: SYMBOLSTART SYMBOLPART*
+	;
 
 ASSIGN
 	: '='
-	;
-
-JMP
-	: 'JMP'
 	;
 
 COLON

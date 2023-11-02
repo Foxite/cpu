@@ -2,55 +2,31 @@ using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
 
-namespace Assembler;
+namespace Assembler.Parsing.Csly;
 
-public class AssemblyParser {
-	private static long ParseNumericLiteral(bool negative, int @base, string basePrefix, string tokenValue, Func<char, int> getDigitValue) {
-		if (!tokenValue.StartsWith(basePrefix)) {
-			throw new FormatException($"Token does not start with expected base prefix {basePrefix}: {tokenValue}");
-		}
-
-		string digits = tokenValue[basePrefix.Length..];
-		
-		int result = 0;
-		for (int i = 0; i < digits.Length; i++) {
-			if (digits[i] == '_') {
-				continue;
-			} else {
-				result = result * @base + getDigitValue(digits[i]);
-			}
-		}
-
-		if (negative) {
-			result = -result;
-		}
-		
-		
-		return result;
-	}
-	
+public class CslyGrammars {
 	[Production("Number: Minus? DecimalInteger")]
-	public ConstantAst DecimalNumber(Token<AssemblyToken> minus, Token<AssemblyToken> token) {
-		return new ConstantAst(ParseNumericLiteral(!minus.IsEmpty, 10, "", token.Value, ch => ch - '0'));
+	public ConstantAst DecimalNumber(Token<CslyTokens> minus, Token<CslyTokens> token) {
+		return new ConstantAst(ParsingUtils.ParseNumericLiteral(!minus.IsEmpty, 10, "", token.Value, ch => ch - '0'));
 	}
 	
 	[Production("Number: Minus? HexadecimalInteger")]
-	public ConstantAst HexadecimalNumber(Token<AssemblyToken> minus, Token<AssemblyToken> token) {
-		return new ConstantAst(ParseNumericLiteral(!minus.IsEmpty, 16, "0x", token.Value.ToLower(), ch => ch switch {
+	public ConstantAst HexadecimalNumber(Token<CslyTokens> minus, Token<CslyTokens> token) {
+		return new ConstantAst(ParsingUtils.ParseNumericLiteral(!minus.IsEmpty, 16, "0x", token.Value.ToLower(), ch => ch switch {
 			>= '0' and <= '9' => ch - '0',
 			>= 'a' and <= 'f' => ch - 'a' + 10,
 		}));
 	}
 	
 	[Production("Number: Minus? BinaryInteger")]
-	public ConstantAst BinaryNumber(Token<AssemblyToken> minus, Token<AssemblyToken> token) {
-		return new ConstantAst(ParseNumericLiteral(!minus.IsEmpty, 2, "0b", token.Value, ch => ch == '0' ? 0 : 1));
+	public ConstantAst BinaryNumber(Token<CslyTokens> minus, Token<CslyTokens> token) {
+		return new ConstantAst(ParsingUtils.ParseNumericLiteral(!minus.IsEmpty, 2, "0b", token.Value, ch => ch == '0' ? 0 : 1));
 	}
 	
 	[Production("Boolean: True")]
 	[Production("Boolean: False")]
-	public BooleanAst Boolean(Token<AssemblyToken> token) {
-		return new BooleanAst(token.TokenID == AssemblyToken.True);
+	public BooleanAst Boolean(Token<CslyTokens> token) {
+		return new BooleanAst(token.TokenID == CslyTokens.True);
 	}
 
 	[Production("Statement: Register Assign [d] Number")]
@@ -59,7 +35,7 @@ public class AssemblyParser {
 	}
 
 	[Production("Statement: Register Assign [d] Symbol")]
-	public IStatement DataWord(CpuRegisterAst register, Token<AssemblyToken> symbol) {
+	public IStatement DataWord(CpuRegisterAst register, Token<CslyTokens> symbol) {
 		return new DataWordInstruction(register, false, null, new SymbolAst(symbol.Value));
 	}
 
@@ -77,17 +53,17 @@ public class AssemblyParser {
 	[Production("Register: BRegister")]
 	[Production("Register: StarA")]
 	[Production("Register: StarB")]
-	public CpuRegisterAst Register(Token<AssemblyToken> register) {
+	public CpuRegisterAst Register(Token<CslyTokens> register) {
 		return new CpuRegisterAst(register.TokenID switch {
-			AssemblyToken.ARegister => CpuRegister.A,
-			AssemblyToken.BRegister => CpuRegister.B,
-			AssemblyToken.StarA => CpuRegister.StarA,
-			AssemblyToken.StarB => CpuRegister.StarB,
+			CslyTokens.ARegister => CpuRegister.A,
+			CslyTokens.BRegister => CpuRegister.B,
+			CslyTokens.StarA => CpuRegister.StarA,
+			CslyTokens.StarB => CpuRegister.StarB,
 		});
 	}
 
 	[Production("AluWriteTarget: (Register Comma [d])* Register")]
-	public AluWriteTarget AluWriteTarget(List<Group<AssemblyToken, IAssemblyAst>> many, CpuRegisterAst single) {
+	public AluWriteTarget AluWriteTarget(List<Group<CslyTokens, IAssemblyAst>> many, CpuRegisterAst single) {
 		var ret = new List<CpuRegisterAst>();
 		ret.AddRange(many.Select(item => (CpuRegisterAst) item.Value(0)));
 		ret.Add(single);
@@ -130,29 +106,29 @@ public class AssemblyParser {
 	[Production("AluOperation: LessThanOrEquals")]
 	[Production("AluOperation: True")]
 	[Production("AluOperation: False")]
-	public AluOperationAst AluOperation(Token<AssemblyToken> token) {
+	public AluOperationAst AluOperation(Token<CslyTokens> token) {
 		return new AluOperationAst(token.TokenID switch {
-			AssemblyToken.Plus					=> Assembler.AluOperation.Add,
-			AssemblyToken.Minus					=> Assembler.AluOperation.Subtract,
-			AssemblyToken.Multiply				=> Assembler.AluOperation.Multiply,
-			AssemblyToken.Divide				=> Assembler.AluOperation.Divide,
-			AssemblyToken.LeftShift				=> Assembler.AluOperation.ShiftLeft,
-			AssemblyToken.RightShift			=> Assembler.AluOperation.ShiftRight,
-			AssemblyToken.BitwiseAnd			=> Assembler.AluOperation.BitwiseAnd,
-			AssemblyToken.BitwiseOr				=> Assembler.AluOperation.BitwiseOr,
-			AssemblyToken.BitwiseNot			=> Assembler.AluOperation.BitwiseNot,
-			AssemblyToken.BitwiseXor			=> Assembler.AluOperation.BitwiseXor,
-			AssemblyToken.BitwiseXnor			=> Assembler.AluOperation.BitwiseXnor,
-			AssemblyToken.BitwiseNor			=> Assembler.AluOperation.BitwiseNor,
-			AssemblyToken.BitwiseNand			=> Assembler.AluOperation.BitwiseNand,
-			AssemblyToken.GreaterThan			=> Assembler.AluOperation.GreaterThan,
-			AssemblyToken.Equals				=> Assembler.AluOperation.Equals,
-			AssemblyToken.GreaterThanOrEquals	=> Assembler.AluOperation.GreaterThanOrEquals,
-			AssemblyToken.LessThan				=> Assembler.AluOperation.LessThan,
-			AssemblyToken.NotEquals				=> Assembler.AluOperation.NotEquals,
-			AssemblyToken.LessThanOrEquals		=> Assembler.AluOperation.LessThanOrEquals,
-			AssemblyToken.True					=> Assembler.AluOperation.True,
-			AssemblyToken.False					=> Assembler.AluOperation.False,
+			CslyTokens.Plus					=> Assembler.AluOperation.Add,
+			CslyTokens.Minus				=> Assembler.AluOperation.Subtract,
+			CslyTokens.Multiply				=> Assembler.AluOperation.Multiply,
+			CslyTokens.Divide				=> Assembler.AluOperation.Divide,
+			CslyTokens.LeftShift			=> Assembler.AluOperation.ShiftLeft,
+			CslyTokens.RightShift			=> Assembler.AluOperation.ShiftRight,
+			CslyTokens.BitwiseAnd			=> Assembler.AluOperation.BitwiseAnd,
+			CslyTokens.BitwiseOr			=> Assembler.AluOperation.BitwiseOr,
+			CslyTokens.BitwiseNot			=> Assembler.AluOperation.BitwiseNot,
+			CslyTokens.BitwiseXor			=> Assembler.AluOperation.BitwiseXor,
+			CslyTokens.BitwiseXnor			=> Assembler.AluOperation.BitwiseXnor,
+			CslyTokens.BitwiseNor			=> Assembler.AluOperation.BitwiseNor,
+			CslyTokens.BitwiseNand			=> Assembler.AluOperation.BitwiseNand,
+			CslyTokens.GreaterThan			=> Assembler.AluOperation.GreaterThan,
+			CslyTokens.Equals				=> Assembler.AluOperation.Equals,
+			CslyTokens.GreaterThanOrEquals	=> Assembler.AluOperation.GreaterThanOrEquals,
+			CslyTokens.LessThan				=> Assembler.AluOperation.LessThan,
+			CslyTokens.NotEquals			=> Assembler.AluOperation.NotEquals,
+			CslyTokens.LessThanOrEquals		=> Assembler.AluOperation.LessThanOrEquals,
+			CslyTokens.True					=> Assembler.AluOperation.True,
+			CslyTokens.False				=> Assembler.AluOperation.False,
 		});
 	}
 	
@@ -173,14 +149,14 @@ public class AssemblyParser {
 	[Production("CompareOperation: LessThan")]
 	[Production("CompareOperation: NotEquals")]
 	[Production("CompareOperation: LessThanOrEquals")]
-	public CompareOperationAst CompareOperation(Token<AssemblyToken> token) {
+	public CompareOperationAst CompareOperation(Token<CslyTokens> token) {
 		return new CompareOperationAst(token.TokenID switch {
-			AssemblyToken.GreaterThan 			=> Assembler.CompareOperation.GreaterThan,
-			AssemblyToken.Equals 				=> Assembler.CompareOperation.Equals,
-			AssemblyToken.GreaterThanOrEquals 	=> Assembler.CompareOperation.GreaterThanOrEquals,
-			AssemblyToken.LessThan 				=> Assembler.CompareOperation.LessThan,
-			AssemblyToken.NotEquals 			=> Assembler.CompareOperation.NotEquals,
-			AssemblyToken.LessThanOrEquals 		=> Assembler.CompareOperation.LessThanOrEquals,
+			CslyTokens.GreaterThan 			=> Assembler.CompareOperation.GreaterThan,
+			CslyTokens.Equals 				=> Assembler.CompareOperation.Equals,
+			CslyTokens.GreaterThanOrEquals 	=> Assembler.CompareOperation.GreaterThanOrEquals,
+			CslyTokens.LessThan 				=> Assembler.CompareOperation.LessThan,
+			CslyTokens.NotEquals 			=> Assembler.CompareOperation.NotEquals,
+			CslyTokens.LessThanOrEquals 		=> Assembler.CompareOperation.LessThanOrEquals,
 		});
 	}
 
@@ -200,7 +176,7 @@ public class AssemblyParser {
 	}
 
 	[Production("LineEnding: EndOfLine+")]
-	public IAssemblyAst? LineEnding(List<Token<AssemblyToken>> ignored) {
+	public IAssemblyAst? LineEnding(List<Token<CslyTokens>> ignored) {
 		return null;
 	}
 
@@ -210,7 +186,7 @@ public class AssemblyParser {
 	}
 
 	[Production("ProgramStatement: (Symbol Colon OptionalLineEnding)? Statement")]
-	public ProgramStatementAst ProgramStatement(ValueOption<Group<AssemblyToken, IAssemblyAst>> label, IStatement statement) {
+	public ProgramStatementAst ProgramStatement(ValueOption<Group<CslyTokens, IAssemblyAst>> label, IStatement statement) {
 		string? labelName = null;
 		if (label.IsSome) {
 			labelName = label.Match(g => g, () => throw new NotImplementedException()).Token(0).Value;
@@ -220,7 +196,7 @@ public class AssemblyParser {
 	}
 
 	[Production("Program: LineEnding? (ProgramStatement LineEnding)* ProgramStatement? LineEnding?")]
-	public ProgramAst Program(ValueOption<IAssemblyAst?> lineEnding1, List<Group<AssemblyToken, IAssemblyAst>> statements, ValueOption<IAssemblyAst> last, ValueOption<IAssemblyAst?> lineEnding2) {
+	public ProgramAst Program(ValueOption<IAssemblyAst?> lineEnding1, List<Group<CslyTokens, IAssemblyAst>> statements, ValueOption<IAssemblyAst> last, ValueOption<IAssemblyAst?> lineEnding2) {
 		var ret = statements.Select(group => group.Value(0)).Cast<ProgramStatementAst>().ToList();
 		if (last.IsSome) {
 			ret.Add((ProgramStatementAst) last.Match(i => i, () => throw new InvalidProgramException("OPIERFUAERDS987Y TGQH4WRT897 =MYB-6YH57 8B9N4343ER 890iumt")));

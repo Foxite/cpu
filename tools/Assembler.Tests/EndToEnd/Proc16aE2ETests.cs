@@ -1,40 +1,18 @@
-using System.Text;
 using Assembler.Assembly;
-using sly.buildresult;
-using sly.parser;
-using sly.parser.generator;
+using Assembler.Parsing;
 
 namespace Assembler.Tests.EndToEnd; 
 
-public class Proc16aE2ETests {
+[TestFixture(typeof(Assembler.Parsing.Csly.CslyAssemblyParser))]
+[TestFixture(typeof(Assembler.Parsing.Antlr.AntlrAssemblyParser))]
+public class Proc16aE2ETests<T> where T : IAssemblyParser, new() {
 	private Proc16aProgramAssembler m_Assembler;
-	private BuildResult<Parser<AssemblyToken, IAssemblyAst>> m_BuildResult;
-	private Parser<AssemblyToken, IAssemblyAst> m_Parser;
+	private IAssemblyParser m_Parser;
 
 	[SetUp]
 	public void Setup() {
-		var parserDefinition = new AssemblyParser();
-		var parserBuilder = new ParserBuilder<AssemblyToken, IAssemblyAst>();
-
-		m_BuildResult = parserBuilder.BuildParser(parserDefinition,
-			ParserType.EBNF_LL_RECURSIVE_DESCENT,
-			"Program");
-		m_Parser = m_BuildResult.Result;
-
+		m_Parser = new T();
 		m_Assembler = new Proc16aProgramAssembler();
-	}
-	
-	[Test]
-	public void A0_TestSetupParser() {
-		if (m_BuildResult.IsOk) {
-			Assert.Pass();
-		} else {
-			Assert.Multiple(() => {
-				foreach (InitializationError error in m_BuildResult.Errors) {
-					Assert.Fail($"{error.Level} {error.Code}: {error.Message}");
-				}
-			});
-		}
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -235,20 +213,9 @@ public class Proc16aE2ETests {
 	[Test]
 	[TestCaseSource(nameof(AssembleTestCases))]
 	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
-		Assume.That(m_BuildResult.IsOk, Is.True, "Parser was not successfully built");
+		ProgramAst ast = m_Parser.Parse(sourceCode);
 
-		var parseResult = m_Parser.Parse(sourceCode);
-
-		Assert.That(parseResult.IsOk, Is.True, () => {
-			var builder = new StringBuilder();
-			builder.AppendLine("Parsing failed:");
-			foreach (ParseError error in parseResult.Errors) {
-				builder.AppendLine($"{error.ErrorType} at line {error.Line}:{error.Column}: {error.ErrorMessage}");
-			}
-			return builder.ToString();
-		});
-
-		var assembledProgram = m_Assembler.Assemble((ProgramAst) parseResult.Result).ToList();
+		List<ushort> assembledProgram = m_Assembler.Assemble(ast).ToList();
 		
 		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
 	}

@@ -15,24 +15,13 @@
       <Antlr4 Include="Grammars\proc16a_grammar.g4">
           <Package>Assembler.Antlr</Package>
           <Visitor>true</Visitor>
-          <GAtn>true</GAtn>
           <Error>true</Error>
       </Antlr4>
       <Antlr4 Include="Grammars\proc16a_lexer.g4">
           <Package>Assembler.Antlr</Package>
           <Visitor>true</Visitor>
-          <GAtn>true</GAtn>
           <Error>true</Error>
       </Antlr4>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammar.cs" />
-      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarBaseListener.cs" />
-      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarBaseVisitor.cs" />
-      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarListener.cs" />
-      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_grammarVisitor.cs" />
-      <Compile Remove="IdeGeneratedParsers\Assembler\Antlr\proc16a_lexer.cs" />
     </ItemGroup>
 
 </Project>

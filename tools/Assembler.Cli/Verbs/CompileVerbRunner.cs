@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Assembler;
 using Assembler.Assembly;
+using Assembler.Parsing;
 using CommandLine;
 
 public enum CompileOutputMode {
@@ -58,12 +58,20 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileFileReadError;
 		}
 
-		ExitCode exitCode = ParseSourceCode(opts.Parser, sourceCode, out ProgramAst? program);
-		if (exitCode != ExitCode.Success) {
-			return exitCode;
-		}
+		
+		IAssemblyParser parser = opts.Parser switch {
+			ParserSelection.Csly => new Assembler.Parsing.Csly.CslyAssemblyParser(),
+			ParserSelection.Antlr => new Assembler.Parsing.Antlr.AntlrAssemblyParser(),
+			_ => throw new ArgumentOutOfRangeException(nameof(opts.Parser), opts.Parser, null)
+		};
 
-		Debug.Assert(program != null);
+		ProgramAst program;
+		try {
+			program = parser.Parse(sourceCode);
+		} catch (ParserException e) {
+			Console.Error.WriteLine(e.ToString());
+			return ExitCode.InternalError; // TODO proper error code
+		}
 
 		IEnumerable<ushort> machineCode;
 
@@ -102,15 +110,5 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		}
 
 		return ExitCode.Success;
-	}
-	
-	private ExitCode ParseSourceCode(ParserSelection parserSelection, string sourceCode, out ProgramAst? program) {
-		var parser = parserSelection switch {
-			ParserSelection.Csly => (IAssemblyParser) new CslyAssemblyParser(),
-			ParserSelection.Antlr => new AntlrAssemblyParser(),
-			_ => throw new ArgumentOutOfRangeException(nameof(parserSelection), parserSelection, null)
-		};
-
-		return parser.Parse(sourceCode, out program);
 	}
 }

@@ -1,36 +1,15 @@
-using System.Text;
-using sly.buildresult;
-using sly.parser;
-using sly.parser.generator;
+using Assembler.Parsing;
 
 namespace Assembler.Tests;
 
-public class ParserTests {
-	private BuildResult<Parser<AssemblyToken, IAssemblyAst>> m_BuildResult;
-	private Parser<AssemblyToken, IAssemblyAst> m_Parser;
+[TestFixture(typeof(Assembler.Parsing.Csly.CslyAssemblyParser))]
+[TestFixture(typeof(Assembler.Parsing.Antlr.AntlrAssemblyParser))]
+public class ParserTests<T> where T : IAssemblyParser, new() {
+	private IAssemblyParser m_Parser;
 
 	[SetUp]
 	public void Setup() {
-		var parserDefinition = new AssemblyParser();
-		var parserBuilder = new ParserBuilder<AssemblyToken, IAssemblyAst>();
-
-		m_BuildResult = parserBuilder.BuildParser(parserDefinition,
-			ParserType.EBNF_LL_RECURSIVE_DESCENT,
-			"Program");
-		m_Parser = m_BuildResult.Result;
-	}
-
-	[Test]
-	public void A0_TestSetupParser() {
-		if (m_BuildResult.IsOk) {
-			Assert.Pass();
-		} else {
-			Assert.Multiple(() => {
-				foreach (InitializationError error in m_BuildResult.Errors) {
-					Assert.Fail($"{error.Level} {error.Code}: {error.Message}");
-				}
-			});
-		}
+		m_Parser = new T();
 	}
 
 	public static object[][] ProgramTestCases() {
@@ -167,25 +146,157 @@ public class ParserTests {
 				"label : A = 5",
 				new ProgramAst(new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 5)))
 			},
+			new object[] {
+				"B = *A AND B",
+				new ProgramAst(new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.StarA), new AluOperand(CpuRegister.B), AluOperation.BitwiseAnd)))
+			},
+			new object[] {
+				"A = NOT B",
+				new ProgramAst(new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), null, AluOperation.BitwiseNot)))
+			},
+			new object[] {
+				"""
+				# starting program with
+				# two consecutive comments
+				
+				A = 5
+				B = 2
+				*B = 5
+				*A = 10
+
+				A = 0x20
+				A = 0x40_10
+				B = 0b1010010
+				B = 0b10_0101_011
+
+
+				label:
+				A = 10
+				
+				label:
+				B = 10
+				A = 10
+				label:
+				A = 20
+				label: B = 40
+				label: A = 40
+
+				label: A = 80
+				
+				label1:
+				B = 80
+				label2: A = 160
+				labe3l: B = 160
+
+				A = A + 0
+				A = B + 1
+				A = B + -1
+				A = -1 - -1
+				A = 1 >> A
+				B = *A AND B
+				B = B < *B
+				*B = B < *B
+				A = NOT B				
+				A = *A
+				A = B
+				*B = *B
+
+				A < 0 JMP B
+				*B > 5 JMP A
+				B != 0 JMP *A
+				true JMP *B
+				false JMP A
+				""",
+				new ProgramAst(
+					// A = 5
+					// B = 2
+					// *B = 5
+					// *A = 10
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 5)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.B, 2)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.StarB, 5)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.StarA, 10)),
+					
+					// A = 0x20
+					// A = 0x40_10
+					// B = 0b1010010
+					// B = 0b10_0101_011
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0x20)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 0x4010)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.B, 0b1010010)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.B, 0b100101011)),
+					
+					// label:
+					// A = 10
+					// label:
+					// B = 10
+					// A = 10
+					// label:
+					// A = 20
+					// label: B = 40
+					// label: A = 40
+					// label: A = 80
+					// label1:
+					// B = 80
+					// label2: A = 160
+					// labe3l: B = 160
+					new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 10)),
+					new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.B, 10)),
+					new ProgramStatementAst(null, new DataWordInstruction(CpuRegister.A, 10)),
+					new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 20)),
+					new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.B, 40)),
+					new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 40)),
+					new ProgramStatementAst("label", new DataWordInstruction(CpuRegister.A, 80)),
+					new ProgramStatementAst("label1", new DataWordInstruction(CpuRegister.B, 80)),
+					new ProgramStatementAst("label2", new DataWordInstruction(CpuRegister.A, 160)),
+					new ProgramStatementAst("labe3l", new DataWordInstruction(CpuRegister.B, 160)),
+					
+					// A = A + 0
+					// A = B + 1
+					// A = B + -1
+					// A = -1 - -1
+					// A = 1 >> A
+					// B = *A AND B
+					// B = B < *B
+					// *B = B < *B
+					// A = NOT B
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.A), new AluOperand((long) 0), AluOperation.Add)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(-1), AluOperation.Add)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(-1), new AluOperand(-1), AluOperation.Subtract)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(CpuRegister.A), AluOperation.ShiftRight)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.StarA), new AluOperand(CpuRegister.B), AluOperation.BitwiseAnd)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(CpuRegister.StarB), AluOperation.LessThan)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.StarB), new AluOperand(CpuRegister.B), new AluOperand(CpuRegister.StarB), AluOperation.LessThan)),
+					new ProgramStatementAst(null, new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), null, AluOperation.BitwiseNot)),
+					
+					// A = *A
+					// A = B
+					// *B = *B
+					new ProgramStatementAst(null, new AssignInstruction(CpuRegister.A, CpuRegister.StarA)),
+					new ProgramStatementAst(null, new AssignInstruction(CpuRegister.A, CpuRegister.B)),
+					new ProgramStatementAst(null, new AssignInstruction(CpuRegister.StarB, CpuRegister.StarB)),
+
+					// A < 0 JMP B
+					// *B > 5 JMP A
+					// B != 0 JMP *A
+					// true JMP *B
+					// false JMP A
+					new ProgramStatementAst(null, new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.LessThan, new AluOperand((long) 0)), CpuRegister.B)),
+					new ProgramStatementAst(null, new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.GreaterThan, new AluOperand(5)), CpuRegister.A)),
+					new ProgramStatementAst(null, new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.NotEquals, new AluOperand((long) 0)), CpuRegister.StarA)),
+					new ProgramStatementAst(null, new JumpInstruction(true, CpuRegister.StarB)),
+					new ProgramStatementAst(null, new JumpInstruction(false, CpuRegister.A))
+				)
+			},
 		};
 	}
 
 	[Test]
 	[TestCaseSource(nameof(ProgramTestCases))]
 	public void ParseDataWord(string sourceCode, IAssemblyAst expectedResult) {
-		Assume.That(m_BuildResult.IsOk, Is.True, "Parser was not successfully built");
-
-		var parseResult = m_Parser.Parse(sourceCode);
-
-		Assert.That(parseResult.IsOk, Is.True, () => {
-			var builder = new StringBuilder();
-			builder.AppendLine("Parsing failed:");
-			foreach (ParseError error in parseResult.Errors) {
-				builder.AppendLine($"{error.ErrorType} at line {error.Line}:{error.Column}: {error.ErrorMessage}");
-			}
-			return builder.ToString();
-		});
+		ProgramAst ast = m_Parser.Parse(sourceCode);
 		
-		Assert.That(parseResult.Result, Is.EqualTo(expectedResult), "Parse result does not match specification");
+		Assert.That(ast, Is.EqualTo(expectedResult), "Parse result does not match specification");
 	}
 }

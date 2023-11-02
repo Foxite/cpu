@@ -1,35 +1,13 @@
 using sly.lexer;
 
-namespace Assembler;
+namespace Assembler.Parsing.Csly;
 
-public enum AssemblyToken {
-	[Lexeme("A")]
-	ARegister,
-	[Lexeme("B")]
-	BRegister,
-	[Lexeme("\\*A")]
-	StarA,
-	[Lexeme("\\*B")]
-	StarB,
-	
+public enum CslyTokens {
 	[Lexeme(",")]
 	Comma,
 	
 	[Lexeme(":")]
 	Colon,
-	
-	[Lexeme("\\+")]
-	Plus,
-	[Lexeme("-")]
-	Minus,
-	[Lexeme("\\*")]
-	Multiply,
-	[Lexeme("/")]
-	Divide,
-	[Lexeme("<<")]
-	LeftShift,
-	[Lexeme(">>")]
-	RightShift,
 	
 	[Lexeme("AND")]
 	BitwiseAnd,
@@ -45,6 +23,29 @@ public enum AssemblyToken {
 	BitwiseNor,
 	[Lexeme("NAND")]
 	BitwiseNand,
+
+	[Lexeme("A")]
+	ARegister,
+	[Lexeme("B")]
+	BRegister,
+	
+	[Lexeme("\\+")]
+	Plus,
+	[Lexeme("-")]
+	Minus,
+	[Lexeme("\\*[^AB]")]
+	Multiply,
+	[Lexeme("/")]
+	Divide,
+	[Lexeme("<<")]
+	LeftShift,
+	[Lexeme(">>")]
+	RightShift,
+	
+	[Lexeme("\\*A")]
+	StarA,
+	[Lexeme("\\*B")]
+	StarB,
 	
 	[Lexeme(">")]
 	GreaterThan,
@@ -62,7 +63,7 @@ public enum AssemblyToken {
 	True,
 	[Lexeme("false")]
 	False,
-	
+
 	[Lexeme("=")]
 	Assign,
 	
