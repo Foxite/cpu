@@ -160,7 +160,7 @@ public class ParserTests<T> where T : IAssemblyParser, new() {
 				# two consecutive comments
 				
 				A = 5
-				B = 2
+				B  2
 				*B = 5
 				*A = 10
 
@@ -176,7 +176,7 @@ public class ParserTests<T> where T : IAssemblyParser, new() {
 				label:
 				B = 10
 				A = 10
-				label:
+				lab el:
 				A = 20
 				label: B = 40
 				label: A = 40

@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Assembler.Parsing;
 
 public static class ParsingUtils {
@@ -9,11 +11,17 @@ public static class ParsingUtils {
 		string digits = tokenValue[basePrefix.Length..];
 		
 		int result = 0;
-		for (int i = 0; i < digits.Length; i++) {
-			if (digits[i] == '_') {
+		foreach (char digit in digits) {
+			if (digit == '_') {
 				continue;
 			} else {
-				result = result * @base + getDigitValue(digits[i]);
+				int digitValue;
+				try {
+					digitValue = getDigitValue(digit);
+				} catch (Exception e) when (e is SwitchExpressionException or ArgumentException or ArgumentOutOfRangeException) {
+					throw new FormatException("Invalid numeric literal", e);
+				}
+				result = result * @base + digitValue;
 			}
 		}
 

@@ -14,6 +14,7 @@ WHITESPACE
 	: ('\t' | ' ')+
 	-> skip;
 
+/*
 fragment NUMBER10
 	: '-'? ('0' .. '9' | '_')+
 	;
@@ -30,6 +31,10 @@ NUMBER
 	: NUMBER10
 	| NUMBER16
 	| NUMBER2
+	;*/
+
+NUMBER
+	: '-'? ('0' .. '9') ('_' | '0' .. '9' | 'A' .. 'Z' | 'a' .. 'z')*
 	;
 
 REGISTER

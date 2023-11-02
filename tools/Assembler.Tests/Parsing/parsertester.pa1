@@ -1,0 +1,50 @@
+# starting program with
+# two consecutive comments
+
+A = 5
+B = 2
+*B = 5
+*A = 10
+
+A = 0x20
+A = 0x40_1f
+B = 0b1010010
+B = 0b10_0101_011
+
+
+label:
+A = 10
+
+label:
+B = 10
+A = 10
+label:
+A = 20
+label: B = 40
+label: A = 40
+
+label: A = 80
+
+label1:
+B = 80
+label2: A = 160
+labe3l: B = 160
+
+A = A + 0
+A = B + 1
+A = B + -1
+A = -1 - -1
+A = 1 >> A
+B = *A AND B
+B = B < *B
+*B = B < *B
+A = NOT B				
+A = *A
+A = B
+*B = *B
+
+A < 0 JMP B
+*B > 5 JMP A
+B != 0 JMP *A
+true JMP *B
+false JMP A
