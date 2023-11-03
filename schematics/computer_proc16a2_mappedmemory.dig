@@ -129,7 +129,7 @@
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/Documents/cpu/doc/assembled test programs/readbuttons-display.out</file>
+          <file>/home/foxite/Documents/digital/doc/hand-compiled test programs/fibonacci.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
@@ -1822,12 +1822,12 @@ responsible for driving *A
           <int>64</int>
         </entry>
         <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-        <entry>
           <string>graphicWidth</string>
           <int>64</int>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>16</int>
         </entry>
       </elementAttributes>
       <pos x="1680" y="760"/>
@@ -1841,7 +1841,7 @@ responsible for driving *A
         </entry>
         <entry>
           <string>Label</string>
-          <string>graphic RAM</string>
+          <string>graphic RAM + fbswitch device</string>
         </entry>
         <entry>
           <string>RectWidth</string>
