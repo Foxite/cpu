@@ -1,4 +1,4 @@
-lexer grammar proc16a_lexer;
+lexer grammar Proc16aLexer;
 
 channels { COMMENT_CHANNEL }
 

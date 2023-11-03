@@ -1,9 +1,8 @@
 using Antlr4.Runtime.Tree;
-using Assembler.Antlr;
 
-namespace Assembler.Parsing.Antlr;
+namespace Assembler.Parsing.Proc16a.Antlr;
 
-public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
+public class BasicVisitor : Proc16aGrammarBaseVisitor<IAssemblyAst> {
 	private static CpuRegister ParseRegister(ITerminalNode registerToken) {
 		return registerToken.GetText() switch {
 			"A" => CpuRegister.A,
@@ -30,7 +29,7 @@ public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
 		}
 	}
 
-	public override IAssemblyAst VisitAluOperand(proc16a_grammar.AluOperandContext context) {
+	public override IAssemblyAst VisitAluOperand(Proc16aGrammar.AluOperandContext context) {
 		ITerminalNode? number = context.NUMBER();
 		ITerminalNode? register = context.REGISTER();
 
@@ -71,7 +70,7 @@ public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
 		};
 	}
 
-	public override IAssemblyAst VisitProgram(proc16a_grammar.ProgramContext context) {
+	public override IAssemblyAst VisitProgram(Proc16aGrammar.ProgramContext context) {
 		return new ProgramAst(
 			context
 				.programStatement()
@@ -81,7 +80,7 @@ public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
 		);
 	}
 
-	public override IAssemblyAst VisitProgramStatement(proc16a_grammar.ProgramStatementContext context) {
+	public override IAssemblyAst VisitProgramStatement(Proc16aGrammar.ProgramStatementContext context) {
 		ITerminalNode? labelToken = context.SYMBOL();
 		string? labelValue = null;
 		if (labelToken != null) {
@@ -93,7 +92,7 @@ public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
 		return new ProgramStatementAst(labelValue, instruction);
 	}
 
-	public override IAssemblyAst VisitDatawordInstruction(proc16a_grammar.DatawordInstructionContext context) {
+	public override IAssemblyAst VisitDatawordInstruction(Proc16aGrammar.DatawordInstructionContext context) {
 		CpuRegister register = ParseRegister(context.REGISTER());
 
 		ITerminalNode? valueToken = context.NUMBER();
@@ -116,11 +115,11 @@ public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
 		}
 	}
 
-	public override IAssemblyAst VisitAssignInstruction(proc16a_grammar.AssignInstructionContext context) {
+	public override IAssemblyAst VisitAssignInstruction(Proc16aGrammar.AssignInstructionContext context) {
 		return new AssignInstruction(ParseRegister(context.REGISTER(0)), ParseRegister(context.REGISTER(1)));
 	}
 
-	public override IAssemblyAst VisitAluInstruction(proc16a_grammar.AluInstructionContext context) {
+	public override IAssemblyAst VisitAluInstruction(Proc16aGrammar.AluInstructionContext context) {
 		bool isUnary = context.UNARY_OPERATION() != null;
 		
 		if (isUnary) {
@@ -143,8 +142,8 @@ public class BasicVisitor : proc16a_grammarBaseVisitor<IAssemblyAst> {
 		}
 	}
 
-	public override IAssemblyAst VisitJumpInstruction(proc16a_grammar.JumpInstructionContext context) {
-		proc16a_grammar.ComparePhraseContext? comparePhrase = context.comparePhrase();
+	public override IAssemblyAst VisitJumpInstruction(Proc16aGrammar.JumpInstructionContext context) {
+		Proc16aGrammar.ComparePhraseContext? comparePhrase = context.comparePhrase();
 
 		if (comparePhrase != null) {
 			return new JumpInstruction(

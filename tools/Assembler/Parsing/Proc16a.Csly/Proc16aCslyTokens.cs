@@ -1,8 +1,8 @@
 using sly.lexer;
 
-namespace Assembler.Parsing.Csly;
+namespace Assembler.Parsing.Proc16a.Csly;
 
-public enum CslyTokens {
+public enum Proc16aCslyTokens {
 	[Lexeme(",")]
 	Comma,
 	

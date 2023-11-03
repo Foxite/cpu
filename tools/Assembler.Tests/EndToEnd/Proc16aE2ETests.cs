@@ -3,8 +3,8 @@ using Assembler.Parsing;
 
 namespace Assembler.Tests.EndToEnd; 
 
-[TestFixture(typeof(Assembler.Parsing.Csly.CslyAssemblyParser))]
-[TestFixture(typeof(Assembler.Parsing.Antlr.AntlrAssemblyParser))]
+[TestFixture(typeof(Parsing.Proc16a.Csly.Proc16aCslyAssemblyParser))]
+[TestFixture(typeof(Parsing.Proc16a.Antlr.Proc16aAntlrAssemblyParser))]
 public class Proc16aE2ETests<T> where T : IAssemblyParser, new() {
 	private Proc16aProgramAssembler m_Assembler;
 	private IAssemblyParser m_Parser;

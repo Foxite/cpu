@@ -1,21 +1,20 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Assembler.Antlr;
 
-namespace Assembler.Parsing.Antlr;
+namespace Assembler.Parsing.Proc16a.Antlr;
 
-public class AntlrAssemblyParser : IAssemblyParser {
+public class Proc16aAntlrAssemblyParser : IAssemblyParser {
 	public ProgramAst Parse(string sourceCode) {
 		var charStream = new AntlrInputStream(sourceCode);
-		var lexer = new proc16a_lexer(charStream);
+		var lexer = new Proc16aLexer(charStream);
 		var tokens = new CommonTokenStream(lexer);
-		var parser = new proc16a_grammar(tokens);
+		var parser = new Proc16aGrammar(tokens);
 		parser.ErrorHandler = new RecoveringErrorStrategy();
 		//parser.ErrorHandler = new DefaultErrorStrategy();
 		//parser.ErrorHandler = new BailErrorStrategy();
 		
-		var errorListenerLexer = new ErrorListener<int>();
-		var errorListenerParser = new ErrorListener<IToken>();
+		var errorListenerLexer = new Proc16aErrorListener<int>();
+		var errorListenerParser = new Proc16aErrorListener<IToken>();
 
 		lexer.AddErrorListener(errorListenerLexer);
 		parser.AddErrorListener(errorListenerParser);

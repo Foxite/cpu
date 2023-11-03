@@ -2,8 +2,8 @@ using Assembler.Parsing;
 
 namespace Assembler.Tests;
 
-[TestFixture(typeof(Assembler.Parsing.Csly.CslyAssemblyParser))]
-[TestFixture(typeof(Assembler.Parsing.Antlr.AntlrAssemblyParser))]
+[TestFixture(typeof(Parsing.Proc16a.Csly.Proc16aCslyAssemblyParser))]
+[TestFixture(typeof(Parsing.Proc16a.Antlr.Proc16aAntlrAssemblyParser))]
 public class ParserTests<T> where T : IAssemblyParser, new() {
 	private IAssemblyParser m_Parser;
 
@@ -160,7 +160,7 @@ public class ParserTests<T> where T : IAssemblyParser, new() {
 				# two consecutive comments
 				
 				A = 5
-				B  2
+				B = 2
 				*B = 5
 				*A = 10
 
@@ -176,7 +176,7 @@ public class ParserTests<T> where T : IAssemblyParser, new() {
 				label:
 				B = 10
 				A = 10
-				lab el:
+				label:
 				A = 20
 				label: B = 40
 				label: A = 40

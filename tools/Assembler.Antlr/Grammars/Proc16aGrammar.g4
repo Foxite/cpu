@@ -1,6 +1,6 @@
-parser grammar proc16a_grammar;
+parser grammar Proc16aGrammar;
 
-options { tokenVocab=proc16a_lexer; }
+options { tokenVocab=Proc16aLexer; }
 
 program
 	: NEWLINE* (programStatement NEWLINE+)* programStatement NEWLINE* EOF

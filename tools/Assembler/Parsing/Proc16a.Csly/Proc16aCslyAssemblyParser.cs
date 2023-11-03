@@ -2,16 +2,16 @@ using sly.buildresult;
 using sly.parser;
 using sly.parser.generator;
 
-namespace Assembler.Parsing.Csly;
+namespace Assembler.Parsing.Proc16a.Csly;
 
-public class CslyAssemblyParser : IAssemblyParser {
-	private readonly Parser<CslyTokens, IAssemblyAst> m_Parser;
+public class Proc16aCslyAssemblyParser : IAssemblyParser {
+	private readonly Parser<Proc16aCslyTokens, IAssemblyAst> m_Parser;
 	
-	public CslyAssemblyParser() {
-		var parserDefinition = new CslyGrammars();
-		var parserBuilder = new ParserBuilder<CslyTokens, IAssemblyAst>();
+	public Proc16aCslyAssemblyParser() {
+		var parserDefinition = new Proc16aCslyGrammars();
+		var parserBuilder = new ParserBuilder<Proc16aCslyTokens, IAssemblyAst>();
 
-		BuildResult<Parser<CslyTokens, IAssemblyAst>> buildResult = parserBuilder.BuildParser(parserDefinition, ParserType.EBNF_LL_RECURSIVE_DESCENT, "Program");
+		BuildResult<Parser<Proc16aCslyTokens, IAssemblyAst>> buildResult = parserBuilder.BuildParser(parserDefinition, ParserType.EBNF_LL_RECURSIVE_DESCENT, "Program");
 
 		if (buildResult.IsError) {
 			throw new ParserException("Unable to build parser!\n" + string.Join('\n', buildResult.Errors.Select(error => $"{error.Level} {error.Code} {error.Message}")));
@@ -21,7 +21,7 @@ public class CslyAssemblyParser : IAssemblyParser {
 	}
 	
 	public ProgramAst Parse(string sourceCode) {
-		ParseResult<CslyTokens, IAssemblyAst> parseResult;
+		ParseResult<Proc16aCslyTokens, IAssemblyAst> parseResult;
 		
 		parseResult = m_Parser.Parse(sourceCode);
 

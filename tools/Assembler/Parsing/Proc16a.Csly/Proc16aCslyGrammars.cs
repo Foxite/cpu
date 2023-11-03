@@ -2,16 +2,16 @@ using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
 
-namespace Assembler.Parsing.Csly;
+namespace Assembler.Parsing.Proc16a.Csly;
 
-public class CslyGrammars {
+public class Proc16aCslyGrammars {
 	[Production("Number: Minus? DecimalInteger")]
-	public ConstantAst DecimalNumber(Token<CslyTokens> minus, Token<CslyTokens> token) {
+	public ConstantAst DecimalNumber(Token<Proc16aCslyTokens> minus, Token<Proc16aCslyTokens> token) {
 		return new ConstantAst(ParsingUtils.ParseNumericLiteral(!minus.IsEmpty, 10, "", token.Value, ch => ch - '0'));
 	}
 	
 	[Production("Number: Minus? HexadecimalInteger")]
-	public ConstantAst HexadecimalNumber(Token<CslyTokens> minus, Token<CslyTokens> token) {
+	public ConstantAst HexadecimalNumber(Token<Proc16aCslyTokens> minus, Token<Proc16aCslyTokens> token) {
 		return new ConstantAst(ParsingUtils.ParseNumericLiteral(!minus.IsEmpty, 16, "0x", token.Value.ToLower(), ch => ch switch {
 			>= '0' and <= '9' => ch - '0',
 			>= 'a' and <= 'f' => ch - 'a' + 10,
@@ -19,14 +19,14 @@ public class CslyGrammars {
 	}
 	
 	[Production("Number: Minus? BinaryInteger")]
-	public ConstantAst BinaryNumber(Token<CslyTokens> minus, Token<CslyTokens> token) {
+	public ConstantAst BinaryNumber(Token<Proc16aCslyTokens> minus, Token<Proc16aCslyTokens> token) {
 		return new ConstantAst(ParsingUtils.ParseNumericLiteral(!minus.IsEmpty, 2, "0b", token.Value, ch => ch == '0' ? 0 : 1));
 	}
 	
 	[Production("Boolean: True")]
 	[Production("Boolean: False")]
-	public BooleanAst Boolean(Token<CslyTokens> token) {
-		return new BooleanAst(token.TokenID == CslyTokens.True);
+	public BooleanAst Boolean(Token<Proc16aCslyTokens> token) {
+		return new BooleanAst(token.TokenID == Proc16aCslyTokens.True);
 	}
 
 	[Production("Statement: Register Assign [d] Number")]
@@ -35,7 +35,7 @@ public class CslyGrammars {
 	}
 
 	[Production("Statement: Register Assign [d] Symbol")]
-	public IStatement DataWord(CpuRegisterAst register, Token<CslyTokens> symbol) {
+	public IStatement DataWord(CpuRegisterAst register, Token<Proc16aCslyTokens> symbol) {
 		return new DataWordInstruction(register, false, null, new SymbolAst(symbol.Value));
 	}
 
@@ -53,17 +53,17 @@ public class CslyGrammars {
 	[Production("Register: BRegister")]
 	[Production("Register: StarA")]
 	[Production("Register: StarB")]
-	public CpuRegisterAst Register(Token<CslyTokens> register) {
+	public CpuRegisterAst Register(Token<Proc16aCslyTokens> register) {
 		return new CpuRegisterAst(register.TokenID switch {
-			CslyTokens.ARegister => CpuRegister.A,
-			CslyTokens.BRegister => CpuRegister.B,
-			CslyTokens.StarA => CpuRegister.StarA,
-			CslyTokens.StarB => CpuRegister.StarB,
+			Proc16aCslyTokens.ARegister => CpuRegister.A,
+			Proc16aCslyTokens.BRegister => CpuRegister.B,
+			Proc16aCslyTokens.StarA => CpuRegister.StarA,
+			Proc16aCslyTokens.StarB => CpuRegister.StarB,
 		});
 	}
 
 	[Production("AluWriteTarget: (Register Comma [d])* Register")]
-	public AluWriteTarget AluWriteTarget(List<Group<CslyTokens, IAssemblyAst>> many, CpuRegisterAst single) {
+	public AluWriteTarget AluWriteTarget(List<Group<Proc16aCslyTokens, IAssemblyAst>> many, CpuRegisterAst single) {
 		var ret = new List<CpuRegisterAst>();
 		ret.AddRange(many.Select(item => (CpuRegisterAst) item.Value(0)));
 		ret.Add(single);
@@ -106,29 +106,29 @@ public class CslyGrammars {
 	[Production("AluOperation: LessThanOrEquals")]
 	[Production("AluOperation: True")]
 	[Production("AluOperation: False")]
-	public AluOperationAst AluOperation(Token<CslyTokens> token) {
+	public AluOperationAst AluOperation(Token<Proc16aCslyTokens> token) {
 		return new AluOperationAst(token.TokenID switch {
-			CslyTokens.Plus					=> Assembler.AluOperation.Add,
-			CslyTokens.Minus				=> Assembler.AluOperation.Subtract,
-			CslyTokens.Multiply				=> Assembler.AluOperation.Multiply,
-			CslyTokens.Divide				=> Assembler.AluOperation.Divide,
-			CslyTokens.LeftShift			=> Assembler.AluOperation.ShiftLeft,
-			CslyTokens.RightShift			=> Assembler.AluOperation.ShiftRight,
-			CslyTokens.BitwiseAnd			=> Assembler.AluOperation.BitwiseAnd,
-			CslyTokens.BitwiseOr			=> Assembler.AluOperation.BitwiseOr,
-			CslyTokens.BitwiseNot			=> Assembler.AluOperation.BitwiseNot,
-			CslyTokens.BitwiseXor			=> Assembler.AluOperation.BitwiseXor,
-			CslyTokens.BitwiseXnor			=> Assembler.AluOperation.BitwiseXnor,
-			CslyTokens.BitwiseNor			=> Assembler.AluOperation.BitwiseNor,
-			CslyTokens.BitwiseNand			=> Assembler.AluOperation.BitwiseNand,
-			CslyTokens.GreaterThan			=> Assembler.AluOperation.GreaterThan,
-			CslyTokens.Equals				=> Assembler.AluOperation.Equals,
-			CslyTokens.GreaterThanOrEquals	=> Assembler.AluOperation.GreaterThanOrEquals,
-			CslyTokens.LessThan				=> Assembler.AluOperation.LessThan,
-			CslyTokens.NotEquals			=> Assembler.AluOperation.NotEquals,
-			CslyTokens.LessThanOrEquals		=> Assembler.AluOperation.LessThanOrEquals,
-			CslyTokens.True					=> Assembler.AluOperation.True,
-			CslyTokens.False				=> Assembler.AluOperation.False,
+			Proc16aCslyTokens.Plus					=> Assembler.AluOperation.Add,
+			Proc16aCslyTokens.Minus				=> Assembler.AluOperation.Subtract,
+			Proc16aCslyTokens.Multiply				=> Assembler.AluOperation.Multiply,
+			Proc16aCslyTokens.Divide				=> Assembler.AluOperation.Divide,
+			Proc16aCslyTokens.LeftShift			=> Assembler.AluOperation.ShiftLeft,
+			Proc16aCslyTokens.RightShift			=> Assembler.AluOperation.ShiftRight,
+			Proc16aCslyTokens.BitwiseAnd			=> Assembler.AluOperation.BitwiseAnd,
+			Proc16aCslyTokens.BitwiseOr			=> Assembler.AluOperation.BitwiseOr,
+			Proc16aCslyTokens.BitwiseNot			=> Assembler.AluOperation.BitwiseNot,
+			Proc16aCslyTokens.BitwiseXor			=> Assembler.AluOperation.BitwiseXor,
+			Proc16aCslyTokens.BitwiseXnor			=> Assembler.AluOperation.BitwiseXnor,
+			Proc16aCslyTokens.BitwiseNor			=> Assembler.AluOperation.BitwiseNor,
+			Proc16aCslyTokens.BitwiseNand			=> Assembler.AluOperation.BitwiseNand,
+			Proc16aCslyTokens.GreaterThan			=> Assembler.AluOperation.GreaterThan,
+			Proc16aCslyTokens.Equals				=> Assembler.AluOperation.Equals,
+			Proc16aCslyTokens.GreaterThanOrEquals	=> Assembler.AluOperation.GreaterThanOrEquals,
+			Proc16aCslyTokens.LessThan				=> Assembler.AluOperation.LessThan,
+			Proc16aCslyTokens.NotEquals			=> Assembler.AluOperation.NotEquals,
+			Proc16aCslyTokens.LessThanOrEquals		=> Assembler.AluOperation.LessThanOrEquals,
+			Proc16aCslyTokens.True					=> Assembler.AluOperation.True,
+			Proc16aCslyTokens.False				=> Assembler.AluOperation.False,
 		});
 	}
 	
@@ -149,14 +149,14 @@ public class CslyGrammars {
 	[Production("CompareOperation: LessThan")]
 	[Production("CompareOperation: NotEquals")]
 	[Production("CompareOperation: LessThanOrEquals")]
-	public CompareOperationAst CompareOperation(Token<CslyTokens> token) {
+	public CompareOperationAst CompareOperation(Token<Proc16aCslyTokens> token) {
 		return new CompareOperationAst(token.TokenID switch {
-			CslyTokens.GreaterThan 			=> Assembler.CompareOperation.GreaterThan,
-			CslyTokens.Equals 				=> Assembler.CompareOperation.Equals,
-			CslyTokens.GreaterThanOrEquals 	=> Assembler.CompareOperation.GreaterThanOrEquals,
-			CslyTokens.LessThan 				=> Assembler.CompareOperation.LessThan,
-			CslyTokens.NotEquals 			=> Assembler.CompareOperation.NotEquals,
-			CslyTokens.LessThanOrEquals 		=> Assembler.CompareOperation.LessThanOrEquals,
+			Proc16aCslyTokens.GreaterThan 			=> Assembler.CompareOperation.GreaterThan,
+			Proc16aCslyTokens.Equals 				=> Assembler.CompareOperation.Equals,
+			Proc16aCslyTokens.GreaterThanOrEquals 	=> Assembler.CompareOperation.GreaterThanOrEquals,
+			Proc16aCslyTokens.LessThan 				=> Assembler.CompareOperation.LessThan,
+			Proc16aCslyTokens.NotEquals 			=> Assembler.CompareOperation.NotEquals,
+			Proc16aCslyTokens.LessThanOrEquals 		=> Assembler.CompareOperation.LessThanOrEquals,
 		});
 	}
 
@@ -176,7 +176,7 @@ public class CslyGrammars {
 	}
 
 	[Production("LineEnding: EndOfLine+")]
-	public IAssemblyAst? LineEnding(List<Token<CslyTokens>> ignored) {
+	public IAssemblyAst? LineEnding(List<Token<Proc16aCslyTokens>> ignored) {
 		return null;
 	}
 
@@ -186,7 +186,7 @@ public class CslyGrammars {
 	}
 
 	[Production("ProgramStatement: (Symbol Colon OptionalLineEnding)? Statement")]
-	public ProgramStatementAst ProgramStatement(ValueOption<Group<CslyTokens, IAssemblyAst>> label, IStatement statement) {
+	public ProgramStatementAst ProgramStatement(ValueOption<Group<Proc16aCslyTokens, IAssemblyAst>> label, IStatement statement) {
 		string? labelName = null;
 		if (label.IsSome) {
 			labelName = label.Match(g => g, () => throw new NotImplementedException()).Token(0).Value;
@@ -196,7 +196,7 @@ public class CslyGrammars {
 	}
 
 	[Production("Program: LineEnding? (ProgramStatement LineEnding)* ProgramStatement? LineEnding?")]
-	public ProgramAst Program(ValueOption<IAssemblyAst?> lineEnding1, List<Group<CslyTokens, IAssemblyAst>> statements, ValueOption<IAssemblyAst> last, ValueOption<IAssemblyAst?> lineEnding2) {
+	public ProgramAst Program(ValueOption<IAssemblyAst?> lineEnding1, List<Group<Proc16aCslyTokens, IAssemblyAst>> statements, ValueOption<IAssemblyAst> last, ValueOption<IAssemblyAst?> lineEnding2) {
 		var ret = statements.Select(group => group.Value(0)).Cast<ProgramStatementAst>().ToList();
 		if (last.IsSome) {
 			ret.Add((ProgramStatementAst) last.Match(i => i, () => throw new InvalidProgramException("OPIERFUAERDS987Y TGQH4WRT897 =MYB-6YH57 8B9N4343ER 890iumt")));
