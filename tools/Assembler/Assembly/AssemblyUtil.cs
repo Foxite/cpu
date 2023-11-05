@@ -1,3 +1,5 @@
+using Assembler.Parsing.Proc16a;
+
 namespace Assembler.Assembly;
 
 public static class AssemblyUtil {

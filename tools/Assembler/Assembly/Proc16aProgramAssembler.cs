@@ -1,9 +1,41 @@
+using Assembler.Assembly.Proc16a;
+using Assembler.Parsing.Proc16a;
+
 namespace Assembler.Assembly; 
 
-public class Proc16aProgramAssembler : ProgramAssembler {
+public class Proc16aProgramAssembler : ProgramAssembler<ProgramAst> {
 	public override string ArchitectureName => "Proc16a";
+	
+	public override IEnumerable<ushort> Assemble(ProgramAst program) {
+		var symbolDefinitions = new Dictionary<string, short>();
+		var unsupportedStatements = new Stack<(IStatement statement, int index)>();
 
-	protected internal override bool ValidateStatement(IStatement statement) {
+		for (int i = 0; i < program.Statements.Count; i++) {
+			ProgramStatementAst statement = program.Statements[i];
+			
+			if (statement.Label != null) {
+				symbolDefinitions[statement.Label] = (short) i;
+			}
+
+			if (!ValidateStatement(statement.Statement)) {
+				unsupportedStatements.Push((statement.Statement, i));
+			}
+		}
+
+		if (unsupportedStatements.Count > 0) {
+			throw new UnsupportedStatementException(ArchitectureName, unsupportedStatements);
+		}
+
+		return ConvertStatements(program, symbolDefinitions);
+	}
+
+	private IEnumerable<ushort> ConvertStatements(ProgramAst program, Dictionary<string, short> symbolDefinitions) {
+		foreach (ProgramStatementAst statement in program.Statements) {
+			yield return ConvertStatement(statement.Statement, name => symbolDefinitions[name]);
+		}
+	}
+
+	protected internal bool ValidateStatement(IStatement statement) {
 		switch (statement) {
 			case AluInstruction aluInstruction:
 				IEnumerable<CpuRegisterAst> registers = aluInstruction.Write.Registers;
@@ -99,7 +131,7 @@ public class Proc16aProgramAssembler : ProgramAssembler {
 		}
 	}
 
-	protected internal override ushort ConvertStatement(IStatement statement, Func<string, short> getSymbolValue) {
+	protected internal ushort ConvertStatement(IStatement statement, Func<string, short> getSymbolValue) {
 		int instruction = 0;
 
 		void SetInstructionBit(int bit, bool value) {

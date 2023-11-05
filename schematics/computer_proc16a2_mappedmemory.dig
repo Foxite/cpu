@@ -657,7 +657,7 @@ end loop
         </entry>
         <entry>
           <string>Label</string>
-          <string>Y</string>
+          <string>D</string>
         </entry>
       </elementAttributes>
       <pos x="-320" y="1580"/>
@@ -671,7 +671,7 @@ end loop
         </entry>
         <entry>
           <string>Label</string>
-          <string>X</string>
+          <string>C</string>
         </entry>
       </elementAttributes>
       <pos x="-260" y="1520"/>

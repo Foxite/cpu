@@ -22,44 +22,16 @@
           <Visitor>true</Visitor>
           <Error>true</Error>
       </Antlr4>
-      <Antlr4 Include="ProcAssemblyV2\ProcAssemblyV2Grammar.g4">
-        <AllowAntlr4cs>false</AllowAntlr4cs>
-        <AntlrToolJarDownloadDir>USERPROFILE/.m2/</AntlrToolJarDownloadDir>
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        <DOptions>language=CSharp</DOptions>
-        <Encoding>UTF-8</Encoding>
-        <Error>true</Error>
-        <ForceAtn>false</ForceAtn>
-        <GAtn>false</GAtn>
-        <Generator>MSBuild:Compile</Generator>
-        <IntermediateOutputPath>obj\Debug/net7.0/</IntermediateOutputPath>
-        <JavaDownloadDirectory>USERPROFILE/.jre/</JavaDownloadDirectory>
-        <JavaExec>PATH;DOWNLOAD</JavaExec>
-        <Listener>true</Listener>
-        <Log>false</Log>
-        <LongMessages>false</LongMessages>
-        <Package>Assembler.Parsing.Proc16a.Antlr</Package>
-        <Visitor>true</Visitor>
-      </Antlr4>
-      <Antlr4 Include="ProcAssemblyV2\ProcAssemblyV2Lexer.g4">
-        <AllowAntlr4cs>false</AllowAntlr4cs>
-        <AntlrToolJarDownloadDir>USERPROFILE/.m2/</AntlrToolJarDownloadDir>
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        <DOptions>language=CSharp</DOptions>
-        <Encoding>UTF-8</Encoding>
-        <Error>true</Error>
-        <ForceAtn>false</ForceAtn>
-        <GAtn>false</GAtn>
-        <Generator>MSBuild:Compile</Generator>
-        <IntermediateOutputPath>obj\Debug/net7.0/</IntermediateOutputPath>
-        <JavaDownloadDirectory>USERPROFILE/.jre/</JavaDownloadDirectory>
-        <JavaExec>PATH;DOWNLOAD</JavaExec>
-        <Listener>true</Listener>
-        <Log>false</Log>
-        <LongMessages>false</LongMessages>
-        <Package>Assembler.Parsing.Proc16a.Antlr</Package>
-        <Visitor>true</Visitor>
-      </Antlr4>
+        <Antlr4 Include="ProcAssemblyV2\ProcAssemblyV2Grammar.g4">
+            <Package>Assembler.Parsing.ProcAssemblyV2.Antlr</Package>
+            <Visitor>true</Visitor>
+            <Error>true</Error>
+        </Antlr4>
+        <Antlr4 Include="ProcAssemblyV2\ProcAssemblyV2Lexer.g4">
+            <Package>Assembler.Parsing.ProcAssemblyV2.Antlr</Package>
+            <Visitor>true</Visitor>
+            <Error>true</Error>
+        </Antlr4>
     </ItemGroup>
 
 </Project>

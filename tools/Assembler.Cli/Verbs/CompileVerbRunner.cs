@@ -1,6 +1,8 @@
 using Assembler;
 using Assembler.Assembly;
+using Assembler.Assembly.Proc16a;
 using Assembler.Parsing;
+using Assembler.Parsing.Proc16a;
 using CommandLine;
 
 public enum CompileOutputMode {
@@ -37,7 +39,7 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		ProgramAssembler? assembler = Program.Assemblers.FirstOrDefault(assembler => assembler.ArchitectureName.ToLower() == opts.Architecture);
+		Proc16aProgramAssembler? assembler = Program.Assemblers.FirstOrDefault(assembler => assembler.ArchitectureName.ToLower() == opts.Architecture);
 
 		if (assembler == null) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
@@ -59,7 +61,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		}
 
 		
-		IAssemblyParser parser = opts.Parser switch {
+		IProc16aAssemblyParser parser = opts.Parser switch {
 			ParserSelection.Csly => new Assembler.Parsing.Proc16a.Csly.Proc16aCslyAssemblyParser(),
 			ParserSelection.Antlr => new Assembler.Parsing.Proc16a.Antlr.Proc16aAntlrAssemblyParser(),
 			_ => throw new ArgumentOutOfRangeException(nameof(opts.Parser), opts.Parser, null)

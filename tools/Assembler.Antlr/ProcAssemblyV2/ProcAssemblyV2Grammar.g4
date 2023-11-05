@@ -9,7 +9,7 @@ program
 programStatement
 	: (SYMBOL COLON NEWLINE*)? instruction
 	| DEFINE SYMBOL instructionArgument
-	| INCLUDE STRING
+	| INCLUDE string
 	;
 
 instruction
@@ -20,5 +20,13 @@ instructionArgument
 	: SYMBOL
 	| IMMEDIATE
 	| REGISTER
-	| STRING
+	| string
+	;
+
+stringTerminatorNt
+	: ~STRINGTERMINATOR // not supported in lexer rule
+	;
+
+string
+	: STRINGTERMINATOR (stringTerminatorNt)* STRINGTERMINATOR
 	;

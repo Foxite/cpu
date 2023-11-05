@@ -2,7 +2,7 @@
 using CommandLine;
 
 public class Program {
-	public static readonly ProgramAssembler[] Assemblers = {
+	public static readonly Proc16aProgramAssembler[] Assemblers = {
 		new Proc16aProgramAssembler(),
 	};
 	

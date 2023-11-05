@@ -1,13 +1,14 @@
 using Assembler.Assembly;
 using Assembler.Parsing;
+using Assembler.Parsing.Proc16a;
 
 namespace Assembler.Tests.EndToEnd; 
 
 [TestFixture(typeof(Parsing.Proc16a.Csly.Proc16aCslyAssemblyParser))]
 [TestFixture(typeof(Parsing.Proc16a.Antlr.Proc16aAntlrAssemblyParser))]
-public class Proc16aE2ETests<T> where T : IAssemblyParser, new() {
+public class Proc16aE2ETests<T> where T : IProc16aAssemblyParser, new() {
 	private Proc16aProgramAssembler m_Assembler;
-	private IAssemblyParser m_Parser;
+	private IProc16aAssemblyParser m_Parser;
 
 	[SetUp]
 	public void Setup() {

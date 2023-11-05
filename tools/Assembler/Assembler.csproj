@@ -14,8 +14,4 @@
       <ProjectReference Include="..\Assembler.Antlr\Assembler.Antlr.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Parsing\ProcAssemblyV2\" />
-    </ItemGroup>
-
 </Project>

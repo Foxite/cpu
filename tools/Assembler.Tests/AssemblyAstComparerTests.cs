@@ -1,3 +1,5 @@
+using Assembler.Parsing.Proc16a;
+
 namespace Assembler.Tests;
 
 public class AssemblyAstComparerTests {
