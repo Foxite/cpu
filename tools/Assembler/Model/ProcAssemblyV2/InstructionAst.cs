@@ -1,6 +1,8 @@
 namespace Assembler.Parsing.ProcAssemblyV2;
 
 public record InstructionAst(string Instruction, IReadOnlyList<InstructionArgumentAst> Arguments) {
+	public InstructionAst(string instruction, params InstructionArgumentAst[] arguments) : this(instruction, (IReadOnlyList<InstructionArgumentAst>) arguments) { }
+
 	public override string ToString() {
 		string ret = Instruction;
 

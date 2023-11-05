@@ -13,6 +13,26 @@ public class ProcAssemblyV2ParserTests {
 
 	public static object[][] ProgramTestCases() {
 		return new object[][] {
+			new object[] {
+				"""
+				# this is a comment.
+				distressSignal:
+					received
+					rescue %operation, %willbe
+					.dispatched "to your location in", $0x999F # hours
+				""",
+				new ProgramAst(
+					new ProgramStatementAst("distressSignal", new InstructionAst("received")),
+					new ProgramStatementAst(null, new InstructionAst("rescue",
+						new InstructionArgumentAst(InstructionArgumentType.Register, null, "operation"),
+						new InstructionArgumentAst(InstructionArgumentType.Register, null, "willbe")
+					)),
+					new ProgramStatementAst(null, new InstructionAst(".dispatched",
+						new InstructionArgumentAst(InstructionArgumentType.String, null, "to your location in"),
+						new InstructionArgumentAst(InstructionArgumentType.Constant, 0x999F, null)
+					))
+				)
+			}
 		};
 	}
 
