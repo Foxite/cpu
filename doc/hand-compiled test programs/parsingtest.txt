@@ -1,0 +1,28 @@
+A = 0
+*B = true
+B = 0xFFFF_0124
+A = *A + 1
+
+A = NOT B
+B = 1 + 1
+B = 0 - *B # hey look a comment
+A = 1 * 5
+A = 5 / 2 # ooh another one
+B = 1 << 5 # two consecutive comments?!
+
+true JMP A
+A < 0 JMP B
+B > 5 JMP A
+A == 0 JMP A # note that these are valid procasm syntax, but theyre not possible to express in all ISAs
+
+label: A = 0
+label1: A = 2
+label2:
+A = 4
+label3:
+
+A = 5
+B = -2
+
+A = 5 AND 2
+B = A XOR B

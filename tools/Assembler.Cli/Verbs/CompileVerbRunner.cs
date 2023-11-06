@@ -74,9 +74,9 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 
 		try {
 			machineCode = assembler.Assemble(program);
-		} catch (UnsupportedStatementException ex) {
+		} catch (UnsupportedInstuctionException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
-			foreach ((ProgramStatementAst statement, int index) in ex.Statements) {
+			foreach ((ProgramStatementAst statement, int index) in ex.Instructions) {
 				Console.WriteLine($"Statement {index}: {statement}");
 			}
 			
