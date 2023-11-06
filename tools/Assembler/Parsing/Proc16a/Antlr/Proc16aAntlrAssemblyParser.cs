@@ -3,8 +3,9 @@ using Assembler.Parsing.Antlr;
 
 namespace Assembler.Parsing.Proc16a.Antlr;
 
-public class Proc16aAntlrAssemblyParser : IProc16aAssemblyParser {
-	public ProgramAst Parse(string sourceCode) {
+public class Proc16aAntlrAssemblyParser : BaseAntlrParser<ProgramAst, Proc16aGrammar>, IProc16aAssemblyParser {
+	/*
+	public ProgramAst _Parse(string sourceCode) {
 		var charStream = new AntlrInputStream(sourceCode);
 		var lexer = new Proc16aLexer(charStream);
 		var tokens = new CommonTokenStream(lexer);
@@ -32,5 +33,15 @@ public class Proc16aAntlrAssemblyParser : IProc16aAssemblyParser {
 		}
 
 		return program;
+	}*/
+	
+	protected override Lexer GetLexer(ICharStream charStream) {
+		return new Proc16aLexer(charStream);
+	}
+	protected override Proc16aGrammar GetParser(ITokenStream tokenStream) {
+		return new Proc16aGrammar(tokenStream);
+	}
+	protected override ProgramAst Visit(Proc16aGrammar parser) {
+		return (ProgramAst) new Proc16aBasicVisitor().Visit(parser.program());
 	}
 }

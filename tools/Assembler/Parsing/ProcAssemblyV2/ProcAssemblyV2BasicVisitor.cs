@@ -3,8 +3,7 @@ using Antlr4.Runtime.Tree;
 namespace Assembler.Parsing.ProcAssemblyV2.Antlr;
 
 public class ProcAssemblyV2BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
-	private static long ParseNumber(ITerminalNode numberToken) {
-		string tokenValue = numberToken.GetText();
+	private static long ParseNumber(string tokenValue) {
 		bool isNegative = tokenValue.StartsWith('-');
 		string numberText = isNegative ? tokenValue[1..] : tokenValue;
 
@@ -19,6 +18,38 @@ public class ProcAssemblyV2BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAsse
 			return ParsingUtils.ParseNumericLiteral(isNegative, 10, "", numberText, ch => ch - '0');
 		}
 	}
-	
-	
+
+	public override IAssemblyAst VisitProgram(ProcAssemblyV2Grammar.ProgramContext context) {
+		return new ProgramAst(context.programStatement().Select(Visit).Cast<ProgramStatementAst>().ToList());
+	}
+
+	public override IAssemblyAst VisitProgramStatement(ProcAssemblyV2Grammar.ProgramStatementContext context) {
+		ITerminalNode? labelSymbol = context.SYMBOL();
+		string? labelValue = labelSymbol?.GetText();
+
+		return new ProgramStatementAst(labelValue, (InstructionAst) Visit(context.instruction()));
+	}
+
+	public override IAssemblyAst VisitInstruction(ProcAssemblyV2Grammar.InstructionContext context) {
+		string instructionTerm = context.SYMBOL().GetText();
+		if (context.DOT() != null) {
+			instructionTerm = "." + instructionTerm;
+		}
+
+		return new InstructionAst(instructionTerm, context.instructionArgument().Select(Visit).Cast<InstructionArgumentAst>().ToList());
+	}
+
+	public override IAssemblyAst VisitInstructionArgument(ProcAssemblyV2Grammar.InstructionArgumentContext context) {
+		if (context.SYMBOL() != null) {
+			return InstructionArgumentAst.Symbol(context.SYMBOL().GetText());
+		} else if (context.IMMEDIATE() != null) {
+			return InstructionArgumentAst.Constant(ParseNumber(context.IMMEDIATE().GetText()[1..]));
+		} else if (context.REGISTER() != null) {
+			return InstructionArgumentAst.Register(context.REGISTER().GetText()[1..]);
+		} else if (context.STRING() != null) {
+			return InstructionArgumentAst.String(context.STRING().GetText()[1..^1]);
+		} else {
+			throw new ParserException("Unable to recognize rule " + context);
+		}
+	}
 }

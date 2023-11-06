@@ -4,6 +4,5 @@ public enum InstructionArgumentType {
 	Constant,
 	Register,
 	Symbol,
-	Label,
 	String,
 }

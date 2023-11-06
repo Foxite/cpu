@@ -8,25 +8,17 @@ program
 
 programStatement
 	: (SYMBOL COLON NEWLINE*)? instruction
-	| DEFINE SYMBOL instructionArgument
-	| INCLUDE string
+	//| DEFINE SYMBOL instructionArgument
+	//| INCLUDE STRING
 	;
 
 instruction
-	: INSTRUCTION ((instructionArgument COMMA)* instructionArgument)?
+	: DOT? SYMBOL ((instructionArgument COMMA)* instructionArgument)?
 	;
 
 instructionArgument
 	: SYMBOL
 	| IMMEDIATE
 	| REGISTER
-	| string
-	;
-
-stringTerminatorNt
-	: ~STRINGTERMINATOR // not supported in lexer rule
-	;
-
-string
-	: STRINGTERMINATOR (stringTerminatorNt)* STRINGTERMINATOR
+	| STRING
 	;

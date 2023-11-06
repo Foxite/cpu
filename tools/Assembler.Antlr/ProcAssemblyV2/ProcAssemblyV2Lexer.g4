@@ -30,10 +30,6 @@ SYMBOL
 	: (SYMBOLSTART) (SYMBOLPART)*
 	;
 
-INSTRUCTION
-	: '.'? ('a' .. 'z') ('a' .. 'z' | '0' .. '9')*
-	;
-
 REGISTER
 	: ('%' | '*') ('a' .. 'z') ('a' .. 'z' | '0' .. '9')*
 	;
@@ -46,6 +42,10 @@ COMMA
 	: ','
 	;
 
+DOT
+	: '.'
+	;
+
 DEFINE
 	: '@define'
 	;
@@ -54,6 +54,11 @@ INCLUDE
 	: '@include'
 	;
 
-STRINGTERMINATOR
-	: ~'\\' '"'
+fragment STRINGTERMINATORNT
+	: '\\' ["] // an escaped double quote
+	| ~('"')   // or anything that is not an (unescaped) double quote
+	;
+
+STRING
+	: '"' (  STRINGTERMINATORNT  )* '"'
 	;

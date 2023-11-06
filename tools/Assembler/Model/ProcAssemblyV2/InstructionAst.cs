@@ -1,6 +1,6 @@
 namespace Assembler.Parsing.ProcAssemblyV2;
 
-public record InstructionAst(string Instruction, IReadOnlyList<InstructionArgumentAst> Arguments) {
+public record InstructionAst(string Instruction, IReadOnlyList<InstructionArgumentAst> Arguments) : IAssemblyAst {
 	public InstructionAst(string instruction, params InstructionArgumentAst[] arguments) : this(instruction, (IReadOnlyList<InstructionArgumentAst>) arguments) { }
 
 	public override string ToString() {
@@ -16,4 +16,6 @@ public record InstructionAst(string Instruction, IReadOnlyList<InstructionArgume
 
 		return ret;
 	}
+	
+	public virtual bool Equals(InstructionAst? other) => other != null && other.Arguments.SequenceEqual(Arguments);
 }
