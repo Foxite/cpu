@@ -1,15 +1,15 @@
 using Antlr4.Runtime;
-using Assembler.Parsing.Antlr;
+using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Parsing.ProcAssemblyV2.Antlr;
 
-namespace Assembler.Parsing.Proc16a.Antlr;
+namespace Assembler.Parsing.Antlr;
 
-public class Proc16aAntlrAssemblyParser : BaseAntlrParser<ProgramAst, Proc16aGrammar>, IProc16aAssemblyParser {
-	/*
-	public ProgramAst _Parse(string sourceCode) {
+public class ProcAssemblyParser {
+	public ProgramAst Parse(string sourceCode) {
 		var charStream = new AntlrInputStream(sourceCode);
-		var lexer = new Proc16aLexer(charStream);
+		Lexer lexer = new ProcAssemblyV2Lexer(charStream);
 		var tokens = new CommonTokenStream(lexer);
-		var parser = new Proc16aGrammar(tokens);
+		var parser = new ProcAssemblyV2Grammar(tokens);
 		//parser.ErrorHandler = new RecoveringErrorStrategy();
 		//parser.ErrorHandler = new DefaultErrorStrategy();
 		//parser.ErrorHandler = new BailErrorStrategy();
@@ -19,10 +19,8 @@ public class Proc16aAntlrAssemblyParser : BaseAntlrParser<ProgramAst, Proc16aGra
 
 		lexer.AddErrorListener(errorListenerLexer);
 		parser.AddErrorListener(errorListenerParser);
-		
-		var visitor = new Proc16aBasicVisitor();
 
-		var program = (ProgramAst) visitor.Visit(parser.program());
+		var program = (ProgramAst) new BasicVisitor().Visit(parser.program());
 
 		if (errorListenerLexer.HadError) {
 			throw new ParserException("Lexer errors:\n" + string.Join('\n', errorListenerParser.Errors.Select(error => error.ToString())));
@@ -33,15 +31,5 @@ public class Proc16aAntlrAssemblyParser : BaseAntlrParser<ProgramAst, Proc16aGra
 		}
 
 		return program;
-	}*/
-	
-	protected override Lexer GetLexer(ICharStream charStream) {
-		return new Proc16aLexer(charStream);
-	}
-	protected override Proc16aGrammar GetParser(ITokenStream tokenStream) {
-		return new Proc16aGrammar(tokenStream);
-	}
-	protected override ProgramAst Visit(Proc16aGrammar parser) {
-		return (ProgramAst) new Proc16aBasicVisitor().Visit(parser.program());
 	}
 }

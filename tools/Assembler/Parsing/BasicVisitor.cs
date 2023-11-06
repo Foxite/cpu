@@ -2,7 +2,7 @@ using Antlr4.Runtime.Tree;
 
 namespace Assembler.Parsing.ProcAssemblyV2.Antlr;
 
-public class ProcAssemblyV2BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
+public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 	private static long ParseNumber(string tokenValue) {
 		bool isNegative = tokenValue.StartsWith('-');
 		string numberText = isNegative ? tokenValue[1..] : tokenValue;

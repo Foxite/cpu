@@ -4,16 +4,14 @@ using Assembler.Parsing.Proc16a;
 
 namespace Assembler.Tests.EndToEnd; 
 
-[TestFixture(typeof(Parsing.Proc16a.Csly.Proc16aCslyAssemblyParser))]
-[TestFixture(typeof(Parsing.Proc16a.Antlr.Proc16aAntlrAssemblyParser))]
-public class Proc16aE2ETests<T> where T : IProc16aAssemblyParser, new() {
-	private Proc16aProgramAssembler m_Assembler;
-	private IProc16aAssemblyParser m_Parser;
+public class Proc16aE2ETests {
+	private TODO m_Assembler;
+	private TODO m_Parser;
 
 	[SetUp]
 	public void Setup() {
-		m_Parser = new T();
-		m_Assembler = new Proc16aProgramAssembler();
+		m_Parser = new TODO();
+		m_Assembler = new TODO();
 	}
 
 	public static object[][] AssembleTestCases() {

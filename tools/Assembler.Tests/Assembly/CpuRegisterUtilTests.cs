@@ -4,68 +4,6 @@ using Assembler.Parsing.Proc16a;
 namespace Assembler.Tests.Assembly; 
 
 public class CpuRegisterUtilTests {
-	private static object[][] CpuRegisterIsRamRegisterTestCases() => new[] {
-		new object[] { CpuRegister.A, false },
-		new object[] { CpuRegister.B, false },
-		new object[] { CpuRegister.StarA, true },
-		new object[] { CpuRegister.StarB, true },
-	};
-		
-	[Test]
-	[TestCaseSource(nameof(CpuRegisterIsRamRegisterTestCases))]
-	public void TestCpuRegisterIsRamRegister(CpuRegister register, bool expectedResult) {
-		Assert.That(register.CpuRegisterIsRamRegister(), Is.EqualTo(expectedResult));
-	}
-	
-	
-	private static object[][] CheckAllRamRegistersAreSameAddressTestCases() => new[] {
-		new object[] { Array.Empty<CpuRegister>(), true },
-		new object[] { new[] { CpuRegister.A }, true },
-		new object[] { new[] { CpuRegister.B }, true },
-		new object[] { new[] { CpuRegister.StarA }, true },
-		new object[] { new[] { CpuRegister.StarB }, true },
-		
-		new object[] { new[] { CpuRegister.A, CpuRegister.B }, true },
-		new object[] { new[] { CpuRegister.B, CpuRegister.B }, true },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.StarA }, true },
-		new object[] { new[] { CpuRegister.StarB, CpuRegister.StarB }, true },
-		new object[] { new[] { CpuRegister.A, CpuRegister.StarA }, true },
-		new object[] { new[] { CpuRegister.A, CpuRegister.StarB }, true },
-		new object[] { new[] { CpuRegister.B, CpuRegister.StarA }, true },
-		new object[] { new[] { CpuRegister.B, CpuRegister.StarB }, true },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.A }, true },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.B }, true },
-		new object[] { new[] { CpuRegister.StarB, CpuRegister.A }, true },
-		new object[] { new[] { CpuRegister.StarB, CpuRegister.B }, true },
-		
-		new object[] { new[] { CpuRegister.B, CpuRegister.B, CpuRegister.StarB }, true },
-		new object[] { new[] { CpuRegister.A, CpuRegister.B, CpuRegister.StarB }, true },
-		new object[] { new[] { CpuRegister.A, CpuRegister.B, CpuRegister.StarA }, true },
-		
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.A, CpuRegister.StarA, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.B, CpuRegister.StarA, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.B, CpuRegister.StarA, CpuRegister.StarA, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.B, CpuRegister.StarA, CpuRegister.StarA, CpuRegister.StarB }, false },
-		
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.A, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.B, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.B, CpuRegister.StarA, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.B, CpuRegister.StarA, CpuRegister.StarB }, false },
-		
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.StarB, CpuRegister.A }, false },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.StarB, CpuRegister.B }, false },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.StarA, CpuRegister.B, CpuRegister.StarB }, false },
-		new object[] { new[] { CpuRegister.StarA, CpuRegister.StarA, CpuRegister.B, CpuRegister.StarB }, false },
-	};
-		
-	[Test]
-	[TestCaseSource(nameof(CheckAllRamRegistersAreSameAddressTestCases))]
-	public void TestCheckAllRamRegistersAreSameAddress(CpuRegister[] registers, bool expectedResult) {
-		Assert.That(AssemblyUtil.CheckAllRamRegistersAreSameAddress(registers), Is.EqualTo(expectedResult));
-	}
-	
-	
 	private static object[][] SetBitTestCases() => new[] {
 		new object[] { 0b000, 0, false, 0b000 },
 		new object[] { 0b001, 0, false, 0b000 },

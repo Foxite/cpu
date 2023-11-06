@@ -2,8 +2,8 @@
 using CommandLine;
 
 public class Program {
-	public static readonly Proc16aProgramAssembler[] Assemblers = {
-		new Proc16aProgramAssembler(),
+	public static readonly ProgramAssembler[] Assemblers = {
+		new OldProc16aProgramAssembler(),
 	};
 	
 	public static int Main(string[] args) {

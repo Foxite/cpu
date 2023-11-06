@@ -1,10 +1,37 @@
+using Assembler.Parsing.ProcAssemblyV2;
+
 namespace Assembler.Assembly; 
 
 /// <summary>
 /// Converts <see cref="ProgramAst"/> into a sequence of bytes for a particular architecture.
 /// </summary>
-public abstract class ProgramAssembler<TAst> {
+public abstract class ProgramAssembler {
 	public abstract string ArchitectureName { get; }
 
-	public abstract IEnumerable<ushort> Assemble(TAst program);
+	public IReadOnlyList<ushort> Assemble(ProgramAst program) {
+		var symbolDefinitions = new Dictionary<string, ushort>();
+		var unsupportedStatements = new Stack<(ProgramStatementAst statement, int index)>();
+
+		for (int i = 0; i < program.Statements.Count; i++) {
+			ProgramStatementAst statement = program.Statements[i];
+			
+			if (statement.Label != null) {
+				symbolDefinitions[statement.Label] = (ushort) i;
+			}
+
+			if (!ValidateInstruction(statement.Instruction)) {
+				unsupportedStatements.Push((statement, i));
+			}
+		}
+
+		if (unsupportedStatements.Count > 0) {
+			throw new UnsupportedStatementException(ArchitectureName, unsupportedStatements);
+		}
+
+		return program.Statements.Select(statement => ConvertInstruction(statement.Instruction, symbol => symbolDefinitions[symbol])).ToList();
+	}
+	
+	protected internal abstract ushort ConvertInstruction(InstructionAst statementInstruction, Func<string, ushort> getSymbolDefinitions);
+
+	protected internal abstract bool ValidateInstruction(InstructionAst statementInstruction);
 }

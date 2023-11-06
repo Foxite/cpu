@@ -4,11 +4,11 @@ using Assembler.Parsing.Proc16a;
 namespace Assembler.Tests; 
 
 public class Proc16aAssemblerTests {
-	private Proc16aProgramAssembler m_Assembler;
+	private OldProc16aProgramAssembler m_Assembler;
 
 	[SetUp]
 	public void Setup() {
-		m_Assembler = new Proc16aProgramAssembler();
+		m_Assembler = new OldProc16aProgramAssembler();
 	}
 	
 	public static object[][] ValidationTestCases() => new[] {

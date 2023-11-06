@@ -12,16 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Antlr4 Include="Proc16a\Proc16aGrammar.g4">
-          <Package>Assembler.Parsing.Proc16a.Antlr</Package>
-          <Visitor>true</Visitor>
-          <Error>true</Error>
-      </Antlr4>
-      <Antlr4 Include="Proc16a\Proc16aLexer.g4">
-          <Package>Assembler.Parsing.Proc16a.Antlr</Package>
-          <Visitor>true</Visitor>
-          <Error>true</Error>
-      </Antlr4>
         <Antlr4 Include="ProcAssemblyV2\ProcAssemblyV2Grammar.g4">
             <Package>Assembler.Parsing.ProcAssemblyV2.Antlr</Package>
             <Visitor>true</Visitor>

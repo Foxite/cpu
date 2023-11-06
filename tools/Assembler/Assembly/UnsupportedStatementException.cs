@@ -1,12 +1,12 @@
-using Assembler.Parsing.Proc16a;
+using Assembler.Parsing.ProcAssemblyV2;
 
-namespace Assembler.Assembly.Proc16a;
+namespace Assembler.Assembly;
 
 public class UnsupportedStatementException : Exception {
 	public string ArchitectureName { get; }
-	public IReadOnlyCollection<(IStatement statement, int index)> Statements { get; }
+	public IReadOnlyCollection<(ProgramStatementAst statement, int index)> Statements { get; }
 	
-	public UnsupportedStatementException(string architectureName, IReadOnlyCollection<(IStatement statement, int index)> statements) {
+	public UnsupportedStatementException(string architectureName, IReadOnlyCollection<(ProgramStatementAst statement, int index)> statements) {
 		ArchitectureName = architectureName;
 		Statements = statements;
 	}

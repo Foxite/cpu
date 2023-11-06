@@ -1,8 +1,7 @@
-using Assembler;
 using Assembler.Assembly;
-using Assembler.Assembly.Proc16a;
 using Assembler.Parsing;
-using Assembler.Parsing.Proc16a;
+using Assembler.Parsing.Antlr;
+using Assembler.Parsing.ProcAssemblyV2;
 using CommandLine;
 
 public enum CompileOutputMode {
@@ -39,7 +38,7 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		Proc16aProgramAssembler? assembler = Program.Assemblers.FirstOrDefault(assembler => assembler.ArchitectureName.ToLower() == opts.Architecture);
+		ProgramAssembler? assembler = Program.Assemblers.FirstOrDefault(assembler => assembler.ArchitectureName.ToLower() == opts.Architecture);
 
 		if (assembler == null) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
@@ -60,19 +59,15 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileFileReadError;
 		}
 
-		
-		IProc16aAssemblyParser parser = opts.Parser switch {
-			ParserSelection.Csly => new Assembler.Parsing.Proc16a.Csly.Proc16aCslyAssemblyParser(),
-			ParserSelection.Antlr => new Assembler.Parsing.Proc16a.Antlr.Proc16aAntlrAssemblyParser(),
-			_ => throw new ArgumentOutOfRangeException(nameof(opts.Parser), opts.Parser, null)
-		};
+
+		var parser = new ProcAssemblyParser();
 
 		ProgramAst program;
 		try {
 			program = parser.Parse(sourceCode);
 		} catch (ParserException e) {
 			Console.Error.WriteLine(e.ToString());
-			return ExitCode.InternalError; // TODO proper error code
+			return ExitCode.CompileParseError;
 		}
 
 		IEnumerable<ushort> machineCode;
@@ -81,7 +76,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			machineCode = assembler.Assemble(program);
 		} catch (UnsupportedStatementException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
-			foreach ((IStatement statement, int index) in ex.Statements) {
+			foreach ((ProgramStatementAst statement, int index) in ex.Statements) {
 				Console.WriteLine($"Statement {index}: {statement}");
 			}
 			
