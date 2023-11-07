@@ -4,7 +4,7 @@ using IAT = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentType;
 namespace Assembler.Assembly;
 
 public class Proc16aAssembler : InstructionMapProgramAssembler {
-	public Proc16aAssembler(string architectureName) : base(architectureName) {
+	public Proc16aAssembler() : base("Proc16a") {
 		AddInstruction("ldi", new ldiInstruction());
 		AddInstruction("mov", new movInstruction());
 		AddInstruction("nop", new nopInstruction());
@@ -48,7 +48,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 	
 	private static bool OneDistinctStarRegister(IReadOnlyList<InstructionArgumentAst> args, out string? register) {
-		var distinctStars = args.Where(arg => arg.Type == InstructionArgumentType.StarRegister).Select(arg => arg.RslsValue!).Distinct().ToList();
+		var distinctStars = args.Where(arg => arg.Type == IAT.StarRegister).Select(arg => arg.RslsValue!).Distinct().ToList();
 		if (distinctStars.Count == 0) {
 			register = null;
 			return true;
@@ -63,15 +63,49 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 
 	private record ldiInstruction() : Instruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Constant })) {
+			if (!ValidateArgumentTypes(args,
+				new[] { IAT.Register, IAT.Constant },
+				new[] { IAT.StarRegister, IAT.Constant }
+			)) {
 				return false;
 			}
 
-			return args[0].RslsValue == "a" && args[1].ConstantValue!.Value is >= 0 and <= 0x7FFF;
+			if (args[0].Type == IAT.Register && args[0].RslsValue == "a") {
+				return args[1].ConstantValue!.Value is >= -2 and <= 0x7FFF;
+			} else {
+				return args[1].ConstantValue!.Value is >= -2 and <= 2;
+			}
 		}
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
-			return (ushort) args[0].ConstantValue!.Value;
+			if (args[0].Type == IAT.Register && args[0].RslsValue == "a" && args[1].ConstantValue!.Value >= 0) {
+				return (ushort) args[1].ConstantValue!.Value;
+			} else {
+				ushort ret = 0;
+				SetInstructionBit(ref ret, 15, true);
+				
+				ushort opcode = args[1].ConstantValue!.Value switch {
+					-2 => 0b10_00_10010, // ~1
+					-1 => 0b01_10_00001, // 0 - 1
+					0  => 0b01_01_00000, // 0 + 0
+					1  => 0b10_01_00000, // 1 + 0
+					2  => 0b10_10_00000, // 1 + 1
+				};
+
+				ret |= (ushort) (opcode << 3);
+				
+				var outRegister = args[0];
+				if (outRegister.Type == IAT.StarRegister) {
+					SetInstructionBit(ref ret, 14, outRegister.RslsValue == "b");
+					SetInstructionBit(ref ret, 2, true);
+				} else if (outRegister.RslsValue == "b") {
+					SetInstructionBit(ref ret, 1, true);
+				} else if (outRegister.RslsValue == "a") {
+					SetInstructionBit(ref ret, 0, true);
+				}
+
+				return ret;
+			}
 		}
 	}
 
@@ -94,8 +128,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args,
 			new[] { IAT.Register, IAT.Register },
 			new[] { IAT.Register, IAT.StarRegister },
-			new[] { IAT.StarRegister, IAT.Register },
-			new[] { IAT.StarRegister, IAT.StarRegister }
+			new[] { IAT.StarRegister, IAT.Register }
 		);
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -112,7 +145,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 			
 			// X = rhs
 			InstructionArgumentAst inRegister = args[1];
-			if (inRegister.Type == InstructionArgumentType.StarRegister) {
+			if (inRegister.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 11, true);
 				SetInstructionBit(ref ret, 10, true);
 			} else {
@@ -127,7 +160,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 			
 			// Out = lhs
 			var outRegister = args[0];
-			if (outRegister.Type == InstructionArgumentType.StarRegister) {
+			if (outRegister.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 2, true);
 			} else if (outRegister.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
@@ -169,12 +202,18 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 				return false;
 			}
 
-			if (args[1].Type == InstructionArgumentType.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
+			if (args[1].Type == IAT.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
 				return false;
 			}
 
-			if (args[2].Type == InstructionArgumentType.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
+			if (args[2].Type == IAT.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
 				return false;
+			}
+
+			if (args[1].Type == IAT.Register && args[2].Type == IAT.Register) {
+				if (args[1].RslsValue == args[2].RslsValue) {
+					return false;
+				}
 			}
 
 			return true;
@@ -183,19 +222,20 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			ushort ret = 0;
 			
+			SetInstructionBit(ref ret, 15, true);
 			OneDistinctStarRegister(args, out string? ax);
 			SetInstructionBit(ref ret, 14, ax == "b");
 			
 			// X = lhs
 			InstructionArgumentAst lhs = args[1];
-			if (lhs.Type == InstructionArgumentType.StarRegister) {
+			if (lhs.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 11, true);
 				SetInstructionBit(ref ret, 10, true);
-			} else if (lhs.Type == InstructionArgumentType.Register) {
+			} else if (lhs.Type == IAT.Register) {
 				SetInstructionBit(ref ret, 12, lhs.RslsValue == "b");
 				SetInstructionBit(ref ret, 11, false);
 				SetInstructionBit(ref ret, 10, false);
-			} else if (lhs.Type == InstructionArgumentType.Constant) {
+			} else if (lhs.Type == IAT.Constant) {
 				if (lhs.ConstantValue!.Value == 0) {
 					SetInstructionBit(ref ret, 11, false);
 					SetInstructionBit(ref ret, 10, true);
@@ -207,13 +247,13 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 			
 			// Y = rhs
 			InstructionArgumentAst rhs = args[2];
-			if (rhs.Type == InstructionArgumentType.StarRegister) {
+			if (rhs.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 9, true);
 				SetInstructionBit(ref ret, 8, true);
-			} else if (rhs.Type == InstructionArgumentType.Register) {
+			} else if (rhs.Type == IAT.Register) {
 				SetInstructionBit(ref ret, 9, false);
 				SetInstructionBit(ref ret, 8, false);
-			} else if (rhs.Type == InstructionArgumentType.Constant) {
+			} else if (rhs.Type == IAT.Constant) {
 				if (rhs.ConstantValue!.Value == 0) {
 					SetInstructionBit(ref ret, 9, false);
 					SetInstructionBit(ref ret, 8, true);
@@ -225,11 +265,11 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 
 			// Out bits
 			var outRegister = args[0];
-			if (outRegister.Type == InstructionArgumentType.StarRegister) {
+			if (outRegister.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 2, true);
 			} else if (outRegister.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (outRegister.RslsValue == "a") {
 				SetInstructionBit(ref ret, 0, true);
 			}
 
@@ -249,7 +289,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	// 0b00111
 	private record andInstruction()  : AluInstruction(0b10000);
 	private record orInstruction ()  : AluInstruction(0b10001);
-	private record notInstruction()  : AluInstruction(0b10010);
+	// 0b10010 (notInstruction)
 	// 0b10011
 	private record xorInstruction () : AluInstruction(0b10100);
 	private record xnorInstruction() : AluInstruction(0b10101);
@@ -263,27 +303,11 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	private record cneInstruction()  : AluInstruction(0b11101);
 	private record cleInstruction()  : AluInstruction(0b11110);
 	// 0b11111 (trueInstruction)
-	
-	
-	
-	private record trueInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-	}
-	
-	private record falseInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-	}
-	
-	
-	
 
-	private record JumpInstruction(int CompareMode) : Instruction {
+
+	private record notInstruction() : Instruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!ValidateArgumentTypes(args,
-				new[] { IAT.Register, IAT.Register, IAT.Constant }
-			)) {
+			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register }, new[] { IAT.Register, IAT.StarRegister }, new[] { IAT.Register, IAT.Constant })) {
 				return false;
 			}
 
@@ -291,44 +315,165 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 				return false;
 			}
 
-			return args[2].ConstantValue!.Value == 0;
+			if (args[1].Type == IAT.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
+				return false;
+			}
+
+			if (args[2].Type == IAT.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
+				return false;
+			}
+
+			return true;
 		}
 
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
+		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+			ushort ret = 0;
+			
+			OneDistinctStarRegister(args, out string? ax);
+			SetInstructionBit(ref ret, 14, ax == "b");
+			
+			// X = operand
+			InstructionArgumentAst lhs = args[1];
+			if (lhs.Type == IAT.StarRegister) {
+				SetInstructionBit(ref ret, 11, true);
+				SetInstructionBit(ref ret, 10, true);
+			} else if (lhs.Type == IAT.Register) {
+				SetInstructionBit(ref ret, 12, lhs.RslsValue == "b");
+				SetInstructionBit(ref ret, 11, false);
+				SetInstructionBit(ref ret, 10, false);
+			} else if (lhs.Type == IAT.Constant) {
+				if (lhs.ConstantValue!.Value == 0) {
+					SetInstructionBit(ref ret, 11, false);
+					SetInstructionBit(ref ret, 10, true);
+				} else {
+					SetInstructionBit(ref ret, 11, true);
+					SetInstructionBit(ref ret, 10, false);
+				}
+			}
+			
+			// Out bits
+			var outRegister = args[0];
+			if (outRegister.Type == IAT.StarRegister) {
+				SetInstructionBit(ref ret, 2, true);
+			} else if (outRegister.RslsValue == "b") {
+				SetInstructionBit(ref ret, 1, true);
+			} else if (outRegister.RslsValue == "b") {
+				SetInstructionBit(ref ret, 0, true);
+			}
+
+			ret |= 0b10010 << 3;
+
+			return ret;
+		}
+	}
+
+
+	private record trueInstruction() : Instruction {
+		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
+
+		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+			ushort ret = 0;
+			SetInstructionBit(ref ret, 15, true);
+			SetInstructionBit(ref ret, 13, false);
+			ret |= 0b11111 << 3;
+			
+			// Out bits
+			var outRegister = args[0];
+			if (outRegister.Type == IAT.StarRegister) {
+				SetInstructionBit(ref ret, 14, outRegister.RslsValue == "b");
+				
+				SetInstructionBit(ref ret, 2, true);
+			} else if (outRegister.RslsValue == "b") {
+				SetInstructionBit(ref ret, 1, true);
+			} else if (outRegister.RslsValue == "b") {
+				SetInstructionBit(ref ret, 0, true);
+			}
+
+			return ret;
+		}
 	}
 	
-	private record jmpInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
+	private record falseInstruction() : Instruction {
+		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
+
+		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+			ushort ret = 0;
+			SetInstructionBit(ref ret, 15, true);
+			SetInstructionBit(ref ret, 13, false);
+			ret |= 0b11000 << 3;
+			
+			// Out bits
+			var outRegister = args[0];
+			if (outRegister.Type == IAT.StarRegister) {
+				SetInstructionBit(ref ret, 14, outRegister.RslsValue == "b");
+				
+				SetInstructionBit(ref ret, 2, true);
+			} else if (outRegister.RslsValue == "b") {
+				SetInstructionBit(ref ret, 1, true);
+			} else if (outRegister.RslsValue == "b") {
+				SetInstructionBit(ref ret, 0, true);
+			}
+
+			return ret;
+		}
 	}
 	
-	private record jgtInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
+	
+	
+
+	private record JumpInstruction(int CompareMode) : Instruction {
+		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
+			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register, IAT.Constant })) {
+				return false;
+			}
+
+			if (!OneDistinctStarRegister(args, out _)) {
+				return false;
+			}
+
+			return args[0].RslsValue != args[1].RslsValue && args[2].ConstantValue!.Value == 0;
+		}
+
+		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+			ushort ret = 0;
+			SetInstructionBit(ref ret, 15, true);
+			SetInstructionBit(ref ret, 13, true);
+			SetInstructionBit(ref ret, 11, false);
+
+			string compareLhsRegister = args[1].RslsValue!;
+
+			SetInstructionBit(ref ret, 3, compareLhsRegister == "b");
+			
+			ret |= (ushort) CompareMode;
+
+			return ret;
+		}
 	}
 	
-	private record jeqInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-	}
+	private record jgtInstruction() : JumpInstruction(0b001);
+	private record jeqInstruction() : JumpInstruction(0b010);
+	private record jgeInstruction() : JumpInstruction(0b011);
+	private record jltInstruction() : JumpInstruction(0b100);
+	private record jneInstruction() : JumpInstruction(0b101);
+	private record jleInstruction() : JumpInstruction(0b110);
 	
-	private record jgeInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-	}
 	
-	private record jltInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-	}
-	
-	private record jneInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-	}
-	
-	private record jleInstruction() : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => throw new NotImplementedException();
+	private record jmpInstruction : Instruction {
+		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
+
+		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+			ushort ret = 0;
+			SetInstructionBit(ref ret, 15, true);
+			SetInstructionBit(ref ret, 13, true);
+			SetInstructionBit(ref ret, 11, false);
+
+			string targetRegister = args[0].RslsValue!;
+
+			SetInstructionBit(ref ret, 3, targetRegister == "a");
+			
+			ret |= 0b111;
+
+			return ret;
+		}
 	}
 }

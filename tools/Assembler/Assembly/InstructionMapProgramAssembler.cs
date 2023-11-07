@@ -16,20 +16,24 @@ public class InstructionMapProgramAssembler : ProgramAssembler {
 			return false;
 		}
 		
-		return instruction.Validate(instructionAst.Arguments);
+		return instruction.Validate(ReplaceSymbolArguments(instructionAst.Arguments, _ => 0x1000)); // TODO make this functionality optional and/or move into proc16aassembler
 	}
 	
 	// TODO Unit test
 	protected internal override ushort ConvertInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition) {
 		Instructions.TryGetValue(instructionAst.Instruction, out Instruction? instruction);
 		
-		return instruction!.Convert(instructionAst.Arguments.Select(arg => {
+		return instruction!.Convert(ReplaceSymbolArguments(instructionAst.Arguments, getSymbolDefinition));
+	}
+	
+	private static List<InstructionArgumentAst> ReplaceSymbolArguments(IReadOnlyList<InstructionArgumentAst> instructionAst, Func<string, ushort> getSymbolDefinition) {
+		return instructionAst.Select(arg => {
 			if (arg.Type == InstructionArgumentType.Symbol) {
 				return new InstructionArgumentAst(InstructionArgumentType.Constant, getSymbolDefinition(arg.RslsValue!), null);
 			} else {
 				return arg;
 			}
-		}).ToList());
+		}).ToList();
 	}
 
 	public bool AddInstruction(string term, Instruction instruction) {

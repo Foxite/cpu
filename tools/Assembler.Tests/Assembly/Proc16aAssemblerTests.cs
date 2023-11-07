@@ -1,172 +1,176 @@
 using Assembler.Assembly;
-using Assembler.Parsing.Proc16a;
+using Assembler.Parsing.ProcAssemblyV2;
+using IAT = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentType;
+using IAA = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentAst;
 
 namespace Assembler.Tests; 
 
 public class Proc16aAssemblerTests {
-	private OldProc16aProgramAssembler m_Assembler;
+	private ProgramAssembler m_Assembler;
 
 	[SetUp]
 	public void Setup() {
-		m_Assembler = new OldProc16aProgramAssembler();
+		m_Assembler = ProgramAssemblers.Proc16a;
 	}
 	
 	public static object[][] ValidationTestCases() => new[] {
 		// data word instruction
-		new object[] { new DataWordInstruction(CpuRegister.A, 0), true }, // can assign any positive value to A register as well as -1 or -2 (using the ALU)
-		new object[] { new DataWordInstruction(CpuRegister.A, 1), true },
-		new object[] { new DataWordInstruction(CpuRegister.A, 2), true },
-		new object[] { new DataWordInstruction(CpuRegister.A, -1), true },
-		new object[] { new DataWordInstruction(CpuRegister.A, -2), true },
-		new object[] { new DataWordInstruction(CpuRegister.A, -3), false },
-		new object[] { new DataWordInstruction(CpuRegister.A, 3), true },
-		new object[] { new DataWordInstruction(CpuRegister.A, 1234), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(0)), true }, // can assign any positive value to A register as well as -1 or -2 (using the ALU)
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(1)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(2)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(-1)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(-2)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(-3)), false },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(3)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(1234)), true },
 		
-		new object[] { new DataWordInstruction(CpuRegister.B, 0), true }, // can assign values between -2 and 2 to any other register by using the ALU with only constants
-		new object[] { new DataWordInstruction(CpuRegister.B, 1), true },
-		new object[] { new DataWordInstruction(CpuRegister.B, 2), true },
-		new object[] { new DataWordInstruction(CpuRegister.B, -1), true },
-		new object[] { new DataWordInstruction(CpuRegister.B, -2), true },
-		new object[] { new DataWordInstruction(CpuRegister.B, -3), false },
-		new object[] { new DataWordInstruction(CpuRegister.B, 3), false },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(0)), true }, // can assign values between -2 and 2 to any other register by using the ALU with only constants
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(1)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(2)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-1)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-2)), true },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-3)), false },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(3)), false },
 		
-		new object[] { new DataWordInstruction(CpuRegister.StarA, 0), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarA, 1), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarA, 2), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarA, -1), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarA, -2), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarA, -3), false },
-		new object[] { new DataWordInstruction(CpuRegister.StarA, 3), false },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(0)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(1)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(2)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(-1)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(-2)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(-3)), false },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("a"), IAA.Constant(3)), false },
 		
-		new object[] { new DataWordInstruction(CpuRegister.StarB, 0), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarB, 1), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarB, 2), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarB, -1), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarB, -2), true },
-		new object[] { new DataWordInstruction(CpuRegister.StarB, -3), false },
-		new object[] { new DataWordInstruction(CpuRegister.StarB, 3), false },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(0)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(1)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(2)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(-1)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(-2)), true },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(-3)), false },
+		new object[] { new InstructionAst("ldi", IAA.StarRegister("b"), IAA.Constant(3)), false },
 		
 		
 		// alu instructions
 		
 		// cannot operate on constants other than 0 or 1
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.A), new AluOperand((long) 0), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.A), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(2), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(3), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.B), new AluOperand(-1), AluOperation.Add), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("a"), IAA.Constant( 0)), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("a"), IAA.Constant( 1)), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("b"), IAA.Constant( 1)), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("b"), IAA.Constant( 2)), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("b"), IAA.Constant( 3)), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("b"), IAA.Constant(-1)), false },
 		
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand((long) 0), new AluOperand(CpuRegister.A), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(CpuRegister.A), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(CpuRegister.B), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(2), new AluOperand(CpuRegister.B), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(3), new AluOperand(CpuRegister.B), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(-1), new AluOperand(CpuRegister.B), AluOperation.Add), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 0), IAA.Register("a")), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 1), IAA.Register("a")), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 1), IAA.Register("b")), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 2), IAA.Register("b")), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 3), IAA.Register("b")), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant(-1), IAA.Register("b")), false },
 		
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand((long) 0), new AluOperand((long) 0), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(1), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(2), new AluOperand(2), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(3), new AluOperand(3), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(-1), new AluOperand(-1), AluOperation.Add), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 0), IAA.Constant( 0)), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 1), IAA.Constant( 1)), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 1), IAA.Constant( 1)), true },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 2), IAA.Constant( 2)), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant( 3), IAA.Constant( 3)), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Constant(-1), IAA.Constant(-1)), false },
 		
 		// can operate on ram as long as all Star registers are the same one
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A), new AluOperand(CpuRegister.StarA), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.StarA), new AluOperand(CpuRegister.A), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.StarB), new AluOperand(CpuRegister.A), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.StarB), new AluOperand(CpuRegister.StarB), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.StarA), new AluOperand(CpuRegister.StarA), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.StarB), new AluOperand(CpuRegister.StarA), new AluOperand(1), AluOperation.Add), false },
+		new object[] { new InstructionAst("add", IAA.Register("a"),     IAA.StarRegister("a"), IAA.Constant(1)      ), true },
+		new object[] { new InstructionAst("add", IAA.StarRegister("a"), IAA.Register("a"),     IAA.Constant(1)      ), true },
+		new object[] { new InstructionAst("add", IAA.StarRegister("b"), IAA.Register("a"),     IAA.Constant(1)      ), true },
+		new object[] { new InstructionAst("add", IAA.StarRegister("b"), IAA.StarRegister("b"), IAA.Constant(1)      ), true },
+		new object[] { new InstructionAst("add", IAA.StarRegister("a"), IAA.StarRegister("a"), IAA.Constant(1)      ), true },
+		new object[] { new InstructionAst("add", IAA.StarRegister("b"), IAA.StarRegister("a"), IAA.Constant(1)      ), false },
 		
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.StarA), new AluOperand(CpuRegister.A), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.A), new AluOperand(CpuRegister.StarA), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.A), new AluOperand(CpuRegister.StarB), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.StarB), new AluOperand(CpuRegister.StarB), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.StarA), new AluOperand(CpuRegister.StarA), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.StarA), new AluOperand(CpuRegister.StarB), AluOperation.Add), false },
+		new object[] { new InstructionAst("add", IAA.Register("b"),	    IAA.StarRegister("a"), IAA.Register("a")    ), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"),	    IAA.Register("a"),     IAA.StarRegister("a")), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"),	    IAA.Register("a"),     IAA.StarRegister("b")), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"),	    IAA.StarRegister("b"), IAA.StarRegister("b")), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"),	    IAA.StarRegister("a"), IAA.StarRegister("a")), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"),	    IAA.StarRegister("a"), IAA.StarRegister("b")), false },
 		
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A, CpuRegister.StarA), new AluOperand(CpuRegister.StarA), new AluOperand(1), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A, CpuRegister.StarB), new AluOperand(CpuRegister.StarA), new AluOperand(1), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A, CpuRegister.StarA, CpuRegister.StarB), new AluOperand(CpuRegister.StarA), new AluOperand(1), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.A, CpuRegister.StarA), new AluOperand(CpuRegister.StarA), new AluOperand(CpuRegister.StarB), AluOperation.Add), false },
+		// new object[] { new InstructionAst("add", IAA.Register("a"), IAA.StarRegister("a")), new AluOperand(IAA.StarRegister("a")), new AluOperand(1), AluOperation.Add), true },
+		// new object[] { new InstructionAst("add", IAA.Register("a"), IAA.StarRegister("b")), new AluOperand(IAA.StarRegister("a")), new AluOperand(1), AluOperation.Add), false },
+		// new object[] { new InstructionAst("add", IAA.Register("a"), IAA.StarRegister("a"), IAA.StarRegister("b")), new AluOperand(IAA.StarRegister("a")), new AluOperand(1), AluOperation.Add), false },
+		// new object[] { new InstructionAst("add", IAA.Register("a"), IAA.StarRegister("a")), new AluOperand(IAA.StarRegister("a")), new AluOperand(IAA.StarRegister("b")), AluOperation.Add), false },
 		
 		// if both operands are cpu registers then they cannot be the same one
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.A), new AluOperand(CpuRegister.B), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(CpuRegister.A), AluOperation.Add), true },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.A), new AluOperand(CpuRegister.A), AluOperation.Add), false },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(CpuRegister.B), AluOperation.Add), false },
+		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Register("a"), IAA.Register("b")), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Register("b"), IAA.Register("a")), true },
+		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Register("a"), IAA.Register("a")), false },
+		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Register("b"), IAA.Register("b")), false },
 		
 		
 		// assign instruction
-		// can assign registers to each other but not one star register to a different star register
-		new object[] { new AssignInstruction(CpuRegister.A, CpuRegister.A), true },
-		new object[] { new AssignInstruction(CpuRegister.A, CpuRegister.B), true },
-		new object[] { new AssignInstruction(CpuRegister.A, CpuRegister.StarA), true },
-		new object[] { new AssignInstruction(CpuRegister.A, CpuRegister.StarB), true },
-		new object[] { new AssignInstruction(CpuRegister.StarB, CpuRegister.StarB), true },
-		new object[] { new AssignInstruction(CpuRegister.StarA, CpuRegister.StarB), false },
+		// can assign registers to each other but not a star register to a star register
+		new object[] { new InstructionAst("mov", IAA.Register("a"),     IAA.Register("a")),     true },
+		new object[] { new InstructionAst("mov", IAA.Register("a"),     IAA.Register("b")),     true },
+		new object[] { new InstructionAst("mov", IAA.Register("a"),     IAA.StarRegister("a")), true },
+		new object[] { new InstructionAst("mov", IAA.Register("a"),     IAA.StarRegister("b")), true },
+		new object[] { new InstructionAst("mov", IAA.StarRegister("b"), IAA.StarRegister("b")), false },
+		new object[] { new InstructionAst("mov", IAA.StarRegister("a"), IAA.StarRegister("b")), false },
 		
 		
 		// jump instruction
 		// right operand must be 0
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), true },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(1)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(-1)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(2)), CpuRegister.B), false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Constant(0)),       true },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Constant(1)),       false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Constant(-1)),      false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Constant(2)),       false },
 		
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(CpuRegister.A)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(CpuRegister.B)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(CpuRegister.StarA)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand(CpuRegister.StarB)), CpuRegister.B), false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Register("a")),     false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Register("b")),     false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.StarRegister("a")), false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.StarRegister("b")), false },
 		
 		// Left operand must be a cpu register different from the target register
-		new object[] { new JumpInstruction(new Condition(new AluOperand((long) 0), CompareOperation.Equals, new AluOperand(CpuRegister.A)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(1), CompareOperation.Equals, new AluOperand(CpuRegister.B)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), true },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), true },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Constant(0),       IAA.Register("a")),     false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Constant(1),       IAA.Register("b")),     false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("a"),     IAA.Constant(0)),       true },
+		new object[] { new InstructionAst("jeq", IAA.Register("a"),     IAA.Register("b"),     IAA.Constant(0)),       true },
+		new object[] { new InstructionAst("jeq", IAA.Register("a"),     IAA.Register("a"),     IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.Register("b"),     IAA.Constant(0)),       false },
 		
 		// neither register can be a star register
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarA), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarA), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarB), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.B), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.StarB), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarA), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.A), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarA), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), false },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.StarB), CompareOperation.Equals, new AluOperand((long) 0)), CpuRegister.B), false },
+		new object[] { new InstructionAst("jeq", IAA.StarRegister("a"), IAA.Register("a"),     IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.StarRegister("a"), IAA.Register("b"),     IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.StarRegister("b"), IAA.Register("a"),     IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.StarRegister("b"), IAA.Register("b"),     IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.Register("a"),     IAA.StarRegister("a"), IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.Register("a"),     IAA.StarRegister("b"), IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.StarRegister("a"), IAA.Constant(0)),       false },
+		new object[] { new InstructionAst("jeq", IAA.Register("b"),     IAA.StarRegister("b"), IAA.Constant(0)),       false },
 		
 	};
 		
 	[Test]
 	[TestCaseSource(nameof(ValidationTestCases))]
-	public void TestValidation(IStatement statement, bool expectedResult) {
-		Assert.That(m_Assembler.ValidateStatement(statement), Is.EqualTo(expectedResult));
+	public void TestValidation(InstructionAst instruction, bool expectedResult) {
+		Assert.That(m_Assembler.ValidateInstruction(instruction), Is.EqualTo(expectedResult));
 	}
 	
 	
 	private static object[][] ConvertInstructionTestCases() => new[] {
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand((long) 0), new AluOperand((long) 0), AluOperation.Add), 0, 0x8502u },
-		new object[] { new DataWordInstruction(CpuRegister.B, 0), 0, 0x8502u },
-		new object[] { new DataWordInstruction(CpuRegister.B, 1), 0, 0x8902u },
-		new object[] { new DataWordInstruction(CpuRegister.B, 2), 0, 0x8A02u },
-		new object[] { new DataWordInstruction(CpuRegister.B, -1), 0, 0x860Au },
-		new object[] { new DataWordInstruction(CpuRegister.B, -2), 0, 0x8892u },
-		new object[] { new AssignInstruction(CpuRegister.StarB, CpuRegister.B), 0, 0xD104u },
-		new object[] { new AluInstruction(new AluWriteTarget(CpuRegister.B), new AluOperand(CpuRegister.B), new AluOperand(1), AluOperation.Add), 0, 0x9202u },
-		new object[] { new DataWordInstruction(CpuRegister.A, "next"), 1, 0x0001u },
-		new object[] { new JumpInstruction(true, CpuRegister.A), 0, 0xA00Fu },
-		new object[] { new JumpInstruction(new Condition(new AluOperand(CpuRegister.A), CompareOperation.GreaterThan, new AluOperand((long) 0)), CpuRegister.B), 0, 0xA001u },
+		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Constant(0), IAA.Constant(0)), 0, 0x8502u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(0)), 0, 0x8502u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(1)), 0, 0x8902u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(2)), 0, 0x8A02u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-1)), 0, 0x860Au },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-2)), 0, 0x8892u },
+		new object[] { new InstructionAst("mov", IAA.StarRegister("b"), IAA.Register("b")), 0, 0xD104u },
+		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Register("b"), IAA.Constant(1)), 0, 0x9202u },
+		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("a"), IAA.Constant(1)), 0, 0x8201u },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Symbol("next")), 1, 0x0001u },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(1)), 0, 0x0001u },
+		new object[] { new InstructionAst("jmp", IAA.Register("a")), 0, 0xA00Fu },
+		new object[] { new InstructionAst("jgt", IAA.Register("b"), IAA.Register("a"), IAA.Constant(0)), 0, 0xA001u },
 	};
 	
 	[Test]
 	[TestCaseSource(nameof(ConvertInstructionTestCases))]
-	public void TestConvertInstruction(IStatement statement, int symbolValue, uint expectedResult) {
-		Assert.That(m_Assembler.ValidateStatement(statement), Is.EqualTo(true), "Statement was not validated");
+	public void TestConvertInstruction(InstructionAst statement, int symbolValue, uint expectedResult) {
+		Assert.That(m_Assembler.ValidateInstruction(statement), Is.EqualTo(true), "Statement was not validated");
 
-		ushort result = m_Assembler.ConvertStatement(statement, _ => (short) symbolValue);
+		ushort result = m_Assembler.ConvertInstruction(statement, _ => (ushort) symbolValue);
 		
 		Assert.That(result, Is.EqualTo((ushort) expectedResult), "Expected 0x{0:X4} received 0x{1:X4}", expectedResult, result);
 	}

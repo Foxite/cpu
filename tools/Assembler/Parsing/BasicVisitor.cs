@@ -45,7 +45,12 @@ public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 		} else if (context.IMMEDIATE() != null) {
 			return InstructionArgumentAst.Constant(ParseNumber(context.IMMEDIATE().GetText()[1..]));
 		} else if (context.REGISTER() != null) {
-			return InstructionArgumentAst.Register(context.REGISTER().GetText()[1..]);
+			string registerName = context.REGISTER().GetText()[1..];
+			if (context.REGISTER().GetText()[0] == '*') {
+				return InstructionArgumentAst.StarRegister(registerName);
+			} else {
+				return InstructionArgumentAst.Register(registerName);
+			}
 		} else if (context.STRING() != null) {
 			return InstructionArgumentAst.String(context.STRING().GetText()[1..^1]);
 		} else {

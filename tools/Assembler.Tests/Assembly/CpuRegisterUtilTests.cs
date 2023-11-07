@@ -65,6 +65,6 @@ public class CpuRegisterUtilTests {
 	[Test]
 	[TestCaseSource(nameof(SetBitTestCases))]
 	public void TestSetBit(int input, int bit, bool value, int expectedResult) {
-		Assert.That(AssemblyUtil.SetBit(input, bit, value), Is.EqualTo(expectedResult));
+		Assert.That(AssemblyUtil.SetBit((ushort) input, bit, value), Is.EqualTo(expectedResult));
 	}
 }

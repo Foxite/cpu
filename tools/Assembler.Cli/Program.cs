@@ -3,7 +3,7 @@ using CommandLine;
 
 public class Program {
 	public static readonly ProgramAssembler[] Assemblers = {
-		new OldProc16aProgramAssembler(),
+		ProgramAssemblers.Proc16a,
 	};
 	
 	public static int Main(string[] args) {

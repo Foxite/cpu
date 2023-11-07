@@ -1,17 +1,19 @@
 using Assembler.Assembly;
 using Assembler.Parsing;
+using Assembler.Parsing.Antlr;
 using Assembler.Parsing.Proc16a;
+using Assembler.Parsing.ProcAssemblyV2;
 
 namespace Assembler.Tests.EndToEnd; 
 
 public class Proc16aE2ETests {
-	private TODO m_Assembler;
-	private TODO m_Parser;
+	private ProgramAssembler m_Assembler;
+	private ProcAssemblyParser m_Parser;
 
 	[SetUp]
 	public void Setup() {
-		m_Parser = new TODO();
-		m_Assembler = new TODO();
+		m_Parser = new ProcAssemblyParser();
+		m_Assembler = ProgramAssemblers.Proc16a;
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -21,10 +23,10 @@ public class Proc16aE2ETests {
 				# increment A forever.
 				# Tests data words, ALU to A, ALU to B, jumping unconditionally.
 
-				A = 0        # data 0x0000
-				B = 2        # ALU x=1 y=1 op=add write=B  ; 100 0 10 10 00000 010 ; 0x8A02
-				A = A + 1    # ALU x=A y=1 op=add write=A  ; 100 0 00 10 00000 001 ; 0x8201
-				A > 0 JMP B  # JMP x=A op=gt to=B          ; 10100 0000000 0 001   ; 0xA001
+				ldi %a, $0     # A = 0        # data 0x0000
+				ldi %b, $2     # B = 2        # ALU x=1 y=1 op=add write=B  ; 100 0 10 10 00000 010 ; 0x8A02
+				add %a, %a, $1 # A = A + 1    # ALU x=A y=1 op=add write=A  ; 100 0 00 10 00000 001 ; 0x8201
+				jgt %b, %a, $0 # A > 0 JMP B  # JMP x=A op=gt to=B          ; 10100 0000000 0 001   ; 0xA001
 
 				""",
 				new ushort[] { 0x0000, 0x8A02, 0x8201, 0xA001 },
@@ -35,55 +37,55 @@ public class Proc16aE2ETests {
 				# Tests addition, subtraction, reading and writing from RAM, data words, jumping unconditionally.
 
 				# initialize fib[0]
-				A = 1		# data 0x0001                     ; 0b0000 0000 0000 0001   ; 0x0001
-				*A = 1		# ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
+				ldi %a, $1    # A = 1           # data 0x0001                     ; 0b0000 0000 0000 0001   ; 0x0001
+				ldi *a, $1    # *A = 1          # ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
 
 				# fib[1]
-				A = A + 1	# ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
-				*A = 1		# ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
+				add %a, %a, $1 # A = A + 1      # ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
+				ldi *a, $1     # *A = 1         # ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
 
 				# lastFibPtr = 0
 				# *lastFibPtr = &fib[1]
-				B = A		# ALU x=A  y=0  op=add   write=B  ; 0b100 0 00 01 00000 010 ; 0x8102
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
-				*A = B		# ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
+				mov %b, %a     # B = A          # ALU x=A  y=0  op=add   write=B  ; 0b100 0 00 01 00000 010 ; 0x8102
+				ldi %a, $0     # A = 0          # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				mov *a, %b     # *A = B         # ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
 
 				computeNext: #                                ; label 0x0007
 				# A = &&fib[last]
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				ldi %a, $0     # A = 0          # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 
 				# A = &fib[last]
-				A = *A		# ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
 
 				# D = fib[last]
-				B = *A		# ALU x=*A y=0  op=add   write=B  ; 0b100 0 11 01 00000 010 ; 0x8D02
+				mov %b, *a     # B = *A         # ALU x=*A y=0  op=add   write=B  ; 0b100 0 11 01 00000 010 ; 0x8D02
 
 				# A = &fib[last - 1]
-				A = A - 1	# ALU x=A  y=1  op=sub   write=A  ; 0b100 0 00 10 00001 001 ; 0x8209
+				sub %a, %a, $1 # A = A - 1      # ALU x=A  y=1  op=sub   write=A  ; 0b100 0 00 10 00001 001 ; 0x8209
 
 				# A = fib[last - 1]
-				A = *A		# ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
 
 				# B = fib[last - 1] + fib[last]
 				# B = fib[next]
-				B = A + B	# ALU x=A  y=B  op=add   write=B  ; 0b100 0 00 00 00000 010 ; 0x8002
+				add %b, %a, %b # B = A + B      # ALU x=A  y=B  op=add   write=B  ; 0b100 0 00 00 00000 010 ; 0x8002
 
 				# A = &&fib[last]
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				ldi %a, $0     # A = 0          # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 				# A = &fib[last]
-				A = *A		# ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
 				# A = &fib[next]
-				A = A + 1	# ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
+				add %a, %a, $1 # A = A + 1      # ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
 
 				# Save fib[next] to memory
-				*A = B		# ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
+				mov *a, %b     # *A = B	        # ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
 
 				# Update pointer
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
-				*A = *A + 1	# ALU x=*A b=1  op=add   write=*A ; 0b100 0 11 10 00000 100 ; 0x8E04
+				ldi %a, $0     # A = 0	        # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				add *a, *a, $1 # *A = *A + 1	# ALU x=*A b=1  op=add   write=*A ; 0b100 0 11 10 00000 100 ; 0x8E04
 				 
-				A = computeNext # data 0x0007                 ; 0b0000 0000 0000 0111   ; 0x0007
-				true JMP A  # JMP x=B op=true to=A            ; 0b10100 0000000 1 111   ; 0xA00F
+				ldi %a, computeNext # A = computeNext # data 0x0007               ; 0b0000 0000 0000 0111   ; 0x0007
+				jmp %a         # true JMP A     # JMP x=B op=true to=A            ; 0b10100 0000000 1 111   ; 0xA00F
 
 				""",
 				new ushort[] {
@@ -117,55 +119,54 @@ public class Proc16aE2ETests {
 				# Tests addition, subtraction, reading and writing from RAM, data words, jumping unconditionally.
 
 				# initialize fib[0]
-				A = 1		# data 0x0001                     ; 0b0000 0000 0000 0001   ; 0x0001
-				*A = 1		# ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
+				ldi %a, $1    # A = 1           # data 0x0001                     ; 0b0000 0000 0000 0001   ; 0x0001
+				ldi *a, $1    # *A = 1          # ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
 
 				# fib[1]
-				A = A + 1	# ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
-				*A = 1		# ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
+				add %a, %a, $1 # A = A + 1      # ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
+				ldi *a, $1     # *A = 1         # ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
 
 				# lastFibPtr = 0
 				# *lastFibPtr = &fib[1]
-				B = A		# ALU x=A  y=0  op=add   write=B  ; 0b100 0 00 01 00000 010 ; 0x8102
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
-				*A = B		# ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
+				mov %b, %a     # B = A          # ALU x=A  y=0  op=add   write=B  ; 0b100 0 00 01 00000 010 ; 0x8102
+				ldi %a, $0     # A = 0          # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				mov *a, %b     # *A = B         # ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
 
-				#                                ; label 0x0007
 				# A = &&fib[last]
-				computeNext: A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				computeNext: ldi %a, $0 # A = 0 # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 
 				# A = &fib[last]
-				A = *A		# ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
 
 				# D = fib[last]
-				B = *A		# ALU x=*A y=0  op=add   write=B  ; 0b100 0 11 01 00000 010 ; 0x8D02
+				mov %b, *a     # B = *A         # ALU x=*A y=0  op=add   write=B  ; 0b100 0 11 01 00000 010 ; 0x8D02
 
 				# A = &fib[last - 1]
-				A = A - 1	# ALU x=A  y=1  op=sub   write=A  ; 0b100 0 00 10 00001 001 ; 0x8209
+				sub %a, %a, $1 # A = A - 1      # ALU x=A  y=1  op=sub   write=A  ; 0b100 0 00 10 00001 001 ; 0x8209
 
 				# A = fib[last - 1]
-				A = *A		# ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
 
 				# B = fib[last - 1] + fib[last]
 				# B = fib[next]
-				B = A + B	# ALU x=A  y=B  op=add   write=B  ; 0b100 0 00 00 00000 010 ; 0x8002
+				add %b, %a, %b # B = A + B      # ALU x=A  y=B  op=add   write=B  ; 0b100 0 00 00 00000 010 ; 0x8002
 
 				# A = &&fib[last]
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				ldi %a, $0     # A = 0          # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
 				# A = &fib[last]
-				A = *A		# ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
 				# A = &fib[next]
-				A = A + 1	# ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
+				add %a, %a, $1 # A = A + 1      # ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
 
 				# Save fib[next] to memory
-				*A = B		# ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
+				mov *a, %b     # *A = B	        # ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
 
 				# Update pointer
-				A = 0		# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
-				*A = *A + 1	# ALU x=*A b=1  op=add   write=*A ; 0b100 0 11 10 00000 100 ; 0x8E04
+				ldi %a, $0     # A = 0	        # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				add *a, *a, $1 # *A = *A + 1	# ALU x=*A b=1  op=add   write=*A ; 0b100 0 11 10 00000 100 ; 0x8E04
 				 
-				A = computeNext # data 0x0007                 ; 0b0000 0000 0000 0111   ; 0x0007
-				true JMP A  # JMP x=B op=true to=A            ; 0b10100 0000000 1 111   ; 0xA00F
+				ldi %a, computeNext # A = computeNext # data 0x0007               ; 0b0000 0000 0000 0111   ; 0x0007
+				jmp %a         # true JMP A     # JMP x=B op=true to=A            ; 0b10100 0000000 1 111   ; 0xA00F
 
 				""",
 				new ushort[] {
@@ -196,12 +197,12 @@ public class Proc16aE2ETests {
 				"""
 				# fill RAM cells with their addresses.
 
-				B = 0      #      ALU x=0 y=0 op=add write=B   ; 100 0 01 01 00000 010 ; 0x8502
-				next:      # instruction index 1               ;  
-				*B = B     # Ax=B ALU x=B y=0 op=add write=*Ax ; 110 1 00 01 00000 100 ; 0xD104
-				B = B + 1  #      ALU x=B y=1 op=add write=B   ; 100 1 00 10 00000 010 ; 0x9202
-				A = next   # data 0x0001
-				true JMP A #      JMP x=B op=true to=A         ; 10100 0000000 1 111   ; 0xA00F
+				ldi %b, $0     # B = 0      #      ALU x=0 y=0 op=add write=B   ; 100 0 01 01 00000 010 ; 0x8502
+				next:          # instruction index 1               ;  
+				mov *b, %b     # *B = B     # Ax=B ALU x=B y=0 op=add write=*Ax ; 110 1 00 01 00000 100 ; 0xD104
+				add %b, %b, $1 # B = B + 1  #      ALU x=B y=1 op=add write=B   ; 100 1 00 10 00000 010 ; 0x9202
+				ldi %a, next   # A = next   # data 0x0001
+				jmp %a         # true JMP A #      JMP x=B op=true to=A         ; 10100 0000000 1 111   ; 0xA00F
 
 				""",
 				new ushort[] { 0x8502, 0xD104, 0x9202, 0x0001, 0xA00F },

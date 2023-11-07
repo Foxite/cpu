@@ -10,7 +10,7 @@ public abstract class ProgramAssembler {
 
 	public IReadOnlyList<ushort> Assemble(ProgramAst program) {
 		var symbolDefinitions = new Dictionary<string, ushort>();
-		var unsupportedStatements = new Stack<(ProgramStatementAst Instruction, int Index)>();
+		var unsupportedStatements = new Stack<(InstructionAst Instruction, int Index)>();
 
 		for (int i = 0; i < program.Statements.Count; i++) {
 			ProgramStatementAst statement = program.Statements[i];
@@ -20,7 +20,7 @@ public abstract class ProgramAssembler {
 			}
 
 			if (!ValidateInstruction(statement.Instruction)) {
-				unsupportedStatements.Push((statement, i));
+				unsupportedStatements.Push((statement.Instruction, i));
 			}
 		}
 
