@@ -10,7 +10,6 @@ public abstract class ProgramAssembler {
 
 	public IReadOnlyList<ushort> Assemble(ProgramAst program) {
 		var symbolDefinitions = new Dictionary<string, ushort>();
-		var unsupportedStatements = new Stack<(InstructionAst Instruction, int Index)>();
 
 		for (int i = 0; i < program.Statements.Count; i++) {
 			ProgramStatementAst statement = program.Statements[i];
@@ -18,20 +17,26 @@ public abstract class ProgramAssembler {
 			if (statement.Label != null) {
 				symbolDefinitions[statement.Label] = (ushort) i;
 			}
+		}
+		
+		var unsupportedInstructions = new List<(InstructionAst Instruction, int Index)>();
+		Func<string, ushort> getSymbolDefinition = symbol => symbolDefinitions[symbol];
 
-			if (!ValidateInstruction(statement.Instruction)) {
-				unsupportedStatements.Push((statement.Instruction, i));
+		for (int i = 0; i < program.Statements.Count; i++) {
+			ProgramStatementAst statement = program.Statements[i];
+			
+			if (!ValidateInstruction(statement.Instruction, getSymbolDefinition)) {
+				unsupportedInstructions.Add((statement.Instruction, i));
 			}
 		}
 
-		if (unsupportedStatements.Count > 0) {
-			throw new UnsupportedInstuctionException(ArchitectureName, unsupportedStatements);
+		if (unsupportedInstructions.Count > 0) {
+			throw new UnsupportedInstuctionException(ArchitectureName, unsupportedInstructions);
 		}
 
-		return program.Statements.Select(statement => ConvertInstruction(statement.Instruction, symbol => symbolDefinitions[symbol])).ToList();
+		return program.Statements.Select(statement => ConvertInstruction(statement.Instruction, getSymbolDefinition)).ToList();
 	}
 	
+	protected internal abstract bool ValidateInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition);
 	protected internal abstract ushort ConvertInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition);
-
-	protected internal abstract bool ValidateInstruction(InstructionAst instructionAst);
 }

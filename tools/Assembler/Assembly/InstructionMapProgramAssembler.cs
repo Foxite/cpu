@@ -4,19 +4,19 @@ namespace Assembler.Assembly;
 
 public class InstructionMapProgramAssembler : ProgramAssembler {
 	public override string ArchitectureName { get; }
-	protected Dictionary<string, Instruction> Instructions { get; } = new Dictionary<string, Instruction>();
+	protected Dictionary<string, Instruction> Instructions { get; } = new();
 	
 	public InstructionMapProgramAssembler(string architectureName) {
 		ArchitectureName = architectureName;
 	}
 
 	// TODO Unit test
-	protected internal override bool ValidateInstruction(InstructionAst instructionAst) {
+	protected internal override bool ValidateInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition) {
 		if (!Instructions.TryGetValue(instructionAst.Instruction, out Instruction? instruction)) {
 			return false;
 		}
 		
-		return instruction.Validate(ReplaceSymbolArguments(instructionAst.Arguments, _ => 0x1000)); // TODO make this functionality optional and/or move into proc16aassembler
+		return instruction.Validate(instructionAst.Arguments);
 	}
 	
 	// TODO Unit test
