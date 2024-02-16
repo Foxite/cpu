@@ -1,0 +1,11 @@
+pa2 (procassembly v2) is a lot like x86 assembly. Every instruction is specified by its name, and any number of arguments, on a single line.
+
+If a parameter is a register it is prefixed by %, if it's a constant it's prefixed by $. If it's a symbol, it does not have a prefix.
+
+Hex (0x) and binary (0b) numeric literals are supported as constant values.
+
+Symbols are references to jump labels anywhere in the program. In future versions, named constants may also be used as symbols.
+
+There is a vision for a macro system, file inclusions, and assembler commands (for example: an "instruction" that gets translated into a constant byte sequence, rather than a logical instruction)
+
+A working parser and assembler written in C# is in the tools directory.

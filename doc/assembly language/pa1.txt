@@ -1,0 +1,7 @@
+pa1 (procassembly v1) is based on the language used in nandgame.
+
+Its structure does not allow much extensibility with complex instructions, and it's pretty much stuck with proc16a.
+
+It was implemented first, so that I could write a program that I could verify in nandgame and then test my own system against.
+
+A working parser and assembler was in the repository but was removed after commit 9136b4f3 in favor of pa2.
