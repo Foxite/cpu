@@ -4,7 +4,7 @@
   <attributes/>
   <visualElements>
     <visualElement>
-      <elementName>proc16a2.dig</elementName>
+      <elementName>cpu_proc16a2.dig</elementName>
       <elementAttributes/>
       <pos x="700" y="600"/>
     </visualElement>

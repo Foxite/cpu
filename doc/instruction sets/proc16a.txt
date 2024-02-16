@@ -1,27 +1,15 @@
-16 bit address space. each memory address contains 16 bits. this size is called a word.
+# proc16a
+proc16a is the first instruction set implemented in this repository. it operates on 16-bit instruction words, two 16-bit registers (A and B), and a 16-bit memory address space with 16-bit cells.
 
-registers in the cpu are 1 word (16 bits). cpu instructions are 1 word.
+it has quite a bit of ALU operations but not much else. a lot of the instruction word space is unused.
 
-this iteration contains general-purpose memory, no multitasking features, and no security features.
-
-
-# memory
-the memory interface takes two addresses at once, Ax and Ai. each address is 1 words (16 bits).
-it also takes an X input.
-
-address Ax is controlled by software. output *Ax is a 1 word value with the value at the memory address. this value is sent to the cpu input to be loaded into a register.
-address Ai is controlled by the program counter. output is a 1 word value that is provided to the instruction input of the cpu.
+two computer designs implement this instruction set, found in the schematics folder:
+- computer_proc16a1, which is basically spaghetti that can think and it does not define a discrete "cpu" component (being mostly one big integrated mess)
+- computer_proc16a2 (and its _mappedmemory variant) which use the "proc16a2" circuit as the CPU
 
 
 
-
-# cpu
-the cpu contains 2 registers, A and B, and also has access to the *Ax output of the memory interface. these can be used by software.
-additionally, it has access to the *Ai output of the memory interface, which provides the current instruction.
-
-
-## instructions
-
+## instruction word layout
 bits in an instruction, from MSB to LSB:
 - 15 - data word. if this bit is 0 the instruction value is loaded into A and all other bits are ignored by the control unit.
 - 14 - Ax select. 0 for A register, 1 for B register
