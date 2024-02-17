@@ -4,7 +4,7 @@
   <attributes/>
   <visualElements>
     <visualElement>
-      <elementName>proc16a2.dig</elementName>
+      <elementName>cpu_proc16a2.dig</elementName>
       <elementAttributes/>
       <pos x="700" y="240"/>
     </visualElement>
@@ -129,7 +129,7 @@
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/Documents/digital/doc/hand-compiled test programs/fibonacci.out</file>
+          <file>/home/foxite/Documents/cpu/doc/test programs/ramfill.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
@@ -2343,6 +2343,10 @@ all other bits are unconnected</string>
       <p2 x="-520" y="1460"/>
     </wire>
     <wire>
+      <p1 x="-320" y="1460"/>
+      <p2 x="-300" y="1460"/>
+    </wire>
+    <wire>
       <p1 x="1520" y="820"/>
       <p2 x="1540" y="820"/>
     </wire>
@@ -2479,10 +2483,6 @@ all other bits are unconnected</string>
       <p2 x="0" y="-200"/>
     </wire>
     <wire>
-      <p1 x="-420" y="1480"/>
-      <p2 x="-320" y="1480"/>
-    </wire>
-    <wire>
       <p1 x="160" y="840"/>
       <p2 x="580" y="840"/>
     </wire>
@@ -2509,6 +2509,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="-520" y="200"/>
       <p2 x="-460" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="-420" y="1480"/>
+      <p2 x="-300" y="1480"/>
     </wire>
     <wire>
       <p1 x="-560" y="460"/>
@@ -2979,6 +2983,10 @@ all other bits are unconnected</string>
       <p2 x="-300" y="1620"/>
     </wire>
     <wire>
+      <p1 x="-300" y="1460"/>
+      <p2 x="-300" y="1480"/>
+    </wire>
+    <wire>
       <p1 x="1580" y="260"/>
       <p2 x="1580" y="280"/>
     </wire>
@@ -3073,10 +3081,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="380" y="-80"/>
       <p2 x="380" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="-320" y="1460"/>
-      <p2 x="-320" y="1480"/>
     </wire>
     <wire>
       <p1 x="-320" y="1680"/>
