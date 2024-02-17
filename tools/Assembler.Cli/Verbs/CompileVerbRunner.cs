@@ -66,7 +66,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		try {
 			program = parser.Parse(sourceCode);
 		} catch (ParserException e) {
-			Console.Error.WriteLine(e.ToString());
+			//Console.Error.WriteLine(e.ToString());
 			return ExitCode.CompileParseError;
 		}
 
@@ -84,7 +84,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		}
 
 		try {
-			using Stream output = opts.Output == "-" ? Console.OpenStandardOutput() : File.OpenWrite(opts.Output);
+			using Stream output = opts.Output == "-" ? Console.OpenStandardOutput() : new FileStream(opts.Output, FileMode.Create);
 
 			if (opts.OutputMode == CompileOutputMode.Raw) {
 				foreach (ushort word in machineCode) {
