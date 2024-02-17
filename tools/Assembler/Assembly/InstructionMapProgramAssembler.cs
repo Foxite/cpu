@@ -16,7 +16,7 @@ public class InstructionMapProgramAssembler : ProgramAssembler {
 			return false;
 		}
 		
-		return instruction.Validate(instructionAst.Arguments);
+		return instruction.Validate(ReplaceSymbolArguments(instructionAst.Arguments, getSymbolDefinition));
 	}
 	
 	// TODO Unit test

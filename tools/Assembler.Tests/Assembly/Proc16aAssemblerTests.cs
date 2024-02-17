@@ -145,7 +145,7 @@ public class Proc16aAssemblerTests {
 	[Test]
 	[TestCaseSource(nameof(ValidationTestCases))]
 	public void TestValidation(InstructionAst instruction, bool expectedResult) {
-		Assert.That(m_Assembler.ValidateInstruction(instruction), Is.EqualTo(expectedResult));
+		Assert.That(m_Assembler.ValidateInstruction(instruction, _ => throw new Exception("Should not be called")), Is.EqualTo(expectedResult));
 	}
 	
 	
@@ -168,7 +168,7 @@ public class Proc16aAssemblerTests {
 	[Test]
 	[TestCaseSource(nameof(ConvertInstructionTestCases))]
 	public void TestConvertInstruction(InstructionAst statement, int symbolValue, uint expectedResult) {
-		Assert.That(m_Assembler.ValidateInstruction(statement), Is.EqualTo(true), "Statement was not validated");
+		Assert.That(m_Assembler.ValidateInstruction(statement, _ => (ushort) symbolValue), Is.EqualTo(true), "Statement was not validated");
 
 		ushort result = m_Assembler.ConvertInstruction(statement, _ => (ushort) symbolValue);
 		
