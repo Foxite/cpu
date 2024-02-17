@@ -1,15 +1,11 @@
-using Assembler.Parsing.ProcAssemblyV2;
-
 namespace Assembler.Assembly;
 
-public class UnsupportedInstuctionException : Exception {
+public class InvalidProcAssemblyProgramException : Exception {
 	public string ArchitectureName { get; }
-	public IReadOnlyCollection<(InstructionAst Instruction, int Index)> Instructions { get; }
+	public IReadOnlyCollection<InvalidInstruction> Instructions { get; }
 	
-	public UnsupportedInstuctionException(string architectureName, IReadOnlyCollection<(InstructionAst Instruction, int Index)> instructions) {
+	public InvalidProcAssemblyProgramException(string architectureName, IReadOnlyCollection<InvalidInstruction> instructions) {
 		ArchitectureName = architectureName;
 		Instructions = instructions;
 	}
-
-	//protected UnsupportedStatementException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }

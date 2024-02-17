@@ -74,10 +74,10 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 
 		try {
 			machineCode = assembler.Assemble(program);
-		} catch (UnsupportedInstuctionException ex) {
+		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
-			foreach ((InstructionAst instruction, int index) in ex.Instructions) {
-				Console.WriteLine($"Statement {index}: {instruction}");
+			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {
+				Console.WriteLine($"Statement {invalidInstruction.Index}: {invalidInstruction.Instruction}: {invalidInstruction.Message}");
 			}
 			
 			return ExitCode.ProgramNotSupported;
