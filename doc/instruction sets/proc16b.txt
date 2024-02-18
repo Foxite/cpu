@@ -1,0 +1,130 @@
+16 bit instruction words and registers
+4 general purpose registers: a, b, c, d
+read-only registers:
+- division remainder (r)
+- overflow (o)
+
+most significant bits (15 and down): instruction type
+	00 ldc
+	01 alu
+	100 jump
+	101 0 mov
+	101 1 bus
+	110 reserved
+	111 misc
+
+
+ldc
+	write a 12-bit constant value into a register (up to 0x0FFF)
+	to use larger constants, load two constants and OR them together using the ALU
+	bits 13 and 12 specify the target register
+		00 to a
+		01 to b
+		10 to c
+		11 to d
+	bits 11-00 are constant value
+
+
+alu
+	13, 12: x operand (second pa2 argument)
+	11, 10: y operand (third pa2 argument)
+	09, 08: output register (first pa2 argument)
+		00 a register
+		01 b register
+		10 c register
+		11 d register
+	
+	07-03: opcode (first two bits is category)
+		00 integer arithmetic
+		00000   add   x + y   the o register is set to 0xFFFF if an operation overflowed, 0 if not
+		00001   sub   x - y   the o register is set to 0xFFFF if an operation overflowed, 0 if not
+		00010   mul   x * y
+		00011   div   x / y   remainder is written to r register
+		00100   shr   x >> y
+		00101   shl   x << y
+		00110   
+		00111   
+		
+		01 unused
+		
+		10 bitwise logic
+		10000   and   x & y
+		10001   or    x | y
+		10010   not   ~x
+		10011   
+		10100   xor   x ^ y
+		10101   xnor  ~(x ^ y)
+		10110   nor   ~(x | y)
+		10111   nand  ~(x & y)
+		
+		11 comparisons
+		these output 0 for false, 0xFFFF for true
+		11000   false
+		11001   cgt    x >  y
+		11010   ceq    x == y
+		11011   cge    x >= y
+		11100   clt    x <  y
+		11101   cne    x != y
+		11110   cle    x <= y
+		11111   true
+
+
+jump
+	12, 11: x operand (second pa2 argument)
+	10, 09: y operand (third pa2 argument)
+	08, 07: jump target (new program counter value, first pa2 argument)
+		00 a register
+		01 b register
+		10 c register
+		11 d register
+	
+	06-04: jump condition
+		000          never jump, no-op (no pa2 name)
+		001   jgt    x >  y
+		010   jeq    x == y
+		011   jge    x >= y
+		100   jlt    x <  y
+		101   jne    x != y
+		110   jle    x <= y
+		111   jmp    always jump
+
+
+mov
+	copy a value between registers
+	11-08: source register (first pa2 argument)
+		0000 a
+		0001 b
+		0010 c
+		0011 d
+		1000 r
+		1001 o
+		remaining value space is reserved
+	
+	07-05: target register (second pa2 argument)
+		000 a
+		001 b
+		010 c
+		011 d
+	
+bus
+	read/write bus addresses
+	11: operation mode
+		0 write bus value to register (pa2 instruction: brd)
+		1 write register value to bus (pa2 instruction: bwr)
+
+	10-08: address register (first pa2 argument)
+		000 a
+		001 b
+		010 c
+		011 d
+
+	07-05: value register (second pa2 argument)
+		000 a
+		001 b
+		010 c
+		011 d
+
+misc
+	assorted miscellaneous instructions
+	1110_0000_0000_0000 noop   do nothing
+	1110_0000_0000_0001 brk    set BRK pin high (will be low next clock cycle)
