@@ -1,0 +1,10 @@
+# read the button device connected to 0x6000 and output its value to 0x0000, infinitely.
+
+start:
+    ldi %a, $0x6000
+    mov %b, *a
+    ldi %a, $0x0000
+    mov *a, %b
+
+    ldi %a, start
+    jmp %a

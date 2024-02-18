@@ -21,7 +21,7 @@
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>5</int>
+          <int>1000</int>
         </entry>
       </elementAttributes>
       <pos x="-520" y="200"/>
@@ -129,7 +129,7 @@
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/Documents/cpu/doc/test programs/ramfill.out</file>
+          <file>/home/foxite/Documents/cpu/doc/test programs/readbuttons-display.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
