@@ -109,8 +109,8 @@ mov
 bus
 	read/write bus addresses
 	11: operation mode
-		0 write bus value to register (pa2 instruction: brd)
-		1 write register value to bus (pa2 instruction: bwr)
+		0 write bus value to register (pa2 instruction: ldb)
+		1 write register value to bus (pa2 instruction: stb)
 
 	10-08: address register (first pa2 argument)
 		000 a
