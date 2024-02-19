@@ -1704,12 +1704,12 @@ C  0b1000001101110000  1  2  0  0xFF  0
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>output</string>
-        </entry>
-        <entry>
           <string>RectHeight</string>
           <int>30</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>output</string>
         </entry>
         <entry>
           <string>RectWidth</string>
@@ -1802,16 +1802,16 @@ C  0b1000001101110000  1  2  0  0xFF  0
       <elementName>Multiplexer</elementName>
       <elementAttributes>
         <entry>
-          <string>flipSelPos</string>
-          <boolean>true</boolean>
+          <string>Selector Bits</string>
+          <int>2</int>
         </entry>
         <entry>
           <string>Bits</string>
           <int>16</int>
         </entry>
         <entry>
-          <string>Selector Bits</string>
-          <int>2</int>
+          <string>flipSelPos</string>
+          <boolean>true</boolean>
         </entry>
       </elementAttributes>
       <pos x="1940" y="-20"/>
@@ -1904,12 +1904,12 @@ C  0b1000001101110000  1  2  0  0xFF  0
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>read/write</string>
-        </entry>
-        <entry>
           <string>RectHeight</string>
           <int>47</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>read/write</string>
         </entry>
         <entry>
           <string>RectWidth</string>
@@ -2323,12 +2323,12 @@ C  0b1000001101110000  1  2  0  0xFF  0
       <elementName>Splitter</elementName>
       <elementAttributes>
         <entry>
-          <string>Input Splitting</string>
-          <string>3</string>
-        </entry>
-        <entry>
           <string>mirror</string>
           <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>Input Splitting</string>
+          <string>3</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
@@ -2348,6 +2348,10 @@ C  0b1000001101110000  1  2  0  0xFF  0
           <string>Testdata</string>
           <testData>
             <dataString>clock  instruction   bus_in  reg_a  reg_b  reg_c  reg_d  reg_o  reg_r  bus_write  bus_address  bus_out
+
+# set up some values in registers
+# o=0, r=1, a=2, b=3, c=4, d=5
+
 # ldc %a, $2
 C 0b0000000000000010 0x0000  0x0002 0x0000 0x0000 0x0000 0x0000 0x0000 0 x      x
 # ldc %b, $3
@@ -2356,9 +2360,22 @@ C 0b0001000000000011 0x0000  0x0002 0x0003 0x0000 0x0000 0x0000 0x0000 0 x      
 C 0b0010000000000100 0x0000  0x0002 0x0003 0x0004 0x0000 0x0000 0x0000 0 x      x
 # ldc %d, $5
 C 0b0011000000000101 0x0000  0x0002 0x0003 0x0004 0x0005 0x0000 0x0000 0 x      x
-# div %a, %a, %d (a = 5 / 2) a = 2, r = 1
+# div %a, %d, %a (a = 5 / 2) a = 2, r = 1
 #   01xxyywwooooo___
-C 0b0100110000011000 0x0000  0x0002 0x0003 0x0004 0x0005 0x0000 0x0001 0 x      x
+C 0b0111000000011000 0x0000  0x0002 0x0003 0x0004 0x0005 0x0000 0x0001 0 x      x
+
+# stb %a, %b (*a = b)
+#   1011maaavvv_____
+C 0b1011100000100000 0x0000  0x0002 0x0003 0x0004 0x0005 0x0000 0x0001 1 0x0002 0x0003
+
+# stb %c, %d (*c = d)
+C 0b1011101001100000 0x0000  0x0002 0x0003 0x0004 0x0005 0x0000 0x0001 1 0x0004 0x0005
+
+# ldb %a, %b (b = *a)
+C 0b1011000000100000 0x0006  0x0002 0x0006 0x0004 0x0005 0x0000 0x0001 0 0x0002 x
+
+# ldb %c, %a (a = *c)
+C 0b1011001000000000 0x0007  0x0007 0x0006 0x0004 0x0005 0x0000 0x0001 0 0x0004 x
 </dataString>
           </testData>
         </entry>
