@@ -1,5 +1,5 @@
 # proc16a
-proc16a is the first instruction set implemented in this repository. it operates on 16-bit instruction words, two 16-bit registers (A and B), and a 16-bit memory address space with 16-bit cells.
+proc16a is the first instruction set implemented in this repository. it operates on 16-bit instruction words, two 16-bit registers (A and B), and a 16-bit memory address space with 16-bit cells. it is not a load-and-store architecture; the memory cell at the address specified by the A register is in itself treated as a register by the ISA.
 
 it has quite a bit of ALU operations but not much else. a lot of the instruction word space is unused.
 

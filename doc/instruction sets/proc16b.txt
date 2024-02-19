@@ -1,8 +1,14 @@
 16 bit instruction words and registers
+load-and-store, no interrupts, no multitasking capabilities
+distinct instruction memory and bus space (RAM + whatever devices connected by the computer)
+
 4 general purpose registers: a, b, c, d
 read-only registers:
 - division remainder (r)
 - overflow (o)
+
+the program counter is not a usable register
+
 
 most significant bits (15 and down): instruction type
 	00 ldc
