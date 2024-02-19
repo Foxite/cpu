@@ -1064,7 +1064,7 @@ UDLRABXY</string>
         </entry>
         <entry>
           <string>Label</string>
-          <string>primary address decoder</string>
+          <string>bus controller</string>
         </entry>
         <entry>
           <string>RectWidth</string>
@@ -2160,12 +2160,12 @@ all other bits are unconnected</string>
       <elementName>Splitter</elementName>
       <elementAttributes>
         <entry>
-          <string>Input Splitting</string>
-          <string>16</string>
-        </entry>
-        <entry>
           <string>mirror</string>
           <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>Input Splitting</string>
+          <string>16</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
