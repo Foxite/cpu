@@ -1905,7 +1905,7 @@ C  0b1000001101110000  1  2  0  0xFF  0
       <elementAttributes>
         <entry>
           <string>RectHeight</string>
-          <int>47</int>
+          <int>49</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -2382,6 +2382,54 @@ C 0b1011001000000000 0x0007  0x0007 0x0006 0x0004 0x0005 0x0000 0x0001 0 0x0004 
       </elementAttributes>
       <pos x="-240" y="140"/>
     </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>mode_break</string>
+        </entry>
+      </elementAttributes>
+      <pos x="2040" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>break</string>
+        </entry>
+      </elementAttributes>
+      <pos x="2080" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>misc tests</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>clock  instruction  instruction_pointer  bus_write  break
+# noop
+#   111_----____----
+0 0b1110000000000000 0  0  0
+# brk
+C 0b1110000000000001 1  0  1
+C 0b1110000000000000 2  0  0
+C 0b1110000000000001 3  0  1
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="-240" y="240"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>
@@ -2571,6 +2619,10 @@ C 0b1011001000000000 0x0007  0x0007 0x0006 0x0004 0x0005 0x0000 0x0001 0 0x0004 
     <wire>
       <p1 x="460" y="280"/>
       <p2 x="480" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="2040" y="280"/>
+      <p2 x="2080" y="280"/>
     </wire>
     <wire>
       <p1 x="80" y="920"/>
