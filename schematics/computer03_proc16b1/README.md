@@ -1,3 +1,3 @@
-a work-in-progress. an entirely new cpu design that implements the proc16b ISA.
+cpu_proc16b1 is the first cpu that implements the proc16b architecture, and my first cpu that isn't spaghetti.
 
-the computer will be similar to computer02. maybe it needs a cool codename.
+the Fox Bay computer design is copied over from computer02.
