@@ -1,5 +1,7 @@
 namespace Assembler.Parsing.ProcAssemblyV2;
 
+// TODO wtf does Rsls mean again
+// Something to do with ralsei, i guess
 public record InstructionArgumentAst(InstructionArgumentType Type, long? ConstantValue, string? RslsValue) : IAssemblyAst {
 	public override string ToString() {
 		return Type switch {

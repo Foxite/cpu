@@ -61,7 +61,14 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		}
 	}
 
-	private record ldiInstruction() : Instruction {
+	private abstract record Proc16aInstruction() : Instruction {
+		// TODO Unit test
+		protected bool ValidateArgumentTypes(IReadOnlyList<InstructionArgumentAst> arguments, params InstructionArgumentType[][] types) {
+			return types.Any(overload => overload.SequenceEqual(arguments.Select(argument => argument.Type)));
+		}
+	}
+		
+	private record ldiInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args,
 				new[] { IAT.Register, IAT.Constant },
@@ -109,12 +116,12 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		}
 	}
 
-	private record brkInstruction() : Instruction {
+	private record brkInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0;
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => 1;
 	}
 
-	private record nopInstruction() : Instruction {
+	private record nopInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0;
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			// none = 0 + 0
@@ -124,7 +131,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		}
 	}
 
-	private record movInstruction() : Instruction {
+	private record movInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args,
 			new[] { IAT.Register, IAT.Register },
 			new[] { IAT.Register, IAT.StarRegister },
@@ -172,7 +179,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		}
 	}
 
-	private record AluInstruction(int Opcode) : Instruction {
+	private record AluInstruction(int Opcode) : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args,
 			    new[] { IAT.Register, IAT.Register, IAT.Register },
@@ -305,7 +312,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	// 0b11111 (trueInstruction)
 
 
-	private record notInstruction() : Instruction {
+	private record notInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register }, new[] { IAT.Register, IAT.StarRegister }, new[] { IAT.Register, IAT.Constant })) {
 				return false;
@@ -368,7 +375,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 
 
-	private record trueInstruction() : Instruction {
+	private record trueInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -393,7 +400,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 		}
 	}
 	
-	private record falseInstruction() : Instruction {
+	private record falseInstruction() : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -421,7 +428,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	
 	
 
-	private record JumpInstruction(int CompareMode) : Instruction {
+	private record JumpInstruction(int CompareMode) : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register, IAT.Constant })) {
 				return false;
@@ -458,7 +465,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	private record jleInstruction() : JumpInstruction(0b110);
 	
 	
-	private record jmpInstruction : Instruction {
+	private record jmpInstruction : Proc16aInstruction {
 		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {

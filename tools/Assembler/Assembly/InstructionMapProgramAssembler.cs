@@ -43,10 +43,5 @@ public class InstructionMapProgramAssembler : ProgramAssembler {
 	public abstract record Instruction() {
 		public abstract bool Validate(IReadOnlyList<InstructionArgumentAst> arguments);
 		public abstract ushort Convert(IReadOnlyList<InstructionArgumentAst> arguments);
-
-		// TODO Unit test
-		protected bool ValidateArgumentTypes(IReadOnlyList<InstructionArgumentAst> arguments, params InstructionArgumentType[][] types) {
-			return types.Any(overload => overload.SequenceEqual(arguments.Select(argument => argument.Type)));
-		}
 	}
 }
