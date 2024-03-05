@@ -90,8 +90,18 @@ public class Proc16bE2ETests {
 	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
 		ProgramAst ast = m_Parser.Parse(sourceCode);
 
-		List<ushort> assembledProgram = m_Assembler.Assemble(ast).ToList();
-		
+		List<ushort> assembledProgram;
+		try {
+			assembledProgram = m_Assembler.Assemble(ast).ToList();
+		} catch (InvalidProcAssemblyProgramException ex) {
+			Assert.Fail(
+				"Test failed due to {0}:\n{1}",
+				nameof(InvalidProcAssemblyProgramException),
+				string.Join("", ex.Instructions.Select(instruction => $"index {instruction.Index} ({instruction.Instruction}): {instruction.Message}\n"))
+			);
+			return;
+		}
+
 		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
 	}
 }

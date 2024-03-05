@@ -26,16 +26,16 @@ public abstract class ProgramAssembler {
 		for (int i = 0; i < program.Statements.Count; i++) {
 			ProgramStatementAst statement = program.Statements[i];
 
-			bool supported;
+			InstructionSupport support;
 			try {
-				supported = ValidateInstruction(statement.Instruction, GetSymbolDefinition);
+				support = ValidateInstruction(statement.Instruction, GetSymbolDefinition);
 			} catch (SymbolNotDefinedException ex) {
-				invalidInstructions.Add(new InvalidInstruction(statement.Instruction, i, $"Symbol not defined: {ex.Symbol}"));
+				invalidInstructions.Add(new InvalidInstruction(statement.Instruction, i, InstructionSupport.OtherError, $"Symbol not defined: {ex.Symbol}"));
 				continue;
 			}
 
-			if (!supported) {
-				invalidInstructions.Add(new InvalidInstruction(statement.Instruction, i, "Instruction not supported"));
+			if (support != InstructionSupport.Supported) {
+				invalidInstructions.Add(new InvalidInstruction(statement.Instruction, i, support, support.ToString()));
 			}
 		}
 
@@ -46,6 +46,6 @@ public abstract class ProgramAssembler {
 		return program.Statements.Select(statement => ConvertInstruction(statement.Instruction, GetSymbolDefinition)).ToList();
 	}
 	
-	protected internal abstract bool ValidateInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition);
+	protected internal abstract InstructionSupport ValidateInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition);
 	protected internal abstract ushort ConvertInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition);
 }

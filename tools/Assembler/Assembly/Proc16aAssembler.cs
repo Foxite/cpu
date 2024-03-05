@@ -69,18 +69,18 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 		
 	private record ldiInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args,
 				new[] { IAT.Register, IAT.Constant },
 				new[] { IAT.StarRegister, IAT.Constant }
 			)) {
-				return false;
+				return InstructionSupport.ParameterType;
 			}
 
 			if (args[0].Type == IAT.Register && args[0].RslsValue == "a") {
-				return args[1].ConstantValue!.Value is >= -2 and <= 0x7FFF;
+				return args[1].ConstantValue!.Value is >= -2 and <= 0x7FFF ? InstructionSupport.Supported : InstructionSupport.OtherError;
 			} else {
-				return args[1].ConstantValue!.Value is >= -2 and <= 2;
+				return args[1].ConstantValue!.Value is >= -2 and <= 2 ? InstructionSupport.Supported : InstructionSupport.OtherError;
 			}
 		}
 
@@ -117,12 +117,12 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 
 	private record brkInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0;
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0 ? InstructionSupport.Supported : InstructionSupport.ParameterType;
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => 1;
 	}
 
 	private record nopInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0;
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0 ? InstructionSupport.Supported : InstructionSupport.ParameterType;
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			// none = 0 + 0
 			ushort ret = 0;
@@ -132,11 +132,11 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 
 	private record movInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args,
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args,
 			new[] { IAT.Register, IAT.Register },
 			new[] { IAT.Register, IAT.StarRegister },
 			new[] { IAT.StarRegister, IAT.Register }
-		);
+		) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			// lhs = rhs + 0
@@ -180,7 +180,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 
 	private record AluInstruction(int Opcode) : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args,
 			    new[] { IAT.Register, IAT.Register, IAT.Register },
 			    new[] { IAT.Register, IAT.Register, IAT.StarRegister },
@@ -202,28 +202,28 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 			    new[] { IAT.StarRegister, IAT.Constant, IAT.StarRegister },
 			    new[] { IAT.StarRegister, IAT.Constant, IAT.Constant }
 		    )) {
-				return false;
+				return InstructionSupport.ParameterType;
 			}
 
 			if (!OneDistinctStarRegister(args, out _)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
 			if (args[1].Type == IAT.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
 			if (args[2].Type == IAT.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
 			if (args[1].Type == IAT.Register && args[2].Type == IAT.Register) {
 				if (args[1].RslsValue == args[2].RslsValue) {
-					return false;
+					return InstructionSupport.OtherError;
 				}
 			}
 
-			return true;
+			return InstructionSupport.Supported;
 		}
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -313,24 +313,24 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 
 
 	private record notInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register }, new[] { IAT.Register, IAT.StarRegister }, new[] { IAT.Register, IAT.Constant })) {
-				return false;
+				return InstructionSupport.ParameterType;
 			}
 
 			if (!OneDistinctStarRegister(args, out _)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
 			if (args[1].Type == IAT.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
 			if (args[2].Type == IAT.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
-			return true;
+			return InstructionSupport.Supported;
 		}
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -376,7 +376,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 
 
 	private record trueInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register }) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			ushort ret = 0;
@@ -401,7 +401,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	}
 	
 	private record falseInstruction() : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register }) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			ushort ret = 0;
@@ -429,16 +429,16 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	
 
 	private record JumpInstruction(int CompareMode) : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
 			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register, IAT.Constant })) {
-				return false;
+				return InstructionSupport.ParameterType;
 			}
 
 			if (!OneDistinctStarRegister(args, out _)) {
-				return false;
+				return InstructionSupport.OtherError;
 			}
 
-			return args[0].RslsValue != args[1].RslsValue && args[2].ConstantValue!.Value == 0;
+			return args[0].RslsValue != args[1].RslsValue && args[2].ConstantValue!.Value == 0 ? InstructionSupport.Supported : InstructionSupport.OtherError;
 		}
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -466,7 +466,7 @@ public class Proc16aAssembler : InstructionMapProgramAssembler {
 	
 	
 	private record jmpInstruction : Proc16aInstruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register });
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register }) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			ushort ret = 0;

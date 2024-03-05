@@ -11,9 +11,9 @@ public class InstructionMapProgramAssembler : ProgramAssembler {
 	}
 
 	// TODO Unit test
-	protected internal override bool ValidateInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition) {
+	protected internal override InstructionSupport ValidateInstruction(InstructionAst instructionAst, Func<string, ushort> getSymbolDefinition) {
 		if (!Instructions.TryGetValue(instructionAst.Instruction, out Instruction? instruction)) {
-			return false;
+			return InstructionSupport.NotRecognized;
 		}
 		
 		return instruction.Validate(ReplaceSymbolArguments(instructionAst.Arguments, getSymbolDefinition));
@@ -41,7 +41,14 @@ public class InstructionMapProgramAssembler : ProgramAssembler {
 	}
 
 	public abstract record Instruction() {
-		public abstract bool Validate(IReadOnlyList<InstructionArgumentAst> arguments);
+		public abstract InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> arguments);
 		public abstract ushort Convert(IReadOnlyList<InstructionArgumentAst> arguments);
 	}
+}
+
+public enum InstructionSupport {
+	Supported,
+	NotRecognized,
+	ParameterType,
+	OtherError,
 }

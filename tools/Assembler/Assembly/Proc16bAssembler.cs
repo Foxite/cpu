@@ -38,13 +38,15 @@ public class Proc16bAssembler : InstructionMapProgramAssembler {
 		AddInstruction("jlt",   new jumpInstruction(0b100));
 		AddInstruction("jne",   new jumpInstruction(0b101));
 		AddInstruction("jle",   new jumpInstruction(0b110));
-		AddInstruction("jmp",   new jumpInstruction(0b111));
+		AddInstruction("jmp",   new jumpAlwaysInstruction());
+		AddInstruction("jump",  new jumpAlwaysInstruction());
 		
 		AddInstruction("mov",   new movInstruction());
 		AddInstruction("ldb",   new busInstruction(false));
 		AddInstruction("stb",   new busInstruction(true));
 		
 		AddInstruction("noop",  new noopInstruction());
+		AddInstruction("nop",   new noopInstruction());
 		AddInstruction("brk",   new brkInstruction());
 	}
 	
@@ -62,14 +64,27 @@ public class Proc16bAssembler : InstructionMapProgramAssembler {
 	}
 
 	private abstract record Proc16bInstruction(params InstructionArgumentType[] Types) : Instruction {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			return args.Select(arg => arg.Type).SequenceEqual(Types);
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
+			if (!args.Select(arg => arg.Type).SequenceEqual(Types)) {
+				return InstructionSupport.ParameterType;
+			}
+			
+			return InstructionSupport.Supported;
 		}
 	}
 	
 	private record ldcInstruction() : Proc16bInstruction(IAT.Register, IAT.Constant) {
-		public override bool Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			return base.Validate(args) && args[1].ConstantValue!.Value < 0x0FFF;
+		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
+			InstructionSupport baseValidation = base.Validate(args);
+			if (baseValidation != InstructionSupport.Supported) {
+				return baseValidation;
+			}
+
+			if (args[1].ConstantValue!.Value > 0x0FFF) {
+				return InstructionSupport.OtherError;
+			}
+			
+			return InstructionSupport.Supported;
 		}
 
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
@@ -116,6 +131,20 @@ public class Proc16bAssembler : InstructionMapProgramAssembler {
 		}
 	}
 
+	private record jumpAlwaysInstruction() : Proc16bInstruction(IAT.Register) {
+		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+			ushort ret = 0;
+			SetInstructionBit(ref ret, 15, true);
+			SetInstructionBit(ref ret, 14, false);
+			SetInstructionBit(ref ret, 13, false);
+			
+			ret |= (ushort) (RegisterToBits(args[0]) << 07);
+			ret |= (ushort) (0b111 << 4);
+
+			return ret;
+		}
+	}
+
 	private record movInstruction() : Proc16bInstruction(IAT.Register, IAT.Register) {
 		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
 			ushort ret = 0;
@@ -133,7 +162,7 @@ public class Proc16bAssembler : InstructionMapProgramAssembler {
 				"o" => 0b1001,
 			} << 8);
 			
-			ret |= (ushort) (args[0].RslsValue switch {
+			ret |= (ushort) (args[1].RslsValue switch {
 				"a" => 0b000,
 				"b" => 0b001,
 				"c" => 0b010,
@@ -161,7 +190,7 @@ public class Proc16bAssembler : InstructionMapProgramAssembler {
 				"d" => 0b011,
 			} << 8);
 			
-			ret |= (ushort) (args[0].RslsValue switch {
+			ret |= (ushort) (args[1].RslsValue switch {
 				"a" => 0b000,
 				"b" => 0b001,
 				"c" => 0b010,
