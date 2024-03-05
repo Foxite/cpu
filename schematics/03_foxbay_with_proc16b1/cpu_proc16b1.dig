@@ -2505,6 +2505,47 @@ C 0b1000000111110000  0x0004 0x0008 0x0001 0x0003 0x0003   x        x       0
       </elementAttributes>
       <pos x="-240" y="560"/>
     </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>increment test</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>clock inst            reg_a  reg_b  reg_c  reg_d  ptr_inst bus_write
+C 0b0000000000000000  0x0000 0x0000 0x0000 0x0000 0x0001   0
+C 0b0001000000000001  0x0000 0x0001 0x0000 0x0000 0x0002   0
+C 0b0010000000000011  0x0000 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0001 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0001 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0002 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0002 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0003 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0003 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0004 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0004 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0005 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0005 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0006 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0006 0x0001 0x0003 0x0000 0x0003   0
+
+C 0b0100010000000000  0x0007 0x0001 0x0003 0x0000 0x0004   0
+C 0b1000000101110000  0x0007 0x0001 0x0003 0x0000 0x0003   0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="-240" y="640"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>
