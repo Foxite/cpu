@@ -32,7 +32,7 @@ public class Proc16bAssembler : InstructionMapProgramAssembler {
 		AddInstruction("cle",   new aluInstruction(0b11110));
 		AddInstruction("true",  new aluInstruction(0b11111));
 		
-		AddInstruction("jgt",   new jumpInstruction(0b000));
+		AddInstruction("jgt",   new jumpInstruction(0b001));
 		AddInstruction("jeq",   new jumpInstruction(0b010));
 		AddInstruction("jge",   new jumpInstruction(0b011));
 		AddInstruction("jlt",   new jumpInstruction(0b100));

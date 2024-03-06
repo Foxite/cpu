@@ -50,13 +50,45 @@ public class Proc16bAssemblerTests {
 			new object[] { new InstructionAst("shl", IAA.Register("a"), IAA.Register("b"), IAA.Register("c")), 0u, 0b01_01_10_00_00101_000u },
 			
 			// jump
+			new object[] { new InstructionAst("jmp",  IAA.Register("a")), 0u, 0b100_00_00_00_111_0000u },
+			new object[] { new InstructionAst("jump", IAA.Register("a")), 0u, 0b100_00_00_00_111_0000u },
+			new object[] { new InstructionAst("jmp",  IAA.Register("b")), 0u, 0b100_00_00_01_111_0000u },
+			new object[] { new InstructionAst("jump", IAA.Register("c")), 0u, 0b100_00_00_10_111_0000u },
+			
+			new object[] { new InstructionAst("jgt", IAA.Register("d"), IAA.Register("a"), IAA.Register("b")), 0u, 0b100_00_01_11_001_0000u },
+			new object[] { new InstructionAst("jgt", IAA.Register("a"), IAA.Register("b"), IAA.Register("c")), 0u, 0b100_01_10_00_001_0000u },
+			new object[] { new InstructionAst("jgt", IAA.Register("a"), IAA.Register("c"), IAA.Register("d")), 0u, 0b100_10_11_00_001_0000u },
+			new object[] { new InstructionAst("jgt", IAA.Register("a"), IAA.Register("d"), IAA.Register("a")), 0u, 0b100_11_00_00_001_0000u },
+			
+			new object[] { new InstructionAst("jeq", IAA.Register("a"), IAA.Register("d"), IAA.Register("a")), 0u, 0b100_11_00_00_010_0000u },
+			new object[] { new InstructionAst("jge", IAA.Register("a"), IAA.Register("d"), IAA.Register("a")), 0u, 0b100_11_00_00_011_0000u },
+			new object[] { new InstructionAst("jlt", IAA.Register("a"), IAA.Register("d"), IAA.Register("a")), 0u, 0b100_11_00_00_100_0000u },
+			new object[] { new InstructionAst("jne", IAA.Register("a"), IAA.Register("d"), IAA.Register("a")), 0u, 0b100_11_00_00_101_0000u },
+			new object[] { new InstructionAst("jle", IAA.Register("a"), IAA.Register("d"), IAA.Register("a")), 0u, 0b100_11_00_00_110_0000u },
 			
 			// mov
+			new object[] { new InstructionAst("mov", IAA.Register("a"), IAA.Register("b")), 0u, 0b1010_0000_001_00000u },
+			new object[] { new InstructionAst("mov", IAA.Register("b"), IAA.Register("c")), 0u, 0b1010_0001_010_00000u },
+			new object[] { new InstructionAst("mov", IAA.Register("c"), IAA.Register("d")), 0u, 0b1010_0010_011_00000u },
+			new object[] { new InstructionAst("mov", IAA.Register("d"), IAA.Register("a")), 0u, 0b1010_0011_000_00000u },
+			new object[] { new InstructionAst("mov", IAA.Register("r"), IAA.Register("b")), 0u, 0b1010_1000_001_00000u },
+			new object[] { new InstructionAst("mov", IAA.Register("o"), IAA.Register("c")), 0u, 0b1010_1001_010_00000u },
 			
 			// bus
+			new object[] { new InstructionAst("ldb", IAA.Register("a"), IAA.Register("b")), 0u, 0b1011_0_000_001_00000u },
+			new object[] { new InstructionAst("ldb", IAA.Register("b"), IAA.Register("c")), 0u, 0b1011_0_001_010_00000u },
+			new object[] { new InstructionAst("ldb", IAA.Register("c"), IAA.Register("d")), 0u, 0b1011_0_010_011_00000u },
+			new object[] { new InstructionAst("ldb", IAA.Register("d"), IAA.Register("a")), 0u, 0b1011_0_011_000_00000u },
+			
+			new object[] { new InstructionAst("stb", IAA.Register("a"), IAA.Register("b")), 0u, 0b1011_1_000_001_00000u },
+			new object[] { new InstructionAst("stb", IAA.Register("b"), IAA.Register("c")), 0u, 0b1011_1_001_010_00000u },
+			new object[] { new InstructionAst("stb", IAA.Register("c"), IAA.Register("d")), 0u, 0b1011_1_010_011_00000u },
+			new object[] { new InstructionAst("stb", IAA.Register("d"), IAA.Register("a")), 0u, 0b1011_1_011_000_00000u },
 			
 			// misc
-			
+			new object[] { new InstructionAst("nop" ), 0u, 0b1110_0000_0000_0000u },
+			new object[] { new InstructionAst("noop"), 0u, 0b1110_0000_0000_0000u },
+			new object[] { new InstructionAst("brk" ), 0u, 0b1110_0000_0000_0001u },
 	};
 	
 	[Test]
