@@ -1,3 +1,5 @@
+# Bugged. One of the designs experiences a short circuit when executing this. Use for regression testing.
+# short happens at 0x000B during the second iteration of the loop
 # Fill RAM addresses with the fibonacci sequence.
 # The last fibonacci number is written to the bus at 0x0000.
 
@@ -5,15 +7,15 @@
 	# &lastFibPtr = &&fib[last] = 1
 	
 	# fib[0] (*(2+0)) = 2
-	ldc %a, $1
+	ldc %a, $1 # incorrect line
 	stb %a, %a
 
 	# fib[1] (*(2+1)) = 3
-	ldc %a, $2
+	ldc %a, $2 # incorrect line
 	stb %a, %a
 
 	# lastFibPtr (*1) = 3
-	ldc %b, $0
+	ldc %b, $0 # incorrect line
 	stb %b, %a
 	
 computeNext:
@@ -50,5 +52,5 @@ computeNext:
 		ldb %d, %d       # d = *d
 	
 	# loop
-	ldb %b, computeNext
+	ldc %b, computeNext
 	jmp %b
