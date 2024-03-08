@@ -4,6 +4,7 @@ using CommandLine;
 public class Program {
 	public static readonly ProgramAssembler[] Assemblers = {
 		ProgramAssemblers.Proc16a,
+		ProgramAssemblers.Proc16b,
 	};
 	
 	public static int Main(string[] args) {

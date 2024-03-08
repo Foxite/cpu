@@ -9,11 +9,6 @@ public enum CompileOutputMode {
 	Raw,
 }
 
-public enum ParserSelection {
-	Csly,
-	Antlr,
-}
-
 [Verb("compile", HelpText = "Compile an assembly file.")]
 public class CompileOptions {
 	[Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages.")]
@@ -24,9 +19,6 @@ public class CompileOptions {
 	
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
-	
-	[Option('p', "parser", Default = ParserSelection.Csly, HelpText = "Choose parser.")]
-	public ParserSelection Parser { get; set; }
 	
 	[Option('o', "output", Default = "-", HelpText = "Filename to output, or - to output to standard output.")]
 	public string Output { get; set; }
