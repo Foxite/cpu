@@ -30,9 +30,7 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		ProgramAssembler? assembler = Program.Assemblers.FirstOrDefault(assembler => assembler.ArchitectureName.ToLower() == opts.Architecture);
-
-		if (assembler == null) {
+		if (!Program.ProgramAssemblerFactory.CanGetAssembler(opts.Architecture)) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
 			return ExitCode.CommandInvalid;
 		}
@@ -62,10 +60,11 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileParseError;
 		}
 
+		ProgramAssembler assembler = Program.ProgramAssemblerFactory.GetAssembler(opts.Architecture, program);
 		IEnumerable<ushort> machineCode;
 
 		try {
-			machineCode = assembler.Assemble(program);
+			machineCode = assembler.Assemble();
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {

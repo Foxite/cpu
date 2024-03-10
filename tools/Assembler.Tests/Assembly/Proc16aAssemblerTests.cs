@@ -6,11 +6,11 @@ using IAA = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentAst;
 namespace Assembler.Tests; 
 
 public class Proc16aAssemblerTests {
-	private ProgramAssembler m_Assembler;
+	private IInstructionConverter m_Converter;
 
 	[SetUp]
 	public void Setup() {
-		m_Assembler = ProgramAssemblers.Proc16a;
+		m_Converter = new Proc16aInstructionConverter();
 	}
 	
 	public static object[][] ValidationTestCases() => new[] {
@@ -145,7 +145,7 @@ public class Proc16aAssemblerTests {
 	[Test]
 	[TestCaseSource(nameof(ValidationTestCases))]
 	public void TestValidation(InstructionAst instruction, InstructionSupport expectedResult) {
-		Assert.That(m_Assembler.ValidateInstruction(instruction), Is.EqualTo(expectedResult));
+		Assert.That(m_Converter.ValidateInstruction(instruction), Is.EqualTo(expectedResult));
 	}
 	
 	
@@ -168,9 +168,9 @@ public class Proc16aAssemblerTests {
 	[Test]
 	[TestCaseSource(nameof(ConvertInstructionTestCases))]
 	public void TestConvertInstruction(InstructionAst statement, uint expectedResult) {
-		Assert.That(m_Assembler.ValidateInstruction(statement), Is.EqualTo(InstructionSupport.Supported), "Statement was not validated");
+		Assert.That(m_Converter.ValidateInstruction(statement), Is.EqualTo(InstructionSupport.Supported), "Statement was not validated");
 
-		ushort result = m_Assembler.ConvertInstruction(statement);
+		ushort result = m_Converter.ConvertInstruction(statement);
 		
 		Assert.That(result, Is.EqualTo((ushort) expectedResult), "Expected 0x{0:X4} received 0x{1:X4}", expectedResult, result);
 	}

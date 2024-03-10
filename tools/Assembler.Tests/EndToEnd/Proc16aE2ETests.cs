@@ -5,13 +5,13 @@ using Assembler.Parsing.ProcAssemblyV2;
 namespace Assembler.Tests.EndToEnd; 
 
 public class Proc16aE2ETests {
-	private ProgramAssembler m_Assembler;
 	private ProcAssemblyParser m_Parser;
+	private ProgramAssemblerFactory m_Factory;
 
 	[SetUp]
 	public void Setup() {
 		m_Parser = new ProcAssemblyParser();
-		m_Assembler = ProgramAssemblers.Proc16a;
+		m_Factory = new ProgramAssemblerFactory();
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -216,7 +216,7 @@ public class Proc16aE2ETests {
 	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
 		ProgramAst ast = m_Parser.Parse(sourceCode);
 
-		List<ushort> assembledProgram = m_Assembler.Assemble(ast).ToList();
+		List<ushort> assembledProgram = m_Factory.GetAssembler("Proc16a", ast).Assemble().ToList();
 		
 		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
 	}

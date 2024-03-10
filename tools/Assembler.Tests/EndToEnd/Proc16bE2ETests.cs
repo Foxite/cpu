@@ -5,13 +5,13 @@ using Assembler.Parsing.ProcAssemblyV2;
 namespace Assembler.Tests.EndToEnd; 
 
 public class Proc16bE2ETests {
-	private ProgramAssembler m_Assembler;
 	private ProcAssemblyParser m_Parser;
+	private ProgramAssemblerFactory m_Factory;
 
 	[SetUp]
 	public void Setup() {
 		m_Parser = new ProcAssemblyParser();
-		m_Assembler = ProgramAssemblers.Proc16b;
+		m_Factory = new ProgramAssemblerFactory();
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -100,7 +100,7 @@ public class Proc16bE2ETests {
 
 		List<ushort> assembledProgram;
 		try {
-			assembledProgram = m_Assembler.Assemble(ast).ToList();
+			assembledProgram = m_Factory.GetAssembler("Proc16b", ast).Assemble().ToList();
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Assert.Fail(
 				"Test failed due to {0}:\n{1}",

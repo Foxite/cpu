@@ -2,15 +2,20 @@ using Assembler.Parsing.ProcAssemblyV2;
 
 namespace Assembler.Assembly;
 
-public abstract class InstructionMapProgramAssembler : ProgramAssembler {
-	public override string ArchitectureName { get; }
+public interface IInstructionConverter {
+	public InstructionSupport ValidateInstruction(InstructionAst instructionAst);
+	public ushort ConvertInstruction(InstructionAst instructionAst);
+}
+
+public abstract class InstructionMapInstructionConverter : IInstructionConverter {
+	public string ArchitectureName { get; }
 	protected Dictionary<string, Instruction> Instructions { get; } = new();
 	
-	protected InstructionMapProgramAssembler(string architectureName) {
+	protected InstructionMapInstructionConverter(string architectureName) {
 		ArchitectureName = architectureName;
 	}
 
-	protected internal override InstructionSupport ValidateInstruction(InstructionAst instructionAst) {
+	public InstructionSupport ValidateInstruction(InstructionAst instructionAst) {
 		if (!Instructions.TryGetValue(instructionAst.Mnemonic, out Instruction? instruction)) {
 			return InstructionSupport.NotRecognized;
 		}
@@ -18,7 +23,7 @@ public abstract class InstructionMapProgramAssembler : ProgramAssembler {
 		return instruction.Validate(instructionAst.Arguments);
 	}
 	
-	protected internal override ushort ConvertInstruction(InstructionAst instructionAst) {
+	public ushort ConvertInstruction(InstructionAst instructionAst) {
 		Instructions.TryGetValue(instructionAst.Mnemonic, out Instruction? instruction);
 		
 		return instruction!.Convert(instructionAst.Arguments);
@@ -32,11 +37,4 @@ public abstract class InstructionMapProgramAssembler : ProgramAssembler {
 		public abstract InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> arguments);
 		public abstract ushort Convert(IReadOnlyList<InstructionArgumentAst> arguments);
 	}
-}
-
-public enum InstructionSupport {
-	Supported,
-	NotRecognized,
-	ParameterType,
-	OtherError,
 }

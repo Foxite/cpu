@@ -3,8 +3,8 @@ using IAT = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentType;
 
 namespace Assembler.Assembly;
 
-public class Proc16bAssembler : InstructionMapProgramAssembler {
-	public Proc16bAssembler() : base("Proc16b") {
+public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
+	public Proc16bInstructionConverter() : base("Proc16b") {
 		AddInstruction("ldc",   new ldcInstruction());
 		
 		AddInstruction("add",   new aluInstruction(0b00000));
