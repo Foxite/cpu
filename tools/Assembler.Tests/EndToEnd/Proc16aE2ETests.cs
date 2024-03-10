@@ -112,6 +112,90 @@ public class Proc16aE2ETests {
 			},
 			new object[] {
 				"""
+				# Fill RAM addresses with the fibonacci sequence.
+				# Tests addition, subtraction, reading and writing from RAM, data words, jumping unconditionally.
+
+				.const fib0Ptr, $1
+				.const lastFibPtrPtr, $0
+
+				# initialize fib[0]
+				ldi %a, fib0Ptr # A = 1         # data 0x0001                     ; 0b0000 0000 0000 0001   ; 0x0001
+				ldi *a, $1      # *A = 1        # ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
+
+				# fib[1]
+				add %a, %a, $1 # A = A + 1      # ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
+				ldi *a, $1     # *A = 1         # ALU x=1  y=0  op=add   write=*A ; 0b100 0 10 01 00000 100 ; 0x8904
+
+				# lastFibPtr = 0
+				# *lastFibPtr = &fib[1]
+				mov %b, %a     # B = A          # ALU x=A  y=0  op=add   write=B  ; 0b100 0 00 01 00000 010 ; 0x8102
+				ldi %a, lastFibPtrPtr # A = 0   # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				mov *a, %b     # *A = B         # ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
+
+				computeNext: #                                ; label 0x0007
+				# A = &&fib[last]
+				ldi %a, lastFibPtrPtr # A = 0   # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+
+				# A = &fib[last]
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+
+				# D = fib[last]
+				mov %b, *a     # B = *A         # ALU x=*A y=0  op=add   write=B  ; 0b100 0 11 01 00000 010 ; 0x8D02
+
+				# A = &fib[last - 1]
+				sub %a, %a, $1 # A = A - 1      # ALU x=A  y=1  op=sub   write=A  ; 0b100 0 00 10 00001 001 ; 0x8209
+
+				# A = fib[last - 1]
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+
+				# B = fib[last - 1] + fib[last]
+				# B = fib[next]
+				add %b, %a, %b # B = A + B      # ALU x=A  y=B  op=add   write=B  ; 0b100 0 00 00 00000 010 ; 0x8002
+
+				# A = &&fib[last]
+				ldi %a, lastFibPtrPtr # A = 0   # data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				# A = &fib[last]
+				mov %a, *a     # A = *A         # ALU x=*A y=0  op=add   write=A  ; 0b100 0 11 01 00000 001 ; 0x8D01
+				# A = &fib[next]
+				add %a, %a, $1 # A = A + 1      # ALU x=A  y=1  op=add   write=A  ; 0b100 0 00 10 00000 001 ; 0x8201
+
+				# Save fib[next] to memory
+				mov *a, %b     # *A = B	        # ALU x=B  y=0  op=add   write=*A ; 0b100 1 00 01 00000 100 ; 0x9104
+
+				# Update pointer
+				ldi %a, lastFibPtrPtr # A = 0	# data 0x0000                     ; 0b0000 0000 0000 0000   ; 0x0000
+				add *a, *a, $1 # *A = *A + 1	# ALU x=*A b=1  op=add   write=*A ; 0b100 0 11 10 00000 100 ; 0x8E04
+				 
+				ldi %a, computeNext # A = computeNext # data 0x0007               ; 0b0000 0000 0000 0111   ; 0x0007
+				jmp %a         # true JMP A     # JMP x=B op=true to=A            ; 0b10100 0000000 1 111   ; 0xA00F
+
+				""",
+				new ushort[] {
+					0x0001,
+					0x8904,
+					0x8201,
+					0x8904,
+					0x8102,
+					0x0000,
+					0x9104,
+					0x0000,
+					0x8D01,
+					0x8D02,
+					0x8209,
+					0x8D01,
+					0x8002,
+					0x0000,
+					0x8D01,
+					0x8201,
+					0x9104,
+					0x0000,
+					0x8E04,
+					0x0007,
+					0xA00F,
+				},
+			},
+			new object[] {
+				"""
 				# fill RAM cells with their addresses.
 
 				ldi %b, $0     # B = 0      #      ALU x=0 y=0 op=add write=B   ; 100 0 01 01 00000 010 ; 0x8502

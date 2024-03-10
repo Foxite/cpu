@@ -145,32 +145,32 @@ public class Proc16aAssemblerTests {
 	[Test]
 	[TestCaseSource(nameof(ValidationTestCases))]
 	public void TestValidation(InstructionAst instruction, InstructionSupport expectedResult) {
-		Assert.That(m_Assembler.ValidateInstruction(instruction, _ => throw new Exception("Should not be called")), Is.EqualTo(expectedResult));
+		Assert.That(m_Assembler.ValidateInstruction(instruction), Is.EqualTo(expectedResult));
 	}
 	
 	
 	private static object[][] ConvertInstructionTestCases() => new[] {
-		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Constant(0), IAA.Constant(0)), 0, 0x8502u },
-		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(0)), 0, 0x8502u },
-		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(1)), 0, 0x8902u },
-		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(2)), 0, 0x8A02u },
-		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-1)), 0, 0x860Au },
-		new object[] { new InstructionAst("ldi", IAA.Register("b"), IAA.Constant(-2)), 0, 0x8892u },
-		new object[] { new InstructionAst("mov", IAA.StarRegister("b"), IAA.Register("b")), 0, 0xD104u },
-		new object[] { new InstructionAst("add", IAA.Register("b"), IAA.Register("b"), IAA.Constant(1)), 0, 0x9202u },
-		new object[] { new InstructionAst("add", IAA.Register("a"), IAA.Register("a"), IAA.Constant(1)), 0, 0x8201u },
-		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Symbol("next")), 1, 0x0001u },
-		new object[] { new InstructionAst("ldi", IAA.Register("a"), IAA.Constant(1)), 0, 0x0001u },
-		new object[] { new InstructionAst("jmp", IAA.Register("a")), 0, 0xA00Fu },
-		new object[] { new InstructionAst("jgt", IAA.Register("b"), IAA.Register("a"), IAA.Constant(0)), 0, 0xA001u },
+		new object[] { new InstructionAst("add", IAA.Register("b"),     IAA.Constant(0),     IAA.Constant(0)), 0x8502u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"),     IAA.Constant(0)),                      0x8502u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"),     IAA.Constant(1)),                      0x8902u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"),     IAA.Constant(2)),                      0x8A02u },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"),     IAA.Constant(-1)),                     0x860Au },
+		new object[] { new InstructionAst("ldi", IAA.Register("b"),     IAA.Constant(-2)),                     0x8892u },
+		new object[] { new InstructionAst("mov", IAA.StarRegister("b"), IAA.Register("b")),                    0xD104u },
+		new object[] { new InstructionAst("add", IAA.Register("b"),     IAA.Register("b"),   IAA.Constant(1)), 0x9202u },
+		new object[] { new InstructionAst("add", IAA.Register("a"),     IAA.Register("a"),   IAA.Constant(1)), 0x8201u },
+		//new object[] { new InstructionAst("ldi", IAA.Register("a"),     IAA.Symbol("next")),                 0x0001u },
+		new object[] { new InstructionAst("ldi", IAA.Register("a"),     IAA.Constant(1)),                      0x0001u },
+		new object[] { new InstructionAst("jmp", IAA.Register("a")),                                           0xA00Fu },
+		new object[] { new InstructionAst("jgt", IAA.Register("b"),     IAA.Register("a"),   IAA.Constant(0)), 0xA001u },
 	};
 	
 	[Test]
 	[TestCaseSource(nameof(ConvertInstructionTestCases))]
-	public void TestConvertInstruction(InstructionAst statement, int symbolValue, uint expectedResult) {
-		Assert.That(m_Assembler.ValidateInstruction(statement, _ => (ushort) symbolValue), Is.EqualTo(InstructionSupport.Supported), "Statement was not validated");
+	public void TestConvertInstruction(InstructionAst statement, uint expectedResult) {
+		Assert.That(m_Assembler.ValidateInstruction(statement), Is.EqualTo(InstructionSupport.Supported), "Statement was not validated");
 
-		ushort result = m_Assembler.ConvertInstruction(statement, _ => (ushort) symbolValue);
+		ushort result = m_Assembler.ConvertInstruction(statement);
 		
 		Assert.That(result, Is.EqualTo((ushort) expectedResult), "Expected 0x{0:X4} received 0x{1:X4}", expectedResult, result);
 	}

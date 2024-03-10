@@ -5,20 +5,28 @@
 	# b: fib(n)
 	# c: fib(n+1)
 	# d: 0x0000 and computeNext
-	ldc %a, $1
-	ldc %b, $1
+	
+	
+.reg fib0,  %a
+.reg fib1,  %b
+.reg fib2,  %c
+.reg other, %d
+.const busOutput, $0
+
+	ldc fib0, $1
+	ldc fib1, $1
 
 computeNext:
-	ldc %d, $0
-	add %c, %a, %b   # c = a + b
-	stb %d, %c       # *0 = c
+	ldc other, busOutput
+	add fib2, fib0, fib1   # c = a + b
+	stb other, fib2       # *0 = c
 	
-	add %a, %b, %c   # a = b + c
-	stb %d, %a       # *0 = a
+	add fib0, fib1, fib2   # a = b + c
+	stb other, fib0       # *0 = a
 	
-	add %b, %c, %a   # b = c + a
-	stb %d, %b       # *0 = b
+	add fib1, fib2, fib0   # b = c + a
+	stb other, fib1       # *0 = b
 	
 	
-	ldc %d, computeNext
-	jmp %d
+	ldc other, computeNext
+	jmp other

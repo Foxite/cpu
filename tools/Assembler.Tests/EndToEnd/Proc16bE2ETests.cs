@@ -21,13 +21,17 @@ public class Proc16bE2ETests {
 				# increment A forever.
 				# Tests data words, ALU to A, ALU to B, jumping unconditionally.
 
-					ldc %a, $0      # address 0b00 00 000000000000
-					ldc %b, $1      # one     0b00 01 000000000001
-					ldc %c, loop    # label   0b00 10 000000000011
+				.reg val,   %a
+				.reg one,   %b
+				.reg label, %c
+
+					ldc val, $0        # 0b00 00 000000000000
+					ldc one,     $1    # 0b00 01 000000000001
+					ldc label,   loop  # 0b00 10 000000000011
 					
 				loop:
-					add %a, %a, %b  #         0b01 00 01 00 00000 000
-					jmp %c          #         0b100 00 00 10 111 0000
+					add val, val, one   # 0b01 00 01 00 00000 000
+					jmp label           # 0b100 00 00 10 111 0000
 				""",
 				new ushort[] {
 					0x0000,
@@ -51,21 +55,25 @@ public class Proc16bE2ETests {
 				"""
 				# fill RAM cells with their addresses times two.
 				
-					ldc %a, $0 # address       # 0b00 00 000000000000
-					ldc %b, $0 # value         # 0b00 01 000000000000
-					ldc %c, $1 # $1            # 0b00 10 000000000001
+				.reg address, %a
+				.reg value,   %b
+				.reg one,     %c
+				
+					ldc address, $0 # 0b00 00 000000000000
+					ldc value,   $0 # 0b00 01 000000000000
+					ldc one,     $1 # 0b00 10 000000000001
 				
 				fill:                          # label value = 3
 					ldc %d, $2 # $2            # 0b00 11 000000000010
 					
 					# a = a + 1 (address + 1)
-					add %a, %a, %c             # 0b01 00 10 00 00000 000
+					add address, address, one  # 0b01 00 10 00 00000 000
 					
 					# b = a * d (address * 2)
-					mul %b, %a, %d             # 0b01 00 11 01 00010 000
+					mul value, address, %d     # 0b01 00 11 01 00010 000
 					
 					# *a = b
-					stb %a, %b                 # 0b1011 1 000 001 00000
+					stb address, value         # 0b1011 1 000 001 00000
 					
 					ldc %d, fill               # 0b00 11 000000000011 (label value = 3)
 					jump %d                    # 0b100 00 00 11 111 0000

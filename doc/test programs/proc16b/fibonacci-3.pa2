@@ -4,17 +4,24 @@
 	# b: fib(n)
 	# c: fib(n+1)
 	# d: 0x0000 and computeNext
-	ldc %a, $1
-	ldc %b, $1
-	ldc %d, $0
+
+.reg fib0,  %a
+.reg fib1,  %b
+.reg fib2,  %c
+.reg other, %d
+.const busOutput, $0
+
+	ldc fib0, $1
+	ldc fib1, $1
+	ldc other, busOutput
 
 computeNext:
-	add %c, %a, %b   # c = a + b
-	mov %b, %a       # a = b
-	mov %c, %b       # b = c
+	add fib2, fib0, fib1   # c = a + b
+	mov fib1, fib0         # a = b
+	mov fib2, fib1         # b = c
 
-	ldc %d, $0
-	stb %d, %b       # *0 = b
+	ldc other, busOutput
+	stb other, fib1        # *0 = b
 
-	ldc %d, computeNext
-	jmp %d
+	ldc other, computeNext
+	jmp other
