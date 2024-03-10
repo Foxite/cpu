@@ -47,16 +47,6 @@
       <pos x="140" y="220"/>
     </visualElement>
     <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>clock</string>
-        </entry>
-      </elementAttributes>
-      <pos x="140" y="300"/>
-    </visualElement>
-    <visualElement>
       <elementName>Register</elementName>
       <elementAttributes>
         <entry>
@@ -73,6 +63,10 @@
     <visualElement>
       <elementName>Register</elementName>
       <elementAttributes>
+        <entry>
+          <string>valueIsProbe</string>
+          <boolean>true</boolean>
+        </entry>
         <entry>
           <string>Label</string>
           <string>B</string>
@@ -2556,37 +2550,57 @@ C 0b1000000101110000  0x0007 0x0001 0x0003 0x0000 0x0003   0
         <entry>
           <string>Testdata</string>
           <testData>
-            <dataString>clock inst  reg_a  reg_b  reg_c  reg_d  ptr_inst bus_addr bus_out bus_write
-C   0x0001  x      x      x      x      0x0001   x        x       0
-C   0xb800  0x0001 x      x      x      0x0002   0x0001   0x0001  1
-C   0x0002  0x0002 x      x      x      0x0003   x        x       0
-C   0xb800  0x0002 x      x      x      0x0004   0x0002   0x0002  1
-C   0x1000  0x0002 0x0000 x      x      0x0005   x        x       0
-C   0xb900  0x0002 0x0000 x      x      0x0006   0x0000   0x0002  1
-C   0x0001  0x0001 0x0000 x      x      0x0007   x        x       0
-C   0x3001  0x0001 0x0000 x      0x0001 0x0008   x        x       0
-C   0xb360  
-C   0x7208
-C   0x7100
-C   0xa100
-C   0xb360
-C   0xb240
-C   0xb120
-C   0x6d00
-C   0xb820
-C   0x0000
-C   0xb820
-C   0x3001
-C   0xb360
-C   0x7300
-C   0xb360
-C   0x1006
-C   0x80f0
-</dataString>
+            <dataString>clock inst bus_in  reg_a  reg_b  reg_c  reg_d  ptr_inst bus_addr bus_out bus_write
+C   0x0001 0xFFFF  0x0001 x      x      x      0x0001   x        x       0
+C   0xb800 0xFFFF  0x0001 x      x      x      0x0002   0x0001   0x0001  1
+C   0x0002 0xFFFF  0x0002 x      x      x      0x0003   x        x       0
+C   0xb800 0xFFFF  0x0002 x      x      x      0x0004   0x0002   0x0002  1
+C   0x1000 0xFFFF  0x0002 0x0000 x      x      0x0005   x        x       0
+C   0xb900 0xFFFF  0x0002 0x0000 x      x      0x0006   0x0000   0x0002  1
+C   0x0001 0xFFFF  0x0001 0x0000 x      x      0x0007   x        x       0
+C   0x3001 0xFFFF  0x0001 0x0000 x      0x0001 0x0008   x        x       0
+#C   0xb360 0x0000  0x0001 0x0000 x      0x0001 0x0009   0x0001   x       0</dataString>
           </testData>
         </entry>
       </elementAttributes>
       <pos x="-240" y="720"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>short regression 1</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString># 0xA100 was found to be able to cause a short. however, it is a legal instruction.
+# this is non deterministic.
+# adding repeated 0xA100 instructions does not seem to increase the chance of it happening,
+# but resetting the registers every time does.
+
+clock inst  reg_a  reg_b
+
+loop(a,10)
+  C  0x0000   0      x
+  C  0x1004   0      4
+  C  0xA100   4      4
+end loop</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="-240" y="860"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Clock</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="140" y="300"/>
     </visualElement>
   </visualElements>
   <wires>
@@ -3307,34 +3321,6 @@ C   0x80f0
       <p2 x="1820" y="1020"/>
     </wire>
     <wire>
-      <p1 x="400" y="720"/>
-      <p2 x="400" y="760"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="1360"/>
-      <p2 x="400" y="1400"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="1240"/>
-      <p2 x="400" y="1280"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="1080"/>
-      <p2 x="400" y="1120"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="960"/>
-      <p2 x="400" y="1000"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="840"/>
-      <p2 x="400" y="880"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="1500"/>
-      <p2 x="400" y="1540"/>
-    </wire>
-    <wire>
       <p1 x="1760" y="880"/>
       <p2 x="1760" y="900"/>
     </wire>
@@ -3367,24 +3353,52 @@ C   0x80f0
       <p2 x="1760" y="740"/>
     </wire>
     <wire>
-      <p1 x="1540" y="-20"/>
-      <p2 x="1540" y="0"/>
+      <p1 x="400" y="720"/>
+      <p2 x="400" y="760"/>
     </wire>
     <wire>
-      <p1 x="1080" y="820"/>
-      <p2 x="1080" y="880"/>
+      <p1 x="400" y="1360"/>
+      <p2 x="400" y="1400"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="1240"/>
+      <p2 x="400" y="1280"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="1080"/>
+      <p2 x="400" y="1120"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="960"/>
+      <p2 x="400" y="1000"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="840"/>
+      <p2 x="400" y="880"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="1500"/>
+      <p2 x="400" y="1540"/>
+    </wire>
+    <wire>
+      <p1 x="1540" y="-20"/>
+      <p2 x="1540" y="0"/>
     </wire>
     <wire>
       <p1 x="1960" y="-80"/>
       <p2 x="1960" y="-20"/>
     </wire>
     <wire>
-      <p1 x="860" y="860"/>
-      <p2 x="860" y="900"/>
+      <p1 x="1080" y="820"/>
+      <p2 x="1080" y="880"/>
     </wire>
     <wire>
       <p1 x="700" y="-80"/>
       <p2 x="700" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="860" y="860"/>
+      <p2 x="860" y="900"/>
     </wire>
     <wire>
       <p1 x="1020" y="720"/>

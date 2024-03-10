@@ -1,0 +1,55 @@
+# Fill RAM addresses with the fibonacci sequence.
+# The last fibonacci number is written to the bus at 0x0000.
+
+	# &fib = 2
+	# &lastFibPtr = &&fib[last] = 1
+	
+	# fib[0] (*(2+0)) = 1
+	ldc %a, $2
+	ldc %b, $1
+	stb %a, %b
+
+	# fib[1] (*(2+1)) = 1
+	ldc %a, $3
+	stb %a, %b
+
+	# lastFibPtr (*1) = 3
+	ldc %a, $3
+	stb %b, %a
+	
+computeNext:
+	# compute the next fibonacci number
+	# fib[last + 1] = fib[last] - fib[last - 1]
+		# a = 1
+			ldc %a, $1
+		# d = lastFibPtr
+			ldc %d, $1
+			ldb %d, %d
+		# c = lastFibPtr - 1
+			sub %c, %d, %a
+		# b = lastFibPtr + 1
+			add %b, %d, %a
+		# a = &fib[last + 1]       its address will be used to write the number to ram
+			mov %b, %a
+		# d = *d, c = *c, b = *b
+			ldb %d, %d
+			ldb %c, %c
+			ldb %b, %b
+		# b = c + d = fib[last + 1]
+			add %b, %c, %d
+	
+	# write fibonacci number %b) to &fib[last + 1] (%a) and 0x0000
+	stb %a, %b
+	ldc %a, $0x0000
+	stb %a, %b
+
+	# update pointer
+	# lastFibPtr = lastFibPtr + 1
+		ldc %c, $1       # c = &lastFibPtr
+		ldb %c, %d       # d = *c            d = lastFibPtr
+		add %d, %d, %c   # d = d + 1
+		stb %c, %d       # *c = d
+	
+	# loop
+	ldc %b, computeNext
+	jmp %b
