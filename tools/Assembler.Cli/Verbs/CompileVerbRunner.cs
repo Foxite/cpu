@@ -20,6 +20,9 @@ public class CompileOptions {
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
 	
+	[Option('p', "macro-path", Default = null, HelpText = "Paths to search for macro definitions.")]
+	public string[] MacroPath { get; set; }
+	
 	[Option('o', "output", Default = "-", HelpText = "Filename to output, or - to output to standard output.")]
 	public string Output { get; set; }
 	
@@ -49,9 +52,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileFileReadError;
 		}
 
-
 		var parser = new ProcAssemblyParser();
-
 		ProgramAst program;
 		try {
 			program = parser.Parse(sourceCode);
@@ -61,7 +62,8 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		}
 
 		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(opts.Architecture);
-		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(program);
+		var macroProcessor = new MacroProcessor(parser, programAssemblerFactory, opts.MacroPath);
+		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(new AssemblerProgram("program", "TODO", program), macroProcessor); // TODO
 		IEnumerable<ushort> machineCode;
 
 		try {

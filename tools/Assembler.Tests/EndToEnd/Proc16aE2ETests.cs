@@ -216,7 +216,7 @@ public class Proc16aE2ETests {
 	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
 		ProgramAst ast = m_Parser.Parse(sourceCode);
 
-		List<ushort> assembledProgram = m_Factory.GetAssembler(ast).Assemble().ToList();
+		List<ushort> assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast), null).Assemble().ToList();
 		
 		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
 	}

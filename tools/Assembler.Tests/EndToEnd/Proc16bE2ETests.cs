@@ -100,7 +100,7 @@ public class Proc16bE2ETests {
 
 		List<ushort> assembledProgram;
 		try {
-			assembledProgram = m_Factory.GetAssembler(ast).Assemble().ToList();
+			assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast), null).Assemble().ToList();
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Assert.Fail(
 				"Test failed due to {0}:\n{1}",

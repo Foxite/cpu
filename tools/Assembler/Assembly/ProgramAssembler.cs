@@ -42,12 +42,12 @@ public sealed class ProgramAssembler {
 		}
 
 		var result = new List<ushort>();
-		foreach (var instruction in m_ExecutableInstructions) {
+		foreach (InstructionAst instruction in m_ExecutableInstructions) {
 			
 			if (instruction.Mnemonic.StartsWith("#")) {
-				ProcessInclude(statement.Instruction, i);
+				result.AddRange(ProcessInclude(instruction, result.Count));
 			} else {
-				m_InstructionConverter.ConvertInstruction(instruction);
+				result.Add(m_InstructionConverter.ConvertInstruction(instruction));
 			}
 		}
 
@@ -111,13 +111,11 @@ public sealed class ProgramAssembler {
 		}
 	}
 
-	private InstructionSupport ProcessInclude(InstructionAst instruction, int index) {
+	private IEnumerable<ushort> ProcessInclude(InstructionAst instruction, int index) {
 		var includeName = instruction.Mnemonic[1..];
 
 		var macroProgramAst = m_MacroProcessor.GetMacro(includeName);
-		var macroProgram = m_MacroProcessor.AssembleMacro(index, macroProgramAst, instruction.Arguments);
-		
-		
+		return m_MacroProcessor.AssembleMacro(index, macroProgramAst, instruction.Arguments);
 	}
 	
 	private InstructionSupport ProcessAssemblerCommand(InstructionAst instruction) {
@@ -153,15 +151,5 @@ public sealed class ProgramAssembler {
 		} else {
 			return InstructionSupport.ParameterType;
 		}
-	}
-}
-
-public class MacroProcessor {
-	public ProgramAst GetMacro(string name) {
-		
-	}
-
-	public IEnumerable<ushort> AssembleMacro(int instructionOffset, ProgramAst programAst, IReadOnlyList<InstructionArgumentAst> arguments) {
-		
 	}
 }
