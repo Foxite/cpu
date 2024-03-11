@@ -30,7 +30,7 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		if (!Program.ProgramAssemblerFactory.CanGetAssembler(opts.Architecture)) {
+		if (!ProgramAssemblerFactory.ArchitectureIsSupported(opts.Architecture)) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
 			return ExitCode.CommandInvalid;
 		}
@@ -60,7 +60,8 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileParseError;
 		}
 
-		ProgramAssembler assembler = Program.ProgramAssemblerFactory.GetAssembler(opts.Architecture, program);
+		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(opts.Architecture);
+		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(program);
 		IEnumerable<ushort> machineCode;
 
 		try {

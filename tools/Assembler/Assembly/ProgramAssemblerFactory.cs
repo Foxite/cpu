@@ -3,16 +3,28 @@ using Assembler.Parsing.ProcAssemblyV2;
 namespace Assembler.Assembly;
 
 public class ProgramAssemblerFactory {
-	public IEnumerable<string> SupportedArchitectures => new []{ "proc16a", "proc16b" };
+	private readonly IInstructionConverter m_InstructionConverter;
 	
-	public ProgramAssembler GetAssembler(string architecture, ProgramAst programAst) {
-		return architecture.ToLower() switch {
-			"proc16a" => new ProgramAssembler(new Proc16aInstructionConverter(), programAst),
-			"proc16b" => new ProgramAssembler(new Proc16bInstructionConverter(), programAst),
-		};
+	public string Architecture => m_InstructionConverter.Architecture;
+
+	public static IReadOnlyCollection<string> SupportedArchitectures => new []{ "proc16a", "proc16b" };
+
+	public ProgramAssemblerFactory(IInstructionConverter instructionConverter) {
+		m_InstructionConverter = instructionConverter;
 	}
 	
-	public bool CanGetAssembler(string architecture) {
-		return architecture.ToLower() is "proc16a" or "proc16b";
+	public ProgramAssembler GetAssembler(ProgramAst programAst) {
+		return new ProgramAssembler(m_InstructionConverter, programAst);
+	}
+	
+	public static bool ArchitectureIsSupported(string architecture) {
+		return SupportedArchitectures.Contains(architecture.ToLower());
+	}
+
+	public static ProgramAssemblerFactory CreateFactory(string architecture) {
+		return new ProgramAssemblerFactory(architecture switch {
+			"proc16a" => new Proc16aInstructionConverter(),
+			"proc16b" => new Proc16bInstructionConverter(),
+		});
 	}
 }

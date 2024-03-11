@@ -2,8 +2,6 @@
 using CommandLine;
 
 public class Program {
-	public static readonly ProgramAssemblerFactory ProgramAssemblerFactory = new ProgramAssemblerFactory();
-	
 	public static int Main(string[] args) {
 		var commandParser = new Parser(settings => {
 			settings.HelpWriter = Console.Error;
