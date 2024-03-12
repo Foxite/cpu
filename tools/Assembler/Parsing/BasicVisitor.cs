@@ -31,12 +31,12 @@ public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 	}
 
 	public override IAssemblyAst VisitInstruction(ProcAssemblyV2Grammar.InstructionContext context) {
-		string instructionTerm = context.SYMBOL().GetText();
-		if (context.DOT() != null) {
-			instructionTerm = "." + instructionTerm;
-		}
-
-		return new InstructionAst(instructionTerm, context.instructionArgument().Select(Visit).Cast<InstructionArgumentAst>().ToList());
+		ProcAssemblyV2Grammar.InstructionMnemonicContext mnemonic = context.instructionMnemonic();
+		return new InstructionAst(
+			//(InstructionMnemonicAst) Visit(context.instructionMnemonic()),
+			mnemonic.DOT()?.GetText() + mnemonic.ATSIGN()?.GetText() + mnemonic.SYMBOL().GetText(),
+			context.instructionArgument().Select(Visit).Cast<InstructionArgumentAst>().ToList()
+		);
 	}
 
 	public override IAssemblyAst VisitInstructionArgument(ProcAssemblyV2Grammar.InstructionArgumentContext context) {

@@ -61,9 +61,9 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileParseError;
 		}
 
-		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(opts.Architecture);
-		var macroProcessor = new MacroProcessor(parser, programAssemblerFactory, opts.MacroPath);
-		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(new AssemblerProgram("program", "TODO", program), macroProcessor); // TODO
+		Dictionary<string, InstructionArgumentAst> globalSymbols; // TODO
+		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath), opts.Architecture, globalSymbols);
+		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(new AssemblerProgram("main", opts.Input == "-" ? "-" : Path.GetFullPath(opts.Input), program));
 		IEnumerable<ushort> machineCode;
 
 		try {

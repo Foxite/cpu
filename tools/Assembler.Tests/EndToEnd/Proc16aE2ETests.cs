@@ -11,7 +11,7 @@ public class Proc16aE2ETests {
 	[SetUp]
 	public void Setup() {
 		m_Parser = new ProcAssemblyParser();
-		m_Factory = new ProgramAssemblerFactory(new Proc16aInstructionConverter());
+		m_Factory = new ProgramAssemblerFactory(new Proc16aInstructionConverter(), new DictionaryMacroProvider(m_Parser));
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -216,7 +216,7 @@ public class Proc16aE2ETests {
 	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
 		ProgramAst ast = m_Parser.Parse(sourceCode);
 
-		List<ushort> assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast), null).Assemble().ToList();
+		List<ushort> assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast)).Assemble().ToList();
 		
 		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
 	}

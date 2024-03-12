@@ -7,6 +7,7 @@ namespace Assembler.Assembly;
 /// </summary>
 public sealed class ProgramAssembler {
 	private readonly IInstructionConverter m_InstructionConverter;
+	private readonly IMacroProvider m_MacroProvider;
 	private readonly MacroProcessor m_MacroProcessor;
 	
 	private readonly int m_InstructionOffset;
@@ -19,8 +20,9 @@ public sealed class ProgramAssembler {
 
 	public string Architecture => m_InstructionConverter.Architecture;
 
-	public ProgramAssembler(IInstructionConverter instructionConverter, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
+	public ProgramAssembler(IInstructionConverter instructionConverter, IMacroProvider macroProvider, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
 		m_InstructionConverter = instructionConverter;
+		m_MacroProvider = macroProvider;
 		m_MacroProcessor = macroProcessor;
 		m_Program = program;
 		m_InstructionOffset = instructionOffset;
@@ -43,8 +45,7 @@ public sealed class ProgramAssembler {
 
 		var result = new List<ushort>();
 		foreach (InstructionAst instruction in m_ExecutableInstructions) {
-			
-			if (instruction.Mnemonic.StartsWith("#")) {
+			if (instruction.Mnemonic.StartsWith("@")) {
 				result.AddRange(ProcessInclude(instruction, result.Count));
 			} else {
 				result.Add(m_InstructionConverter.ConvertInstruction(instruction));
@@ -74,8 +75,8 @@ public sealed class ProgramAssembler {
 		InstructionSupport support;
 		if (statement.Instruction.Mnemonic.StartsWith(".")) {
 			support = ProcessAssemblerCommand(statement.Instruction);
-		} else if (statement.Instruction.Mnemonic.StartsWith("#")) {
-			// Will be processed during Convert stage
+		} else if (statement.Instruction.Mnemonic.StartsWith("@")) {
+			m_ExecutableInstructions.Add(statement.Instruction);
 			support = InstructionSupport.Supported;
 		} else {
 			support = ProcessInstruction(statement, i);
@@ -112,9 +113,9 @@ public sealed class ProgramAssembler {
 	}
 
 	private IEnumerable<ushort> ProcessInclude(InstructionAst instruction, int index) {
-		var includeName = instruction.Mnemonic[1..];
+		string includeName = instruction.Mnemonic[1..];
 
-		var macroProgramAst = m_MacroProcessor.GetMacro(includeName);
+		AssemblerProgram macroProgramAst = m_MacroProvider.GetMacro(includeName);
 		return m_MacroProcessor.AssembleMacro(index, macroProgramAst, instruction.Arguments);
 	}
 	

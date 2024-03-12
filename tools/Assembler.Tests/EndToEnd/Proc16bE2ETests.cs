@@ -11,7 +11,7 @@ public class Proc16bE2ETests {
 	[SetUp]
 	public void Setup() {
 		m_Parser = new ProcAssemblyParser();
-		m_Factory = new ProgramAssemblerFactory(new Proc16bInstructionConverter());
+		m_Factory = new ProgramAssemblerFactory(new Proc16bInstructionConverter(), new DictionaryMacroProvider(m_Parser));
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -100,7 +100,7 @@ public class Proc16bE2ETests {
 
 		List<ushort> assembledProgram;
 		try {
-			assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast), null).Assemble().ToList();
+			assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast)).Assemble().ToList();
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Assert.Fail(
 				"Test failed due to {0}:\n{1}",

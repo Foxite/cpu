@@ -12,8 +12,12 @@ programStatement
 	//| INCLUDE STRING
 	;
 
+instructionMnemonic
+	: (DOT | ATSIGN)? SYMBOL
+	;
+
 instruction
-	: DOT? SYMBOL ((instructionArgument COMMA)* instructionArgument)?
+	: instructionMnemonic ((instructionArgument COMMA)* instructionArgument)?
 	;
 
 instructionArgument
