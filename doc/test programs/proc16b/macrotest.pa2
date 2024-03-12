@@ -1,0 +1,40 @@
+.const theConst, $0x10
+
+# pre test: *0 = 0x88
+ldc %a, $0
+ldc %b, $0x88
+stb %a, %b
+
+@ldcs theConst
+
+add %c, %a, %b
+
+ldc %d, $0x20
+
+ldc %a, succeed
+jeq %a, %c, %d
+
+
+fail:
+# *0 = 0x44
+ldc %a, $0
+ldc %b, $0x44
+stb %a, %b
+
+ldc %a, end
+jump %a
+
+
+succeed:
+# *0 = 0x11
+ldc %a, $0
+ldc %b, $0x11
+stb %a, %b
+
+#ldc %a, end
+#jump %a
+
+
+end:
+brk
+

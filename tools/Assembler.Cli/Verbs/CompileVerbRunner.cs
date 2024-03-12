@@ -20,8 +20,11 @@ public class CompileOptions {
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
 	
-	[Option('p', "macro-path", Default = null, HelpText = "Paths to search for macro definitions.")]
-	public string[] MacroPath { get; set; }
+	[Option('p', "macro-path", Separator = ',', Default = null, HelpText = "Paths to search for macro definitions.")]
+	public IEnumerable<string> MacroPath { get; set; }
+	
+	[Option('s', "symbol", Separator = ',', Default = null, HelpText = "Symbols defined globally in the program. key=value")]
+	public IEnumerable<string> GlobalSymbols { get; set; }
 	
 	[Option('o', "output", Default = "-", HelpText = "Filename to output, or - to output to standard output.")]
 	public string Output { get; set; }
@@ -61,8 +64,15 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileParseError;
 		}
 
-		Dictionary<string, InstructionArgumentAst> globalSymbols; // TODO
-		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath), opts.Architecture, globalSymbols);
+		var globalSymbols = new Dictionary<string, InstructionArgumentAst>(opts.GlobalSymbols.Select(item => {
+			int split = item.IndexOf('=');
+			string name = item[..split];
+			string value = item[(split + 1)..];
+
+			return new KeyValuePair<string, InstructionArgumentAst>(name, parser.ParseSymbolValue(value));
+		}));
+			
+		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath.ToArray()), opts.Architecture, globalSymbols);
 		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(new AssemblerProgram("main", opts.Input == "-" ? "-" : Path.GetFullPath(opts.Input), program));
 		IEnumerable<ushort> machineCode;
 
