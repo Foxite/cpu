@@ -1,2 +1,3 @@
 ldc %a, macro0
 ldc %b, macro0
+noop

@@ -5,6 +5,7 @@ ldc %a, $0
 ldc %b, $0x88
 stb %a, %b
 
+# BUG: macro inclusions do not affect the value of subsequent label symbols
 @ldcs theConst
 
 add %c, %a, %b
@@ -23,7 +24,6 @@ stb %a, %b
 
 ldc %a, end
 jump %a
-
 
 succeed:
 # *0 = 0x11

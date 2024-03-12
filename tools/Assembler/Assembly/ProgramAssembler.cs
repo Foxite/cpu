@@ -87,17 +87,21 @@ public sealed class ProgramAssembler {
 		}
 	}
 
+	private IReadOnlyList<InstructionArgumentAst> ReplaceSymbolsInArguments(IReadOnlyList<InstructionArgumentAst> arguments) {
+		return arguments.Select(arg => {
+			if (arg.Type == InstructionArgumentType.Symbol) {
+				return m_SymbolDefinitions[arg.RslsValue!];
+			} else {
+				return arg;
+			}
+		}).ToList();
+	}
+
 	private InstructionSupport ProcessInstruction(ProgramStatementAst statement, int index) {
 		statement = statement with {
 			Instruction = statement.Instruction with {
-				Arguments = statement.Instruction.Arguments.Select(arg => {
-					if (arg.Type == InstructionArgumentType.Symbol) {
-						return m_SymbolDefinitions[arg.RslsValue!];
-					} else {
-						return arg;
-					}
-				}).ToList(),
-			},
+				Arguments = ReplaceSymbolsInArguments(statement.Instruction.Arguments)
+			}
 		};
 
 		m_StatementList[index] = statement;
@@ -116,7 +120,7 @@ public sealed class ProgramAssembler {
 		string includeName = instruction.Mnemonic[1..];
 
 		AssemblerProgram macroProgramAst = m_MacroProvider.GetMacro(includeName);
-		return m_MacroProcessor.AssembleMacro(index, macroProgramAst, instruction.Arguments);
+		return m_MacroProcessor.AssembleMacro(index, macroProgramAst, ReplaceSymbolsInArguments(instruction.Arguments));
 	}
 	
 	private InstructionSupport ProcessAssemblerCommand(InstructionAst instruction) {
