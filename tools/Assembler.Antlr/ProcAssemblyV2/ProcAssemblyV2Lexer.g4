@@ -46,6 +46,10 @@ DOT
 	: '.'
 	;
 
+ATSIGN	
+	: '@'
+	;
+
 DEFINE
 	: '@define'
 	;

@@ -20,6 +20,12 @@ public class CompileOptions {
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
 	
+	[Option('p', "macro-path", Separator = ',', Default = null, HelpText = "Paths to search for macro definitions.")]
+	public IEnumerable<string> MacroPath { get; set; }
+	
+	[Option('s', "symbol", Separator = ',', Default = null, HelpText = "Symbols defined globally in the program. key=value")]
+	public IEnumerable<string> GlobalSymbols { get; set; }
+	
 	[Option('o', "output", Default = "-", HelpText = "Filename to output, or - to output to standard output.")]
 	public string Output { get; set; }
 	
@@ -30,7 +36,7 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		if (!Program.ProgramAssemblerFactory.CanGetAssembler(opts.Architecture)) {
+		if (!ProgramAssemblerFactory.ArchitectureIsSupported(opts.Architecture)) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
 			return ExitCode.CommandInvalid;
 		}
@@ -49,9 +55,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileFileReadError;
 		}
 
-
 		var parser = new ProcAssemblyParser();
-
 		ProgramAst program;
 		try {
 			program = parser.Parse(sourceCode);
@@ -60,7 +64,16 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return ExitCode.CompileParseError;
 		}
 
-		ProgramAssembler assembler = Program.ProgramAssemblerFactory.GetAssembler(opts.Architecture, program);
+		var globalSymbols = new Dictionary<string, InstructionArgumentAst>(opts.GlobalSymbols.Select(item => {
+			int split = item.IndexOf('=');
+			string name = item[..split];
+			string value = item[(split + 1)..];
+
+			return new KeyValuePair<string, InstructionArgumentAst>(name, parser.ParseSymbolValue(value));
+		}));
+			
+		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath.ToArray()), opts.Architecture, globalSymbols);
+		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(new AssemblerProgram("main", opts.Input == "-" ? "-" : Path.GetFullPath(opts.Input), program));
 		IEnumerable<ushort> machineCode;
 
 		try {

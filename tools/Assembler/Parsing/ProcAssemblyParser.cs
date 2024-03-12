@@ -5,7 +5,7 @@ using Assembler.Parsing.ProcAssemblyV2.Antlr;
 namespace Assembler.Parsing.Antlr;
 
 public class ProcAssemblyParser {
-	public ProgramAst Parse(string sourceCode) {
+	private T UseParser<T>(string sourceCode, Func<ProcAssemblyV2Grammar, T> callback) {
 		var charStream = new AntlrInputStream(sourceCode);
 		Lexer lexer = new ProcAssemblyV2Lexer(charStream);
 		var tokens = new CommonTokenStream(lexer);
@@ -20,7 +20,7 @@ public class ProcAssemblyParser {
 		lexer.AddErrorListener(errorListenerLexer);
 		parser.AddErrorListener(errorListenerParser);
 
-		var program = (ProgramAst) new BasicVisitor().Visit(parser.program());
+		T ret = callback(parser);
 
 		if (errorListenerLexer.HadError) {
 			throw new ParserException("Lexer errors:\n" + string.Join('\n', errorListenerParser.Errors.Select(error => error.ToString())));
@@ -30,6 +30,14 @@ public class ProcAssemblyParser {
 			throw new ParserException("Parser errors:\n" + string.Join('\n', errorListenerParser.Errors.Select(error => error.ToString())));
 		}
 
-		return program;
+		return ret;
+	}
+	
+	public ProgramAst Parse(string sourceCode) {
+		return UseParser(sourceCode, parser => (ProgramAst) new BasicVisitor().Visit(parser.program()));
+	}
+	
+	public InstructionArgumentAst ParseSymbolValue(string value) {
+		return UseParser(value, parser => (InstructionArgumentAst) new BasicVisitor().VisitInstructionArgument(parser.instructionArgument()));
 	}
 }

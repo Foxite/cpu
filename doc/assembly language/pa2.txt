@@ -1,11 +1,39 @@
 pa2 (procassembly v2) is a lot like x86 assembly. Every instruction is specified by its name, and any number of arguments, on a single line.
 
-If a parameter is a register it is prefixed by %, if it's a constant it's prefixed by $. If it's a symbol, it does not have a prefix.
-
-Hex (0x) and binary (0b) numeric literals are supported as constant values.
-
-Symbols are references to jump labels anywhere in the program. In future versions, named constants may also be used as symbols.
-
-There is a vision for a macro system, file inclusions, and assembler commands (for example: an "instruction" that gets translated into a constant byte sequence, rather than a logical instruction)
-
 A working parser and assembler written in C# is in the tools directory.
+
+
+# instruction names (mnemonic)
+The list of available instructions for each instruction set is in the "doc/instruction sets" folder. there are also a few assembler commands, which do not correspond to a machine code instruction, and are executed by the assembler at compile time. these have their name prefixed with a dot (.)
+
+Supported assembler commands are:
+- `.const symbol, constant` - this defines a symbol that expands to a constant
+- `.reg symbol, register` - this defines a symbol that expands to a register
+
+# parameter types
+There are 4 types of parameter:
+- Register, prefixed with %
+- Star register, prefixed with * - this is only used in proc16a
+- Constant, prefixed with $ - the constants themselves can be decimal, binary (0b prefix) or hexadecimal (0x prefix)
+- Symbol, no prefix - this expands to a different parameter type, see below
+
+
+# symbols
+Symbols are words that are defined within the assembly program. when an instruction is converted into machine code, any symbols in its parameters are converted to their defined value.
+
+a symbol can be defined by an assembler command (which will only be usable in code following the command), or by a jump label (which are usable anywhere in the program, and they expand to a constant value equal to the index of the next machine code instruction in the program).
+
+
+# macros
+this is not yet implemented.
+
+it will be possible to use macros. this will be like importing a pa2 file with parameters. something like this:
+```
+#push_reg %b
+#push_value $0x12
+#add
+```
+
+this will copy the parameterized contents of a file called "push_value.pa2", found in some directory specified by a command-line parameter to the assembler.
+
+when this system is implemented, a set of macros implementing a stack-machine with rudimentary function calls will be written.

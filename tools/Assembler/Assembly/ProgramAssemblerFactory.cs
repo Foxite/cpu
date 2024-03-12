@@ -3,16 +3,42 @@ using Assembler.Parsing.ProcAssemblyV2;
 namespace Assembler.Assembly;
 
 public class ProgramAssemblerFactory {
-	public IEnumerable<string> SupportedArchitectures => new []{ "proc16a", "proc16b" };
-	
-	public ProgramAssembler GetAssembler(string architecture, ProgramAst programAst) {
-		return architecture.ToLower() switch {
-			"proc16a" => new ProgramAssembler(new Proc16aInstructionConverter(), programAst),
-			"proc16b" => new ProgramAssembler(new Proc16bInstructionConverter(), programAst),
-		};
+	private readonly IInstructionConverter m_InstructionConverter;
+	private readonly IMacroProvider m_MacroProvider;
+	private readonly IReadOnlyDictionary<string, InstructionArgumentAst> m_GlobalSymbols;
+	private readonly MacroProcessor m_MacroProcessor;
+
+	public string Architecture => m_InstructionConverter.Architecture;
+
+	public static IReadOnlyCollection<string> SupportedArchitectures => new []{ "proc16a", "proc16b" };
+
+	public ProgramAssemblerFactory(IInstructionConverter instructionConverter, IMacroProvider macroProvider, IReadOnlyDictionary<string, InstructionArgumentAst>? globalSymbols = null) {
+		m_InstructionConverter = instructionConverter;
+		m_MacroProvider = macroProvider;
+		m_GlobalSymbols = globalSymbols ?? new Dictionary<string, InstructionArgumentAst>();
+		m_MacroProcessor = new MacroProcessor(this);
 	}
 	
-	public bool CanGetAssembler(string architecture) {
-		return architecture.ToLower() is "proc16a" or "proc16b";
+	public ProgramAssembler GetAssembler(AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
+		var mergedSymbols = new Dictionary<string, InstructionArgumentAst>(m_GlobalSymbols);
+
+		if (symbols != null) {
+			foreach ((string? key, InstructionArgumentAst? value) in symbols) {
+				mergedSymbols[key] = value;
+			}
+		}
+
+		return new ProgramAssembler(m_InstructionConverter, m_MacroProvider, m_MacroProcessor, program, instructionOffset, mergedSymbols);
+	}
+	
+	public static bool ArchitectureIsSupported(string architecture) {
+		return SupportedArchitectures.Contains(architecture.ToLower());
+	}
+
+	public static ProgramAssemblerFactory CreateFactory(IMacroProvider macroProvider, string architecture, IReadOnlyDictionary<string, InstructionArgumentAst> globalSymbols) {
+		return new ProgramAssemblerFactory(architecture switch {
+			"proc16a" => new Proc16aInstructionConverter(),
+			"proc16b" => new Proc16bInstructionConverter(),
+		}, macroProvider, globalSymbols);
 	}
 }

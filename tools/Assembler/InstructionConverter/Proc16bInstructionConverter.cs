@@ -45,9 +45,10 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 		AddInstruction("ldb",   new busInstruction(false));
 		AddInstruction("stb",   new busInstruction(true));
 		
-		AddInstruction("noop",  new noopInstruction());
 		AddInstruction("nop",   new noopInstruction());
+		AddInstruction("noop",  new noopInstruction());
 		AddInstruction("brk",   new brkInstruction());
+		AddInstruction("break", new brkInstruction());
 	}
 	
 	private static void SetInstructionBit(ref ushort instruction, int bit, bool value) {
