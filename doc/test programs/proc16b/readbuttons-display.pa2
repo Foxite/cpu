@@ -1,0 +1,37 @@
+start:
+    # read the button device connected to 0x6000.
+    ldi %a, $0x6000
+    mov %b, *a
+    
+    # output its value to 0x0000.
+    ldi %a, $0x0000
+    mov *a, %b
+    
+    
+    # output the 4 most significant bits to 0x4000.
+    ldi %a, $0b0000_0000_1111_0000
+    and %b, %a, %b
+    ldi %a, $4
+    shr %b, %b, %a
+    
+    # output
+    ldi %a, $0x4000
+    mov *a, %b
+
+    
+    # read device
+    ldi %a, $0x6000
+    mov %b, *a
+    
+    # output the 4 least significant bits to 0x4001.
+    ldi %a, $0b0000_0000_0000_1111
+    and %b, %a, %b
+    
+    # output
+    ldi %a, $0x4001
+    mov *a, %b
+
+
+    # loop
+    ldi %a, start
+    jmp %a
