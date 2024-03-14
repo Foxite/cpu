@@ -5,9 +5,14 @@ namespace Assembler.Assembly;
 /// <summary>
 /// Converts a <see cref="ProgramAst"/> into a sequence of bytes for a particular architecture. Only works for one call of Assemble, then it should be discarded.
 /// </summary>
+
+// TODO: refactor this so that it converts the AST into a list of scoped instructions (scope per macro), with all macros and assembler commands fully rendered, but symbols still left intact.
+// An assembly instruction item is either an executable instruction that can be passed to the IInstructionConverter, an assembler command (which will output any zero or non-zero amount of words) or a macro (which just recurses on all its methods)
+// After this conversion, compute the label symbol values and apply them, then apply all constant values after their definition.
+
+// Also, I want to refactor this class so that it can be used more than once. Most variables should go into a context class, and most assembly instruction handling should be moved to the AssemblyInstruction class 
 public sealed class ProgramAssembler {
 	private readonly IInstructionConverter m_InstructionConverter;
-	private readonly IMacroProvider m_MacroProvider;
 	private readonly MacroProcessor m_MacroProcessor;
 	
 	private readonly int m_InstructionOffset;
@@ -20,9 +25,8 @@ public sealed class ProgramAssembler {
 
 	public string Architecture => m_InstructionConverter.Architecture;
 
-	public ProgramAssembler(IInstructionConverter instructionConverter, IMacroProvider macroProvider, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
+	public ProgramAssembler(IInstructionConverter instructionConverter, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
 		m_InstructionConverter = instructionConverter;
-		m_MacroProvider = macroProvider;
 		m_MacroProcessor = macroProcessor;
 		m_Program = program;
 		m_InstructionOffset = instructionOffset;
@@ -63,7 +67,12 @@ public sealed class ProgramAssembler {
 				m_SymbolDefinitions[statement.Label] = new InstructionArgumentAst(InstructionArgumentType.Constant, instructionI, null);
 			}
 
-			if (!statement.Instruction.Mnemonic.StartsWith(".")) {
+			if (statement.Instruction.Mnemonic.StartsWith(".")) {
+				// pass
+			} else if (statement.Instruction.Mnemonic.StartsWith("@")) {
+				// TODO find a way to avoid reading the macro twice (should probably use caching)
+				instructionI += m_MacroProcessor.GetInstructionCount(statement.Instruction.Mnemonic[1..]);
+			} else {
 				instructionI++;
 			}
 		}
@@ -74,7 +83,7 @@ public sealed class ProgramAssembler {
 		
 		InstructionSupport support;
 		if (statement.Instruction.Mnemonic.StartsWith(".")) {
-			support = ProcessAssemblerCommand(statement.Instruction);
+			support = ProcessAssemblerCommand(ReplaceSymbolsInArguments(statement).Instruction);
 		} else if (statement.Instruction.Mnemonic.StartsWith("@")) {
 			m_ExecutableInstructions.Add(statement.Instruction);
 			support = InstructionSupport.Supported;
@@ -87,9 +96,9 @@ public sealed class ProgramAssembler {
 		}
 	}
 
-	private IReadOnlyList<InstructionArgumentAst> ReplaceSymbolsInArguments(IReadOnlyList<InstructionArgumentAst> arguments) {
+	private IReadOnlyList<InstructionArgumentAst> ReplaceSymbols(IReadOnlyList<InstructionArgumentAst> arguments, bool optional = false) {
 		return arguments.Select(arg => {
-			if (arg.Type == InstructionArgumentType.Symbol) {
+			if (arg.Type == InstructionArgumentType.Symbol && (optional || m_SymbolDefinitions.ContainsKey(arg.RslsValue!))) {
 				return m_SymbolDefinitions[arg.RslsValue!];
 			} else {
 				return arg;
@@ -97,12 +106,16 @@ public sealed class ProgramAssembler {
 		}).ToList();
 	}
 
-	private InstructionSupport ProcessInstruction(ProgramStatementAst statement, int index) {
-		statement = statement with {
+	private ProgramStatementAst ReplaceSymbolsInArguments(ProgramStatementAst statement) {
+		return statement with {
 			Instruction = statement.Instruction with {
-				Arguments = ReplaceSymbolsInArguments(statement.Instruction.Arguments)
+				Arguments = ReplaceSymbols(statement.Instruction.Arguments)
 			}
 		};
+	}
+	
+	private InstructionSupport ProcessInstruction(ProgramStatementAst statement, int index) {
+		statement = ReplaceSymbolsInArguments(statement);
 
 		m_StatementList[index] = statement;
 		
@@ -119,8 +132,7 @@ public sealed class ProgramAssembler {
 	private IEnumerable<ushort> ProcessInclude(InstructionAst instruction, int index) {
 		string includeName = instruction.Mnemonic[1..];
 
-		AssemblerProgram macroProgramAst = m_MacroProvider.GetMacro(includeName);
-		return m_MacroProcessor.AssembleMacro(index, macroProgramAst, ReplaceSymbolsInArguments(instruction.Arguments));
+		return m_MacroProcessor.AssembleMacro(index, includeName, ReplaceSymbols(instruction.Arguments));
 	}
 	
 	private InstructionSupport ProcessAssemblerCommand(InstructionAst instruction) {

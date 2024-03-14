@@ -4,7 +4,6 @@ namespace Assembler.Assembly;
 
 public class ProgramAssemblerFactory {
 	private readonly IInstructionConverter m_InstructionConverter;
-	private readonly IMacroProvider m_MacroProvider;
 	private readonly IReadOnlyDictionary<string, InstructionArgumentAst> m_GlobalSymbols;
 	private readonly MacroProcessor m_MacroProcessor;
 
@@ -14,9 +13,8 @@ public class ProgramAssemblerFactory {
 
 	public ProgramAssemblerFactory(IInstructionConverter instructionConverter, IMacroProvider macroProvider, IReadOnlyDictionary<string, InstructionArgumentAst>? globalSymbols = null) {
 		m_InstructionConverter = instructionConverter;
-		m_MacroProvider = macroProvider;
 		m_GlobalSymbols = globalSymbols ?? new Dictionary<string, InstructionArgumentAst>();
-		m_MacroProcessor = new MacroProcessor(this);
+		m_MacroProcessor = new MacroProcessor(this, macroProvider);
 	}
 	
 	public ProgramAssembler GetAssembler(AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
@@ -28,7 +26,7 @@ public class ProgramAssemblerFactory {
 			}
 		}
 
-		return new ProgramAssembler(m_InstructionConverter, m_MacroProvider, m_MacroProcessor, program, instructionOffset, mergedSymbols);
+		return new ProgramAssembler(m_InstructionConverter, m_MacroProcessor, program, instructionOffset, mergedSymbols);
 	}
 	
 	public static bool ArchitectureIsSupported(string architecture) {

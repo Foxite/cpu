@@ -23,7 +23,7 @@ public class ProcAssemblyParser {
 		T ret = callback(parser);
 
 		if (errorListenerLexer.HadError) {
-			throw new ParserException("Lexer errors:\n" + string.Join('\n', errorListenerParser.Errors.Select(error => error.ToString())));
+			throw new ParserException("Lexer errors:\n" + string.Join('\n', errorListenerLexer.Errors.Select(error => error.ToString())));
 		}
 		
 		if (errorListenerParser.HadError) {

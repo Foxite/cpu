@@ -1,8 +1,11 @@
-﻿using Assembler.Assembly;
+﻿using System.Diagnostics;
+using Assembler.Assembly;
 using CommandLine;
 
 public class Program {
 	public static int Main(string[] args) {
+		Debugger.Launch();
+		
 		var commandParser = new Parser(settings => {
 			settings.HelpWriter = Console.Error;
 			settings.EnableDashDash = true;
