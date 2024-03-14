@@ -203,6 +203,10 @@
           <string>barrelSigned</string>
           <boolean>true</boolean>
         </entry>
+        <entry>
+          <string>direction</string>
+          <direction>right</direction>
+        </entry>
       </elementAttributes>
       <pos x="720" y="840"/>
     </visualElement>
@@ -272,10 +276,6 @@ end loop</dataString>
         <entry>
           <string>barrelSigned</string>
           <boolean>true</boolean>
-        </entry>
-        <entry>
-          <string>direction</string>
-          <direction>right</direction>
         </entry>
       </elementAttributes>
       <pos x="720" y="940"/>

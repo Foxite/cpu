@@ -16,7 +16,7 @@
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>10</int>
+          <int>1000</int>
         </entry>
       </elementAttributes>
       <pos x="-720" y="280"/>
@@ -104,7 +104,7 @@
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/Documents/cpu/doc/test programs/proc16b/stacktest.out</file>
+          <file>/home/foxite/Documents/cpu/doc/test programs/proc16b/readbuttons-display.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
@@ -285,7 +285,7 @@ TODO better address space layout</string>
         </entry>
         <entry>
           <string>Label</string>
-          <string>B</string>
+          <string>Z</string>
         </entry>
       </elementAttributes>
       <pos x="-380" y="1520"/>
@@ -299,7 +299,7 @@ TODO better address space layout</string>
         </entry>
         <entry>
           <string>Label</string>
-          <string>D</string>
+          <string>X</string>
         </entry>
       </elementAttributes>
       <pos x="-320" y="1580"/>
@@ -313,7 +313,7 @@ TODO better address space layout</string>
         </entry>
         <entry>
           <string>Label</string>
-          <string>C</string>
+          <string>S</string>
         </entry>
       </elementAttributes>
       <pos x="-260" y="1520"/>
@@ -1527,7 +1527,7 @@ all other bits are unconnected</string>
         </entry>
         <entry>
           <string>Data</string>
-          <data>0,0,1,2</data>
+          <data>0,1,0,2</data>
         </entry>
       </elementAttributes>
       <pos x="240" y="760"/>
@@ -1635,7 +1635,7 @@ all other bits are unconnected</string>
         </entry>
         <entry>
           <string>Data</string>
-          <data>7fff,7fff,1fff,1fff</data>
+          <data>7fff,1fff,7fff,1fff</data>
         </entry>
       </elementAttributes>
       <pos x="240" y="940"/>
