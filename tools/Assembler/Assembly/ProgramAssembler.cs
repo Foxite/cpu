@@ -11,7 +11,7 @@ namespace Assembler.Assembly;
 // After this conversion, compute the label symbol values and apply them, then apply all constant values after their definition.
 
 // Also, I want to refactor this class so that it can be used more than once. Most variables should go into a context class, and most assembly instruction handling should be moved to the AssemblyInstruction class 
-public sealed class ProgramAssembler {
+public sealed class _ProgramAssembler {
 	private readonly IInstructionConverter m_InstructionConverter;
 	private readonly MacroProcessor m_MacroProcessor;
 	
@@ -25,7 +25,7 @@ public sealed class ProgramAssembler {
 
 	public string Architecture => m_InstructionConverter.Architecture;
 
-	public ProgramAssembler(IInstructionConverter instructionConverter, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
+	public _ProgramAssembler(IInstructionConverter instructionConverter, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
 		m_InstructionConverter = instructionConverter;
 		m_MacroProcessor = macroProcessor;
 		m_Program = program;
