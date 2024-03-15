@@ -1,8 +1,13 @@
 using Assembler.Assembly;
 using Assembler.Parsing;
 using Assembler.Parsing.Antlr;
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 using CommandLine;
+
+public enum AssemblerSelection {
+	V1,
+	V2,
+}
 
 public enum CompileOutputMode {
 	Hex16,
@@ -16,6 +21,9 @@ public class CompileOptions {
 	
 	[Option('a', "arch", Required = true, HelpText = "Choose architecture")]
 	public string Architecture { get; set; }
+	
+	[Option('A', "assembler", Required = true, HelpText = "Select the assembler. V1 has been tested, V2 is experimental.")]
+	public AssemblerSelection AssemblerSelection { get; set; }
 	
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
@@ -36,18 +44,26 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		if (!ProgramAssemblerFactory.ArchitectureIsSupported(opts.Architecture)) {
+		var architectureIsSupported = opts.AssemblerSelection switch {
+			AssemblerSelection.V1 => Assembler.Assembly.V1._ProgramAssemblerFactory.ArchitectureIsSupported(opts.Architecture),
+			AssemblerSelection.V2 => Assembler.Assembly.V2.AssemblyContextFactory.ArchitectureIsSupported(opts.Architecture),
+		};
+		
+		if (!architectureIsSupported) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
 			return ExitCode.CommandInvalid;
 		}
 		
 		string sourceCode;
+		string fullInputPath;
 		
 		try {
 			if (opts.Input == "-") {
+				fullInputPath = opts.Input;
 				sourceCode = Console.In.ReadToEnd();
 			} else {
-				using TextReader readSourceCode = File.OpenText(opts.Input);
+				fullInputPath = Path.GetFullPath(opts.Input);
+				using TextReader readSourceCode = File.OpenText(fullInputPath);
 				sourceCode = readSourceCode.ReadToEnd();
 			}
 		} catch (IOException e) {
@@ -56,9 +72,9 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		}
 
 		var parser = new ProcAssemblyParser();
-		ProgramAst program;
+		AssemblerProgram program;
 		try {
-			program = parser.Parse(sourceCode);
+			program = new AssemblerProgram("main", fullInputPath, parser.Parse(sourceCode));
 		} catch (ParserException e) {
 			//Console.Error.WriteLine(e.ToString());
 			return ExitCode.CompileParseError;
@@ -71,13 +87,16 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 
 			return new KeyValuePair<string, InstructionArgumentAst>(name, parser.ParseSymbolValue(value));
 		}));
-			
-		var programAssemblerFactory = ProgramAssemblerFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath.ToArray()), opts.Architecture, globalSymbols);
-		ProgramAssembler assembler = programAssemblerFactory.GetAssembler(new AssemblerProgram("main", opts.Input == "-" ? "-" : Path.GetFullPath(opts.Input), program));
-		IEnumerable<ushort> machineCode;
 
+		// TODO
+		var assembler = new ProgramAssemblerv2();
+		var contextFactory = AssemblyContextFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath.ToArray()), opts.Architecture);
+		var context = contextFactory.CreateContext(globalSymbols, assembler);
+
+		IEnumerable<ushort> machineCode;
 		try {
-			machineCode = assembler.Assemble();
+			var instructionList = assembler.CompileInstructionList(context, program);
+			machineCode = assembler.AssembleMachineCode(context, instructionList);
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {

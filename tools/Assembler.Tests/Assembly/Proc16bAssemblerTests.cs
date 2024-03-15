@@ -1,7 +1,7 @@
 using Assembler.Assembly;
-using Assembler.Parsing.ProcAssemblyV2;
-using IAT = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentType;
-using IAA = Assembler.Parsing.ProcAssemblyV2.InstructionArgumentAst;
+using Assembler.Ast;
+using IAT = Assembler.Ast.InstructionArgumentType;
+using IAA = Assembler.Ast.InstructionArgumentAst;
 
 namespace Assembler.Tests; 
 

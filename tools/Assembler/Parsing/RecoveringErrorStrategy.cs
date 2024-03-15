@@ -1,7 +1,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 
-namespace Assembler.Parsing.ProcAssemblyV2.Antlr;
+namespace Assembler.Ast.Antlr;
 
 public class RecoveringErrorStrategy : DefaultErrorStrategy {
 	public override void Reset(Parser recognizer) {

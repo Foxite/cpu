@@ -1,4 +1,4 @@
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 public record InstructionAst(string Mnemonic, IReadOnlyList<InstructionArgumentAst> Arguments) : IAssemblyAst {
 	public InstructionAst(string mnemonic, params InstructionArgumentAst[] arguments) : this(mnemonic, (IReadOnlyList<InstructionArgumentAst>) arguments) { }

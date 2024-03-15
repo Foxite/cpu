@@ -1,0 +1,6 @@
+Refactoring
+- Update tests as always
+- What the hell does rslsvalue mean. Idk but get rid of that variable. You're mixing 4 conceptually different types
+- Want to remove assembler v1 eventually, but make sure v2 works properly
+- Caching in FileMacroProvider
+- Instruction argument validation with compile time safety

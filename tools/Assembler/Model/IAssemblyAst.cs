@@ -1,3 +1,3 @@
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 public interface IAssemblyAst { }

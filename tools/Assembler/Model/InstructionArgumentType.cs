@@ -1,4 +1,4 @@
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 public enum InstructionArgumentType {
 	Constant,

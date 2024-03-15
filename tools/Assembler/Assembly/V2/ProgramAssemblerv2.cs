@@ -1,18 +1,8 @@
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 
-namespace Assembler.Assembly; 
+namespace Assembler.Assembly.V2;
 
 public class ProgramAssemblerv2 {
-	private readonly IMacroProvider m_MacroProvider;
-	private readonly IInstructionConverter m_InstructionConverter;
-	
-	public ProgramAssemblerv2(IMacroProvider macroProvider, IInstructionConverter instructionConverter) {
-		m_MacroProvider = macroProvider;
-		m_InstructionConverter = instructionConverter;
-		
-		//var context = new AssemblyContext(m_MacroProvider, m_InstructionConverter, this);
-	}
-	
 	public List<AssemblyInstruction> CompileInstructionList(AssemblyContext context, AssemblerProgram program) {
 		var ret = new List<AssemblyInstruction>();
 
@@ -25,11 +15,11 @@ public class ProgramAssemblerv2 {
 		return ret;
 	}
 
-	public IReadOnlyList<ushort> Assemble(AssemblyContext context, IReadOnlyList<AssemblyInstruction> instructions) {
+	public IReadOnlyList<ushort> AssembleMachineCode(AssemblyContext context, IReadOnlyList<AssemblyInstruction> instructions) {
 		int labelIndex = context.OutputIndex;
 		foreach (AssemblyInstruction instruction in instructions) {
 			if (instruction.Label != null) {
-				context.SetSymbol(instruction.Label, new SymbolDefinition(instruction.Label, new InstructionArgumentAst(InstructionArgumentType.Constant, labelIndex, null)));
+				context.SetSymbol(new SymbolDefinition(instruction.Label, new InstructionArgumentAst(InstructionArgumentType.Constant, labelIndex, null)));
 			}
 
 			labelIndex += instruction.GetWordCount(context);
@@ -40,7 +30,7 @@ public class ProgramAssemblerv2 {
 			var definedSymbols = instruction.GetDefinedSymbols(context);
 			if (definedSymbols != null) {
 				foreach ((string? key, InstructionArgumentAst? value) in definedSymbols) {
-					context.SetSymbol(key, new SymbolDefinition(key, value));
+					context.SetSymbol(new SymbolDefinition(key, value));
 				}
 			}
 

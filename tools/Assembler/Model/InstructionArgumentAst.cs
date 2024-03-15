@@ -1,4 +1,4 @@
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 // TODO wtf does Rsls mean again
 // Something to do with ralsei, i guess

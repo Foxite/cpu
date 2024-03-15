@@ -1,12 +1,12 @@
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 
-namespace Assembler.Assembly;
+namespace Assembler.Assembly.V1;
 
-public class MacroProcessor {
-	private readonly ProgramAssemblerFactory m_AssemblerFactory;
+public class _MacroProcessor {
+	private readonly _ProgramAssemblerFactory m_AssemblerFactory;
 	private readonly IMacroProvider m_MacroProvider;
 
-	public MacroProcessor(ProgramAssemblerFactory assemblerFactory, IMacroProvider macroProvider) {
+	public _MacroProcessor(_ProgramAssemblerFactory assemblerFactory, IMacroProvider macroProvider) {
 		m_AssemblerFactory = assemblerFactory;
 		m_MacroProvider = macroProvider;
 	}
@@ -19,7 +19,7 @@ public class MacroProcessor {
 		}
 		
 		AssemblerProgram program = m_MacroProvider.GetMacro(includeName);
-		ProgramAssembler assembler = m_AssemblerFactory.GetAssembler(program, instructionOffset, macroArguments);
+		_ProgramAssembler assembler = m_AssemblerFactory.GetAssembler(program, instructionOffset, macroArguments);
 		
 		return assembler.Assemble();
 	}

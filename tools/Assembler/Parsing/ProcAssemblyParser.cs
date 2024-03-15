@@ -1,6 +1,6 @@
 using Antlr4.Runtime;
-using Assembler.Parsing.ProcAssemblyV2;
-using Assembler.Parsing.ProcAssemblyV2.Antlr;
+using Assembler.Ast;
+using Assembler.Ast.Antlr;
 
 namespace Assembler.Parsing.Antlr;
 

@@ -1,6 +1,7 @@
 using Antlr4.Runtime.Tree;
+using Assembler.Parsing;
 
-namespace Assembler.Parsing.ProcAssemblyV2.Antlr;
+namespace Assembler.Ast.Antlr;
 
 public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 	private static long ParseNumber(string tokenValue) {

@@ -1,4 +1,4 @@
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 public record ProgramStatementAst(string? Label, InstructionAst Instruction) : IAssemblyAst {
 	public override string ToString() {

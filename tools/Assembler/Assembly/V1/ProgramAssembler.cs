@@ -1,19 +1,13 @@
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 
-namespace Assembler.Assembly; 
+namespace Assembler.Assembly.V1; 
 
 /// <summary>
 /// Converts a <see cref="ProgramAst"/> into a sequence of bytes for a particular architecture. Only works for one call of Assemble, then it should be discarded.
 /// </summary>
-
-// TODO: refactor this so that it converts the AST into a list of scoped instructions (scope per macro), with all macros and assembler commands fully rendered, but symbols still left intact.
-// An assembly instruction item is either an executable instruction that can be passed to the IInstructionConverter, an assembler command (which will output any zero or non-zero amount of words) or a macro (which just recurses on all its methods)
-// After this conversion, compute the label symbol values and apply them, then apply all constant values after their definition.
-
-// Also, I want to refactor this class so that it can be used more than once. Most variables should go into a context class, and most assembly instruction handling should be moved to the AssemblyInstruction class 
 public sealed class _ProgramAssembler {
 	private readonly IInstructionConverter m_InstructionConverter;
-	private readonly MacroProcessor m_MacroProcessor;
+	private readonly _MacroProcessor m_MacroProcessor;
 	
 	private readonly int m_InstructionOffset;
 	private readonly AssemblerProgram m_Program;
@@ -25,7 +19,7 @@ public sealed class _ProgramAssembler {
 
 	public string Architecture => m_InstructionConverter.Architecture;
 
-	public _ProgramAssembler(IInstructionConverter instructionConverter, MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
+	public _ProgramAssembler(IInstructionConverter instructionConverter, _MacroProcessor macroProcessor, AssemblerProgram program, int instructionOffset = 0, IReadOnlyDictionary<string, InstructionArgumentAst>? symbols = null) {
 		m_InstructionConverter = instructionConverter;
 		m_MacroProcessor = macroProcessor;
 		m_Program = program;

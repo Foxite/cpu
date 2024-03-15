@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 public record ProgramAst(IReadOnlyList<ProgramStatementAst> Statements) : IAssemblyAst {
 	public ProgramAst(params ProgramStatementAst[] statements) : this((IReadOnlyList<ProgramStatementAst>) statements) {}

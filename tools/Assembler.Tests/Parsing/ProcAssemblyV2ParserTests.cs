@@ -1,5 +1,5 @@
 using Assembler.Parsing.Antlr;
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 
 namespace Assembler.Tests;
 

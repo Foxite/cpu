@@ -1,6 +1,6 @@
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 
-namespace Assembler.Assembly;
+namespace Assembler.Assembly.V2;
 
 public class AssemblyContext {
 	private Dictionary<string, SymbolDefinition> m_Symbols = new();
@@ -34,11 +34,37 @@ public class AssemblyContext {
 		OutputIndex += wordCount;
 	}
 
-	public InstructionArgumentAst GetSymbol(string name) {
-		return m_Symbols[name].Value;
+	private SymbolDefinition? GetSymbol(string name, bool optional) {
+		if (m_Symbols.TryGetValue(name, out SymbolDefinition? ret)) {
+			return ret;
+		} else if (optional) {
+			return null;
+		} else {
+			throw new SymbolNotDefinedException(name);
+		}
 	}
 
-	public void SetSymbol(string name, SymbolDefinition symbolDefinition) {
-		m_Symbols[name] = symbolDefinition;
+	public InstructionArgumentAst GetSymbolValue(string name) {
+		InstructionArgumentAst ret = GetSymbol(name, false)!.Value;
+
+		while (ret.Type == InstructionArgumentType.Symbol) {
+			ret = GetSymbol(ret.RslsValue!, false)!.Value;
+		}
+
+		return ret;
+	}
+
+	public void SetSymbol(SymbolDefinition symbolDefinition) {
+		m_Symbols[symbolDefinition.Name] = symbolDefinition;
+	}
+	
+	public bool IsSymbolDefined(string name) {
+		var symbol = GetSymbol(name, true);
+
+		while (symbol != null && symbol.Value.Type == InstructionArgumentType.Symbol) {
+			symbol = GetSymbol(symbol.Value.RslsValue!, true);
+		}
+
+		return symbol != null;
 	}
 }

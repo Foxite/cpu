@@ -6,7 +6,7 @@ public class ListArchitectureOptions { }
 
 public class ListArchVerbRunner : VerbRunner<ListArchitectureOptions> {
 	public ExitCode Run(ListArchitectureOptions opts) {
-		foreach (string architecture in ProgramAssemblerFactory.SupportedArchitectures) {
+		foreach (string architecture in _ProgramAssemblerFactory.SupportedArchitectures) {
 			Console.WriteLine(architecture);
 		}
 		

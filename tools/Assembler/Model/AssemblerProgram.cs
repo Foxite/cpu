@@ -1,4 +1,4 @@
-namespace Assembler.Parsing.ProcAssemblyV2;
+namespace Assembler.Ast;
 
 public record AssemblerProgram(
 	string Name,

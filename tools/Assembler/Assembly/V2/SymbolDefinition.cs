@@ -1,6 +1,6 @@
-using Assembler.Parsing.ProcAssemblyV2;
+using Assembler.Ast;
 
-namespace Assembler.Assembly;
+namespace Assembler.Assembly.V2;
 
 public record SymbolDefinition(
 	string Name,
