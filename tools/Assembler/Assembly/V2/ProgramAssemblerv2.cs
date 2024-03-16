@@ -3,7 +3,14 @@ using Assembler.Ast;
 namespace Assembler.Assembly.V2;
 
 public class ProgramAssemblerv2 {
-	public List<AssemblyInstruction> CompileInstructionList(AssemblyContext context, AssemblerProgram program) {
+	public IReadOnlyList<ushort> AssembleAst(AssemblyContext context, AssemblerProgram assemblerProgram) {
+		IReadOnlyList<AssemblyInstruction> instructions = CompileInstructionList(context, assemblerProgram);
+		IReadOnlyList<AssemblyInstruction> renderedInstructions = RenderInstructions(context, instructions);
+		IReadOnlyList<ushort> machineCode = AssembleMachineCode(context, renderedInstructions);
+		return machineCode;
+	}
+	
+	public IReadOnlyList<AssemblyInstruction> CompileInstructionList(AssemblyContext context, AssemblerProgram program) {
 		var ret = new List<AssemblyInstruction>();
 
 		var instructionFactory = new AssemblyInstructionFactory();

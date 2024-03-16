@@ -6,12 +6,10 @@ namespace Assembler.Tests.EndToEnd;
 
 public class Proc16aE2ETests {
 	private ProcAssemblyParser m_Parser;
-	private ProgramAssemblerFactory m_Factory;
 
 	[SetUp]
 	public void Setup() {
 		m_Parser = new ProcAssemblyParser();
-		m_Factory = new ProgramAssemblerFactory(new Proc16aInstructionConverter(), new DictionaryMacroProvider(m_Parser));
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -213,10 +211,25 @@ public class Proc16aE2ETests {
 
 	[Test]
 	[TestCaseSource(nameof(AssembleTestCases))]
-	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
+	public void TestV1Assembler(string sourceCode, ushort[] expectedResult) {
+		var factory = new Assembler.Assembly.V1._ProgramAssemblerFactory(new Proc16aInstructionConverter(), new DictionaryMacroProvider(m_Parser));
+		
 		ProgramAst ast = m_Parser.Parse(sourceCode);
 
-		List<ushort> assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast)).Assemble().ToList();
+		List<ushort> assembledProgram = factory.GetAssembler(new AssemblerProgram(null, null, ast)).Assemble().ToList();
+		
+		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
+	}
+
+	[Test]
+	[TestCaseSource(nameof(AssembleTestCases))]
+	public void TestV2Assembler(string sourceCode, ushort[] expectedResult) {
+		var factory = new Assembler.Assembly.V2.AssemblyContextFactory(new DictionaryMacroProvider(m_Parser), new Proc16aInstructionConverter());
+		
+		ProgramAst ast = m_Parser.Parse(sourceCode);
+
+		var context = factory.CreateContext(null, new Assembler.Assembly.V2.ProgramAssemblerv2());
+		IReadOnlyList<ushort> assembledProgram = context.Assembler.AssembleAst(context, new AssemblerProgram(null, null, ast));
 		
 		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
 	}

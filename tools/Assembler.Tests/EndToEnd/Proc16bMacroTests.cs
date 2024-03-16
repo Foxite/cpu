@@ -1,4 +1,5 @@
 using Assembler.Assembly;
+using Assembler.Assembly.V1;
 using Assembler.Parsing.Antlr;
 using Assembler.Ast;
 
@@ -6,7 +7,7 @@ namespace Assembler.Tests.EndToEnd;
 
 public class Proc16bMacroTests {
 	private ProcAssemblyParser m_Parser;
-	private ProgramAssemblerFactory m_Factory;
+	private _ProgramAssemblerFactory m_Factory;
 
 	[SetUp]
 	public void Setup() {
@@ -29,7 +30,7 @@ public class Proc16bMacroTests {
 			"""
 		);
 		
-		m_Factory = new ProgramAssemblerFactory(new Proc16bInstructionConverter(), macroProvider);
+		m_Factory = new _ProgramAssemblerFactory(new Proc16bInstructionConverter(), macroProvider);
 	}
 
 	public static object[][] AssembleTestCases() {

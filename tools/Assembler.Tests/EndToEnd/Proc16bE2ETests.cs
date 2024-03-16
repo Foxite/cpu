@@ -1,4 +1,5 @@
 using Assembler.Assembly;
+using Assembler.Assembly.V1;
 using Assembler.Parsing.Antlr;
 using Assembler.Ast;
 
@@ -6,12 +7,12 @@ namespace Assembler.Tests.EndToEnd;
 
 public class Proc16bE2ETests {
 	private ProcAssemblyParser m_Parser;
-	private ProgramAssemblerFactory m_Factory;
+	private _ProgramAssemblerFactory m_Factory;
 
 	[SetUp]
 	public void Setup() {
 		m_Parser = new ProcAssemblyParser();
-		m_Factory = new ProgramAssemblerFactory(new Proc16bInstructionConverter(), new DictionaryMacroProvider(m_Parser));
+		m_Factory = new _ProgramAssemblerFactory(new Proc16bInstructionConverter(), new DictionaryMacroProvider(m_Parser));
 	}
 
 	public static object[][] AssembleTestCases() {
@@ -95,12 +96,34 @@ public class Proc16bE2ETests {
 
 	[Test]
 	[TestCaseSource(nameof(AssembleTestCases))]
-	public void TestAssemble(string sourceCode, ushort[] expectedResult) {
+	public void TestV1Assembler(string sourceCode, ushort[] expectedResult) {
 		ProgramAst ast = m_Parser.Parse(sourceCode);
 
 		List<ushort> assembledProgram;
 		try {
 			assembledProgram = m_Factory.GetAssembler(new AssemblerProgram(null, null, ast)).Assemble().ToList();
+		} catch (InvalidProcAssemblyProgramException ex) {
+			Assert.Fail(
+				"Test failed due to {0}:\n{1}",
+				nameof(InvalidProcAssemblyProgramException),
+				string.Join("", ex.Instructions.Select(instruction => $"index {instruction.Index} ({instruction.Instruction}): {instruction.Message}\n"))
+			);
+			return;
+		}
+
+		Assert.That(assembledProgram, Is.EquivalentTo(expectedResult));
+	}
+
+	[Test]
+	[TestCaseSource(nameof(AssembleTestCases))]
+	public void TestV2Assembler(string sourceCode, ushort[] expectedResult) {
+		ProgramAst ast = m_Parser.Parse(sourceCode);
+		var factory = new Assembler.Assembly.V2.AssemblyContextFactory(new DictionaryMacroProvider(m_Parser), new Proc16aInstructionConverter());
+		var context = factory.CreateContext(null, new Assembler.Assembly.V2.ProgramAssemblerv2());
+
+		IReadOnlyList<ushort> assembledProgram;
+		try {
+			assembledProgram = context.Assembler.AssembleAst(context, new AssemblerProgram(null, null, ast));
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Assert.Fail(
 				"Test failed due to {0}:\n{1}",
