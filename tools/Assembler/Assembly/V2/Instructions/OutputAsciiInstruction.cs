@@ -8,6 +8,7 @@ public record OutputAsciiInstruction(string? Label, string Ascii) : CommandInstr
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
 	
 	public override IEnumerable<AssemblyInstruction> Render(AssemblyContext context) => new[] { this };
+	public override bool HasUnrenderedSymbols() => false;
 
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) {
 		return Encoding.ASCII.GetBytes(Ascii).Select(word => (ushort) word);

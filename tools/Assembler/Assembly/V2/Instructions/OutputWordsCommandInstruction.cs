@@ -14,6 +14,8 @@ public record OutputWordsCommandInstruction(string? Label, IReadOnlyList<Instruc
 		};
 	}
 	
+	public override bool HasUnrenderedSymbols() => Words.Any(arg => arg.Type == InstructionArgumentType.Symbol);
+	
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) {
 		return Words.Select(argument => (ushort) argument.ConstantValue!.Value);
 	}

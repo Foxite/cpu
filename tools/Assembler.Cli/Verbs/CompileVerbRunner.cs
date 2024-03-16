@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Assembler.Assembly;
 using Assembler.Parsing;
 using Assembler.Parsing.Antlr;
@@ -88,15 +89,25 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			return new KeyValuePair<string, InstructionArgumentAst>(name, parser.ParseSymbolValue(value));
 		}));
 
-		// TODO
-		var assembler = new ProgramAssemblerv2();
-		var contextFactory = AssemblyContextFactory.CreateFactory(new FileMacroProvider(parser, opts.MacroPath.ToArray()), opts.Architecture);
-		var context = contextFactory.CreateContext(globalSymbols, assembler);
-
-		IEnumerable<ushort> machineCode;
+		var macroProvider = new FileMacroProvider(parser, opts.MacroPath.ToArray());
+		
+		IReadOnlyList<ushort> machineCode;
 		try {
-			var instructionList = assembler.CompileInstructionList(context, program);
-			machineCode = assembler.AssembleMachineCode(context, instructionList);
+			if (opts.AssemblerSelection == AssemblerSelection.V2) {
+				var assembler = new Assembler.Assembly.V2.ProgramAssemblerv2();
+				var contextFactory = Assembler.Assembly.V2.AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
+				var context = contextFactory.CreateContext(globalSymbols, assembler);
+
+				var instructionList = assembler.CompileInstructionList(context, program);
+				var renderedInstructions = assembler.RenderInstructions(context, instructionList);
+				machineCode = assembler.AssembleMachineCode(context, renderedInstructions);
+			} else if (opts.AssemblerSelection == AssemblerSelection.V1) {
+				var assemblerFactory = Assembler.Assembly.V1._ProgramAssemblerFactory.CreateFactory(macroProvider, opts.Architecture, globalSymbols);
+				var assembler = assemblerFactory.GetAssembler(program);
+				machineCode = assembler.Assemble();
+			} else {
+				throw new Exception("Unrecognized assembler selection (this should never happen)");
+			}
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {

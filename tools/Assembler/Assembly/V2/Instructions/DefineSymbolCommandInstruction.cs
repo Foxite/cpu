@@ -4,6 +4,7 @@ namespace Assembler.Assembly.V2;
 
 public record DefineSymbolCommandInstruction(string? Label, string Name, InstructionArgumentAst Value) : CommandInstruction(Label) {
 	public override int GetWordCount(AssemblyContext context) => 0;
+	public override bool HasUnrenderedSymbols() => Value.Type == InstructionArgumentType.Symbol;
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) => Array.Empty<ushort>();
 	
 	public override IEnumerable<AssemblyInstruction> Render(AssemblyContext context) {

@@ -1,5 +1,6 @@
 Refactoring
 - Update tests as always
+- An end-to-end test that compiles all test programs in proc16b-v1 and proc16b-v2, then ensures that they all have the exact same machine code output
 - What the hell does rslsvalue mean. Idk but get rid of that variable. You're mixing 4 conceptually different types
 - Want to remove assembler v1 eventually, but make sure v2 works properly
 - Caching in FileMacroProvider

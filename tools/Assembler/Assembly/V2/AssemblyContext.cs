@@ -20,12 +20,11 @@ public class AssemblyContext {
 	public AssemblyContext CreateScope() {
 		var ret = new AssemblyContext(MacroProvider, InstructionConverter, Assembler);
 
-		/*
 		foreach ((string key, SymbolDefinition value) in m_Symbols) {
 			if (value.Imported) {
 				ret.m_Symbols[key] = value;
 			}
-		}*/
+		}
 
 		return ret;
 	}

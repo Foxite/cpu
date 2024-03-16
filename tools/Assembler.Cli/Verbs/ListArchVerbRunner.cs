@@ -1,4 +1,4 @@
-using Assembler.Assembly;
+using Assembler.Assembly.V1;
 using CommandLine;
 
 [Verb("arch", HelpText = "List available architectures.")]
