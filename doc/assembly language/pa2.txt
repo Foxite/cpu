@@ -25,15 +25,17 @@ a symbol can be defined by an assembler command (which will only be usable in co
 
 
 # macros
-this is not yet implemented.
-
-it will be possible to use macros. this will be like importing a pa2 file with parameters. something like this:
+macros include instructions from another file into the program. it looks like this:
 ```
-#push_reg %b
-#push_value $0x12
-#add
+@push_reg %b
+@push_value $0x12
+@add
 ```
 
-this will copy the parameterized contents of a file called "push_value.pa2", found in some directory specified by a command-line parameter to the assembler.
+push_reg.pa2 is searched for in directories specified on the command-line. this file is parsed as pa2 and then included in the assembly process. any parameters it gets are defined as symbols named "macro0", "macro1" etc. It makes sense to alias these symbols with better names:
 
-when this system is implemented, a set of macros implementing a stack-machine with rudimentary function calls will be written.
+```
+.reg registerToPush, macro0
+```
+
+Any other symbols defined in the outer program are not accessible to the macro, and symbols defined in a macro are not exported to the outer program. Label symbols are likewise not cross-available. Symbols can be used as parameters, however, in which case the argument symbol will get its value. 
