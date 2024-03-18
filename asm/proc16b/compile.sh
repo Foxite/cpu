@@ -1,6 +1,6 @@
 #!/bin/bash
 
-../../../tools/Assembler.Cli/bin/Debug/net7.0/Assembler.Cli compile \
+dotnet run --project ../../tools/Assembler.Cli -- compile \
 	--arch proc16b \
 	--assembler V2 \
 	--output-mode raw \

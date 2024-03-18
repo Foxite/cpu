@@ -18,7 +18,6 @@ Assembly language
 
 
 Programs
-- "doc/test programs" directory should probably be moved to "asm" or some other directory in the repository root.
 - Write stack machine
 - Function calls for stack machine
 - Pong
