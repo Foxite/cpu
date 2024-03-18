@@ -58,7 +58,7 @@ public sealed class _ProgramAssembler {
 			ProgramStatementAst statement = m_StatementList[statementI];
 			
 			if (statement.Label != null) {
-				m_SymbolDefinitions[statement.Label] = new InstructionArgumentAst(InstructionArgumentType.Constant, instructionI, null);
+				m_SymbolDefinitions[statement.Label] = new ConstantAst(instructionI);
 			}
 
 			if (statement.Instruction.Mnemonic.StartsWith(".")) {
@@ -92,8 +92,8 @@ public sealed class _ProgramAssembler {
 
 	private IReadOnlyList<InstructionArgumentAst> ReplaceSymbols(IReadOnlyList<InstructionArgumentAst> arguments, bool optional = false) {
 		return arguments.Select(arg => {
-			if (arg.Type == InstructionArgumentType.Symbol && (optional || m_SymbolDefinitions.ContainsKey(arg.RslsValue!))) {
-				return m_SymbolDefinitions[arg.RslsValue!];
+			if (arg is SymbolAst symbol && (optional || m_SymbolDefinitions.ContainsKey(symbol.Value))) {
+				return m_SymbolDefinitions[symbol.Value];
 			} else {
 				return arg;
 			}
@@ -131,36 +131,35 @@ public sealed class _ProgramAssembler {
 	
 	private InstructionSupport ProcessAssemblerCommand(InstructionAst instruction) {
 		switch (instruction.Mnemonic[1..]) {
-			case "const":
-				return ProcessAssemblerCommand_Constant(
-					instruction,
-					InstructionArgumentType.Constant,
-					new InstructionArgumentAst(InstructionArgumentType.Constant, instruction.Arguments[1].ConstantValue!.Value, null)
-				);
-			case "reg":
-				return ProcessAssemblerCommand_Constant(
-					instruction,
-					InstructionArgumentType.Register,
-					new InstructionArgumentAst(InstructionArgumentType.Register, null, instruction.Arguments[1].RslsValue)
-				);
+			case "const": {
+				var constantResult = instruction.GetArguments(out symbolName, out ConstantAst valueConstant);
+				if (constantResult != InstructionSupport.Supported) {
+					return constantResult;
+				}
+
+				return ProcessAssemblerCommand_Constant_Constant(symbolName, valueConstant);
+			}
+			case "reg": {
+				var argumentResult = instruction.GetArguments(out SymbolAst symbolName, out RegisterAst register);
+				if (argumentResult != InstructionSupport.Supported) {
+					
+				}
+			}
 			default:
 				return InstructionSupport.NotRecognized;
 		}
 	}
 
-	private InstructionSupport ProcessAssemblerCommand_Constant(InstructionAst instruction, InstructionArgumentType argumentType, InstructionArgumentAst result) {
-		if (instruction.Arguments.Select(arg => arg.Type).SequenceEqual(new[] { InstructionArgumentType.Symbol, argumentType })) {
-			m_SymbolDefinitions[instruction.Arguments[0].RslsValue!] = result;
-			return InstructionSupport.Supported;
-		} else if (instruction.Arguments.Select(arg => arg.Type).SequenceEqual(new[] { InstructionArgumentType.Symbol, InstructionArgumentType.Symbol })) {
-			if (m_SymbolDefinitions[instruction.Arguments[1].RslsValue!].Type == argumentType) {
-				m_SymbolDefinitions[instruction.Arguments[0].RslsValue!] = m_SymbolDefinitions[instruction.Arguments[1].RslsValue!];
-				return InstructionSupport.Supported;
-			} else {
-				return InstructionSupport.OtherError;
-			}
-		} else {
-			return InstructionSupport.ParameterType;
-		}
+	private InstructionSupport ProcessAssemblerCommand_Define_Symbol(SymbolAst name, SymbolAst value) {
+		m_SymbolDefinitions[name.Value] = m_SymbolDefinitions[value.Value];
+		return InstructionSupport.Supported;
+	}
+	private InstructionSupport ProcessAssemblerCommand_Define_Constant(SymbolAst name, ConstantAst value) {
+		m_SymbolDefinitions[name.Value] = value;
+		return InstructionSupport.Supported;
+	}
+	private InstructionSupport ProcessAssemblerCommand_Define_Register(SymbolAst name, RegisterAst value) {
+		m_SymbolDefinitions[name.Value] = value;
+		return InstructionSupport.Supported;
 	}
 }

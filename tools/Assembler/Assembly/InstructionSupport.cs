@@ -4,6 +4,7 @@ public enum InstructionSupport {
 	Supported,
 	NotRecognized,
 	ParameterType,
+	ParameterCount,
 	OtherError,
 	SymbolNotDefined,
 }

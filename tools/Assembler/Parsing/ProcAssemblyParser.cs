@@ -1,6 +1,5 @@
 using Antlr4.Runtime;
 using Assembler.Ast;
-using Assembler.Ast.Antlr;
 
 namespace Assembler.Parsing.Antlr;
 

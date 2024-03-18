@@ -1,21 +1,32 @@
 namespace Assembler.Ast;
 
-// TODO wtf does Rsls mean again
-// Something to do with ralsei, i guess
-public record InstructionArgumentAst(InstructionArgumentType Type, long? ConstantValue, string? RslsValue) : IAssemblyAst {
-	public override string ToString() {
-		return Type switch {
-			InstructionArgumentType.Constant => $"Constant {ConstantValue}",
-			InstructionArgumentType.Register => $"Register {RslsValue}",
-			InstructionArgumentType.StarRegister => $"StarRegister {RslsValue}",
-			InstructionArgumentType.Symbol => $"Symbol {RslsValue}",
-			InstructionArgumentType.String => $"String \"{RslsValue}\"",
-		};
-	}
+public abstract record InstructionArgumentAst : IAssemblyAst {
+	public abstract override string ToString();
 	
-	public static InstructionArgumentAst Constant(long value) => new InstructionArgumentAst(InstructionArgumentType.Constant, value, null);
-	public static InstructionArgumentAst Register(string value) => new InstructionArgumentAst(InstructionArgumentType.Register, null, value);
-	public static InstructionArgumentAst StarRegister(string value) => new InstructionArgumentAst(InstructionArgumentType.StarRegister, null, value);
-	public static InstructionArgumentAst Symbol(string value) => new InstructionArgumentAst(InstructionArgumentType.Symbol, null, value);
-	public static InstructionArgumentAst String(string value) => new InstructionArgumentAst(InstructionArgumentType.String, null, value);
+	public static InstructionArgumentAst Constant(long value) => new ConstantAst(value);
+	public static InstructionArgumentAst Register(string value) => new RegisterAst(value);
+	public static InstructionArgumentAst StarRegister(string value) => new StarRegisterAst(value);
+	public static InstructionArgumentAst Symbol(string value) => new SymbolAst(value);
+	public static InstructionArgumentAst String(string value) => new StringAst(value);
 }
+
+public record ConstantAst(long Value) : InstructionArgumentAst {
+	public override string ToString() => $"Constant {Value}";
+}
+
+public record RegisterAst(string Value) : InstructionArgumentAst {
+	public override string ToString() => $"Register {Value}";
+}
+
+public record StarRegisterAst(string Value) : InstructionArgumentAst {
+	public override string ToString() => $"StarRegister {Value}";
+}
+
+public record SymbolAst(string Value) : InstructionArgumentAst {
+	public override string ToString() => $"Symbol {Value}";
+}
+
+public record StringAst(string Value) : InstructionArgumentAst {
+	public override string ToString() => $"String \"{Value}\"";
+}
+
