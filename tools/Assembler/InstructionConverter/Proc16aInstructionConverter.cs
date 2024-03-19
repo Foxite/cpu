@@ -46,7 +46,7 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 		instruction = AssemblyUtil.SetBit(instruction, bit, value);
 	}
 	
-	private static bool OneDistinctStarRegister(IReadOnlyList<InstructionArgumentAst> args, out string? register) {
+	private static bool OneDistinctStarRegister(out string? register, params InstructionArgumentAst[] args) {
 		var distinctStars = args.OfType<StarRegisterAst>().Select(starRegister => starRegister.Value).Distinct().ToList();
 		if (distinctStars.Count == 0) {
 			register = null;
@@ -62,29 +62,25 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 		
 	private record ldiInstruction() : Instruction {
 		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!ValidateArgumentTypes(args,
-				new[] { IAT.Register, IAT.Constant },
-				new[] { IAT.StarRegister, IAT.Constant }
-			)) {
-				return InstructionSupport.ParameterType;
-			}
-
-			if (args[0].Type == IAT.Register && args[0].RslsValue == "a") {
-				return args[1].ConstantValue!.Value is >= -2 and <= 0x7FFF ? InstructionSupport.Supported : InstructionSupport.OtherError;
+		protected InstructionSupport Validate(RegisterAst register, ConstantAst constant)
+		protected InstructionSupport Validate(StarRegisterAst register, ConstantAst constant) {
+			if (register.Type == IAT.Register && register.RslsValue == "a") {
+				return constant.ConstantValue!.Value is >= -2 and <= 0x7FFF ? InstructionSupport.Supported : InstructionSupport.OtherError;
 			} else {
-				return args[1].ConstantValue!.Value is >= -2 and <= 2 ? InstructionSupport.Supported : InstructionSupport.OtherError;
+				return constant.ConstantValue!.Value is >= -2 and <= 2 ? InstructionSupport.Supported : InstructionSupport.OtherError;
 			}
 		}
 
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
-			if (args[0].Type == IAT.Register && args[0].RslsValue == "a" && args[1].ConstantValue!.Value >= 0) {
-				return (ushort) args[1].ConstantValue!.Value;
+		[Converter]
+		protected ushort Convert(RegisterAst register, ConstantAst constant)
+		protected ushort Convert(StarRegisterAst register, ConstantAst constant) {
+			if (register.Type == IAT.Register && register.RslsValue == "a" && constant.ConstantValue!.Value >= 0) {
+				return (ushort) constant.ConstantValue!.Value;
 			} else {
 				ushort ret = 0;
 				SetInstructionBit(ref ret, 15, true);
 				
-				ushort opcode = args[1].ConstantValue!.Value switch {
+				ushort opcode = constant.ConstantValue!.Value switch {
 					-2 => 0b10_00_10010, // ~1
 					-1 => 0b01_10_00001, // 0 - 1
 					0  => 0b01_01_00000, // 0 + 0
@@ -94,13 +90,12 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 
 				ret |= (ushort) (opcode << 3);
 				
-				var outRegister = args[0];
-				if (outRegister.Type == IAT.StarRegister) {
-					SetInstructionBit(ref ret, 14, outRegister.RslsValue == "b");
+				if (register.Type == IAT.StarRegister) {
+					SetInstructionBit(ref ret, 14, register.RslsValue == "b");
 					SetInstructionBit(ref ret, 2, true);
-				} else if (outRegister.RslsValue == "b") {
+				} else if (register.RslsValue == "b") {
 					SetInstructionBit(ref ret, 1, true);
-				} else if (outRegister.RslsValue == "a") {
+				} else if (register.RslsValue == "a") {
 					SetInstructionBit(ref ret, 0, true);
 				}
 
@@ -110,15 +105,13 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	}
 
 	private record brkInstruction() : Instruction {
-		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0 ? InstructionSupport.Supported : InstructionSupport.ParameterType;
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) => 1;
+		[Converter]
+		protected ushort Convert() => 1;
 	}
 
 	private record nopInstruction() : Instruction {
-		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => args.Count == 0 ? InstructionSupport.Supported : InstructionSupport.ParameterType;
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert() {
 			// none = 0 + 0
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
@@ -127,14 +120,10 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	}
 
 	private record movInstruction() : Instruction {
-		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args,
-			new[] { IAT.Register, IAT.Register },
-			new[] { IAT.Register, IAT.StarRegister },
-			new[] { IAT.StarRegister, IAT.Register }
-		) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
-
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(    RegisterAst target, RegisterAst source)
+		protected ushort Convert(    RegisterAst target, StarRegisterAst source)
+		protected ushort Convert(StarRegisterAst target, RegisterAst source) {
 			// lhs = rhs + 0
 			ushort ret = 0;
 			
@@ -143,16 +132,15 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 			SetInstructionBit(ref ret, 13, false);
 			
 			// Ax select
-			OneDistinctStarRegister(args, out string? ax);
+			OneDistinctStarRegister(out string? ax, source, target);
 			SetInstructionBit(ref ret, 14, ax == "b");
 			
 			// X = rhs
-			InstructionArgumentAst inRegister = args[1];
-			if (inRegister.Type == IAT.StarRegister) {
+			if (source.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 11, true);
 				SetInstructionBit(ref ret, 10, true);
 			} else {
-				SetInstructionBit(ref ret, 12, inRegister.RslsValue == "b");
+				SetInstructionBit(ref ret, 12, source.RslsValue == "b");
 				SetInstructionBit(ref ret, 11, false);
 				SetInstructionBit(ref ret, 10, false);
 			}
@@ -162,12 +150,11 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 			SetInstructionBit(ref ret, 8, true);
 			
 			// Out = lhs
-			var outRegister = args[0];
-			if (outRegister.Type == IAT.StarRegister) {
+			if (target.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 2, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
-			} else if (outRegister.RslsValue == "a") {
+			} else if (target.RslsValue == "a") {
 				SetInstructionBit(ref ret, 0, true);
 			}
 
@@ -177,45 +164,35 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 
 	private record AluInstruction(int Opcode) : Instruction {
 		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!ValidateArgumentTypes(args,
-			    new[] { IAT.Register, IAT.Register, IAT.Register },
-			    new[] { IAT.Register, IAT.Register, IAT.StarRegister },
-			    new[] { IAT.Register, IAT.Register, IAT.Constant },
-			    new[] { IAT.Register, IAT.StarRegister, IAT.Register },
-			    new[] { IAT.Register, IAT.StarRegister, IAT.StarRegister },
-			    new[] { IAT.Register, IAT.StarRegister, IAT.Constant },
-			    new[] { IAT.Register, IAT.Constant, IAT.Register },
-			    new[] { IAT.Register, IAT.Constant, IAT.StarRegister },
-			    new[] { IAT.Register, IAT.Constant, IAT.Constant },
-			    
-			    new[] { IAT.StarRegister, IAT.Register, IAT.Register },
-			    new[] { IAT.StarRegister, IAT.Register, IAT.StarRegister },
-			    new[] { IAT.StarRegister, IAT.Register, IAT.Constant },
-			    new[] { IAT.StarRegister, IAT.StarRegister, IAT.Register },
-			    new[] { IAT.StarRegister, IAT.StarRegister, IAT.StarRegister },
-			    new[] { IAT.StarRegister, IAT.StarRegister, IAT.Constant },
-			    new[] { IAT.StarRegister, IAT.Constant, IAT.Register },
-			    new[] { IAT.StarRegister, IAT.Constant, IAT.StarRegister },
-			    new[] { IAT.StarRegister, IAT.Constant, IAT.Constant }
-		    )) {
-				return InstructionSupport.ParameterType;
-			}
-
-			if (!OneDistinctStarRegister(args, out _)) {
+		protected InstructionSupport Validate(    RegisterAst target,     RegisterAst lhs, RegisterAst rhs)
+		protected InstructionSupport Validate(    RegisterAst target,     RegisterAst lhs, ConstantAst rhs)
+		protected InstructionSupport Validate(    RegisterAst target,     RegisterAst lhs, StarRegisterAst rhs)
+		
+		protected InstructionSupport Validate(    RegisterAst target, StarRegisterAst lhs, RegisterAst rhs)
+		protected InstructionSupport Validate(    RegisterAst target, StarRegisterAst lhs, ConstantAst rhs)
+		protected InstructionSupport Validate(    RegisterAst target, StarRegisterAst lhs, StarRegisterAst rhs)
+		
+		protected InstructionSupport Validate(StarRegisterAst target,     RegisterAst lhs, RegisterAst rhs)
+		protected InstructionSupport Validate(StarRegisterAst target,     RegisterAst lhs, ConstantAst rhs)
+		protected InstructionSupport Validate(StarRegisterAst target,     RegisterAst lhs, StarRegisterAst rhs)
+		
+		protected InstructionSupport Validate(StarRegisterAst target, StarRegisterAst lhs, RegisterAst rhs)
+		protected InstructionSupport Validate(StarRegisterAst target, StarRegisterAst lhs, ConstantAst rhs)
+		protected InstructionSupport Validate(StarRegisterAst target, StarRegisterAst lhs, StarRegisterAst rhs) {
+			if (!OneDistinctStarRegister(out _, target, lhs, rhs)) {
 				return InstructionSupport.OtherError;
 			}
 
-			if (args[1].Type == IAT.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
+			if (lhs.Type == IAT.Constant && lhs.ConstantValue!.Value is not (0 or 1)) {
 				return InstructionSupport.OtherError;
 			}
 
-			if (args[2].Type == IAT.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
+			if (rhs.Type == IAT.Constant && rhs.ConstantValue!.Value is not (0 or 1)) {
 				return InstructionSupport.OtherError;
 			}
 
-			if (args[1].Type == IAT.Register && args[2].Type == IAT.Register) {
-				if (args[1].RslsValue == args[2].RslsValue) {
+			if (lhs.Type == IAT.Register && rhs.Type == IAT.Register) {
+				if (lhs.RslsValue == rhs.RslsValue) {
 					return InstructionSupport.OtherError;
 				}
 			}
@@ -223,15 +200,15 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 			return InstructionSupport.Supported;
 		}
 
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(StarRegisterAst target, StarRegisterAst lhs, StarRegisterAst rhs) {
 			ushort ret = 0;
 			
 			SetInstructionBit(ref ret, 15, true);
-			OneDistinctStarRegister(args, out string? ax);
+			OneDistinctStarRegister(out string? ax, target, lhs, rhs);
 			SetInstructionBit(ref ret, 14, ax == "b");
 			
 			// X = lhs
-			InstructionArgumentAst lhs = args[1];
 			if (lhs.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 11, true);
 				SetInstructionBit(ref ret, 10, true);
@@ -250,7 +227,6 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 			}
 			
 			// Y = rhs
-			InstructionArgumentAst rhs = args[2];
 			if (rhs.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 9, true);
 				SetInstructionBit(ref ret, 8, true);
@@ -268,12 +244,11 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 			}
 
 			// Out bits
-			var outRegister = args[0];
-			if (outRegister.Type == IAT.StarRegister) {
+			if (target.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 2, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
-			} else if (outRegister.RslsValue == "a") {
+			} else if (target.RslsValue == "a") {
 				SetInstructionBit(ref ret, 0, true);
 			}
 
@@ -311,43 +286,45 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 
 	private record notInstruction() : Instruction {
 		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register }, new[] { IAT.Register, IAT.StarRegister }, new[] { IAT.Register, IAT.Constant })) {
-				return InstructionSupport.ParameterType;
-			}
-
-			if (!OneDistinctStarRegister(args, out _)) {
+		protected InstructionSupport Validate(    RegisterAst target, ConstantAst operand)
+		protected InstructionSupport Validate(    RegisterAst target, StarRegisterAst operand)
+		protected InstructionSupport Validate(    RegisterAst target, RegisterAst operand)
+		protected InstructionSupport Validate(StarRegisterAst target, ConstantAst operand)
+		protected InstructionSupport Validate(StarRegisterAst target, StarRegisterAst operand)
+		protected InstructionSupport Validate(StarRegisterAst target, RegisterAst operand) {
+			if (!OneDistinctStarRegister(out _, target, operand)) {
 				return InstructionSupport.OtherError;
 			}
 
-			if (args[1].Type == IAT.Constant && args[1].ConstantValue!.Value is not (0 or 1)) {
-				return InstructionSupport.OtherError;
-			}
-
-			if (args[2].Type == IAT.Constant && args[2].ConstantValue!.Value is not (0 or 1)) {
+			if (operand.Type == IAT.Constant && operand.ConstantValue!.Value is not (0 or 1)) {
 				return InstructionSupport.OtherError;
 			}
 
 			return InstructionSupport.Supported;
 		}
 
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(    RegisterAst target, ConstantAst operand)
+		protected ushort Convert(    RegisterAst target, StarRegisterAst operand)
+		protected ushort Convert(    RegisterAst target, RegisterAst operand)
+		protected ushort Convert(StarRegisterAst target, ConstantAst operand)
+		protected ushort Convert(StarRegisterAst target, StarRegisterAst operand)
+		protected ushort Convert(StarRegisterAst target, RegisterAst operand) {
 			ushort ret = 0;
 			
-			OneDistinctStarRegister(args, out string? ax);
+			OneDistinctStarRegister(out string? ax, target, operand);
 			SetInstructionBit(ref ret, 14, ax == "b");
 			
 			// X = operand
-			InstructionArgumentAst lhs = args[1];
-			if (lhs.Type == IAT.StarRegister) {
+			if (operand.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 11, true);
 				SetInstructionBit(ref ret, 10, true);
-			} else if (lhs.Type == IAT.Register) {
-				SetInstructionBit(ref ret, 12, lhs.RslsValue == "b");
+			} else if (operand.Type == IAT.Register) {
+				SetInstructionBit(ref ret, 12, operand.RslsValue == "b");
 				SetInstructionBit(ref ret, 11, false);
 				SetInstructionBit(ref ret, 10, false);
-			} else if (lhs.Type == IAT.Constant) {
-				if (lhs.ConstantValue!.Value == 0) {
+			} else if (operand.Type == IAT.Constant) {
+				if (operand.ConstantValue!.Value == 0) {
 					SetInstructionBit(ref ret, 11, false);
 					SetInstructionBit(ref ret, 10, true);
 				} else {
@@ -357,12 +334,11 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 			}
 			
 			// Out bits
-			var outRegister = args[0];
-			if (outRegister.Type == IAT.StarRegister) {
+			if (target.Type == IAT.StarRegister) {
 				SetInstructionBit(ref ret, 2, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 0, true);
 			}
 
@@ -374,24 +350,21 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 
 
 	private record trueInstruction() : Instruction {
-		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register }) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
-
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(RegisterAst target) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 13, false);
 			ret |= 0b11111 << 3;
 			
 			// Out bits
-			var outRegister = args[0];
-			if (outRegister.Type == IAT.StarRegister) {
-				SetInstructionBit(ref ret, 14, outRegister.RslsValue == "b");
+			if (target.Type == IAT.StarRegister) {
+				SetInstructionBit(ref ret, 14, target.RslsValue == "b");
 				
 				SetInstructionBit(ref ret, 2, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 0, true);
 			}
 
@@ -400,24 +373,21 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	}
 	
 	private record falseInstruction() : Instruction {
-		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register }) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
-
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(RegisterAst target) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 13, false);
 			ret |= 0b11000 << 3;
 			
 			// Out bits
-			var outRegister = args[0];
-			if (outRegister.Type == IAT.StarRegister) {
-				SetInstructionBit(ref ret, 14, outRegister.RslsValue == "b");
+			if (target.Type == IAT.StarRegister) {
+				SetInstructionBit(ref ret, 14, target.RslsValue == "b");
 				
 				SetInstructionBit(ref ret, 2, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 1, true);
-			} else if (outRegister.RslsValue == "b") {
+			} else if (target.RslsValue == "b") {
 				SetInstructionBit(ref ret, 0, true);
 			}
 
@@ -430,25 +400,18 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 
 	private record JumpInstruction(int CompareMode) : Instruction {
 		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!ValidateArgumentTypes(args, new[] { IAT.Register, IAT.Register, IAT.Constant })) {
-				return InstructionSupport.ParameterType;
-			}
-
-			if (!OneDistinctStarRegister(args, out _)) {
-				return InstructionSupport.OtherError;
-			}
-
-			return args[0].RslsValue != args[1].RslsValue && args[2].ConstantValue!.Value == 0 ? InstructionSupport.Supported : InstructionSupport.OtherError;
+		protected InstructionSupport Validate(RegisterAst target, RegisterAst lhs, ConstantAst rhs) {
+			return target.Value != lhs.Value && rhs.Value == 0 ? InstructionSupport.Supported : InstructionSupport.OtherError;
 		}
 
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(RegisterAst target, RegisterAst lhs, ConstantAst rhs) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 13, true);
 			SetInstructionBit(ref ret, 11, false);
 
-			string compareLhsRegister = args[1].RslsValue!;
+			string compareLhsRegister = lhs.Value;
 
 			SetInstructionBit(ref ret, 3, compareLhsRegister == "b");
 			
@@ -467,18 +430,14 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	
 	
 	private record jmpInstruction : Instruction {
-		[Validator]
-		protected InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) => ValidateArgumentTypes(args, new[] { IAT.Register }) ? InstructionSupport.Supported : InstructionSupport.ParameterType;
-
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		[Converter]
+		protected ushort Convert(RegisterAst target) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 13, true);
 			SetInstructionBit(ref ret, 11, false);
 
-			string targetRegister = args[0].RslsValue!;
-
-			SetInstructionBit(ref ret, 3, targetRegister == "a");
+			SetInstructionBit(ref ret, 3, target.Value == "a");
 			
 			ret |= 0b111;
 
