@@ -8,8 +8,8 @@ public record MacroInstruction(string? Label, string Name, string Path, IReadOnl
 		
 		for (int i = 0; i < Arguments.Count; i++) {
 			var argument = Arguments[i];
-			if (resolveSymbols && argument.Type == InstructionArgumentType.Symbol) {
-				argument = outerContext.GetSymbolValue(Arguments[i].RslsValue!);
+			if (resolveSymbols && argument is SymbolAst symbolArgument) {
+				argument = outerContext.GetSymbolValue(symbolArgument.Value);
 			}
 			
 			innerContext.SetSymbol(new SymbolDefinition($"macro{i}", false, argument));

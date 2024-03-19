@@ -26,7 +26,7 @@ public class ProgramAssemblerv2 {
 		int labelIndex = context.OutputIndex;
 		foreach (AssemblyInstruction instruction in instructions) {
 			if (instruction.Label != null) {
-				context.SetSymbol(new SymbolDefinition(instruction.Label, false, new InstructionArgumentAst(InstructionArgumentType.Constant, labelIndex, null)));
+				context.SetSymbol(new SymbolDefinition(instruction.Label, false, new ConstantAst(labelIndex)));
 			}
 
 			labelIndex += instruction.GetWordCount(context);
@@ -54,6 +54,7 @@ public class ProgramAssemblerv2 {
 	}
 
 	public IReadOnlyList<ushort> AssembleMachineCode(AssemblyContext context, IReadOnlyList<AssemblyInstruction> renderedInstructions) {
+		// TODO validate instructions
 		var ret = new List<ushort>();
 		foreach (var renderedInstruction in renderedInstructions) {
 			ret.AddRange(renderedInstruction.Assemble(context));

@@ -1,14 +1,9 @@
-using System.Reflection.Metadata;
 using Assembler.Assembly;
+using Assembler.Assembly.V2;
 using Assembler.Parsing;
 using Assembler.Parsing.Antlr;
 using Assembler.Ast;
 using CommandLine;
-
-public enum AssemblerSelection {
-	V1,
-	V2,
-}
 
 public enum CompileOutputMode {
 	Hex16,
@@ -22,9 +17,6 @@ public class CompileOptions {
 	
 	[Option('a', "arch", Required = true, HelpText = "Choose architecture")]
 	public string Architecture { get; set; }
-	
-	[Option('A', "assembler", Required = true, HelpText = "Select the assembler. V1 has been tested, V2 is experimental.")]
-	public AssemblerSelection AssemblerSelection { get; set; }
 	
 	[Option('m', "output-mode", Default = CompileOutputMode.Hex16, HelpText = "Choose output mode.")]
 	public CompileOutputMode OutputMode { get; set; }
@@ -45,12 +37,7 @@ public class CompileOptions {
 
 public class CompileVerbRunner : VerbRunner<CompileOptions> {
 	public ExitCode Run(CompileOptions opts) {
-		var architectureIsSupported = opts.AssemblerSelection switch {
-			AssemblerSelection.V1 => Assembler.Assembly.V1._ProgramAssemblerFactory.ArchitectureIsSupported(opts.Architecture),
-			AssemblerSelection.V2 => Assembler.Assembly.V2.AssemblyContextFactory.ArchitectureIsSupported(opts.Architecture),
-		};
-		
-		if (!architectureIsSupported) {
+		if (!AssemblyContextFactory.ArchitectureIsSupported(opts.Architecture)) {
 			Console.Error.WriteLine($"Architecture {opts.Architecture} is not recognized.");
 			return ExitCode.CommandInvalid;
 		}
@@ -93,21 +80,13 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		
 		IReadOnlyList<ushort> machineCode;
 		try {
-			if (opts.AssemblerSelection == AssemblerSelection.V2) {
-				var assembler = new Assembler.Assembly.V2.ProgramAssemblerv2();
-				var contextFactory = Assembler.Assembly.V2.AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
-				var context = contextFactory.CreateContext(globalSymbols, assembler);
+			var assembler = new Assembler.Assembly.V2.ProgramAssemblerv2();
+			var contextFactory = Assembler.Assembly.V2.AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
+			var context = contextFactory.CreateContext(globalSymbols, assembler);
 
-				var instructionList = assembler.CompileInstructionList(context, program);
-				var renderedInstructions = assembler.RenderInstructions(context, instructionList);
-				machineCode = assembler.AssembleMachineCode(context, renderedInstructions);
-			} else if (opts.AssemblerSelection == AssemblerSelection.V1) {
-				var assemblerFactory = Assembler.Assembly.V1._ProgramAssemblerFactory.CreateFactory(macroProvider, opts.Architecture, globalSymbols);
-				var assembler = assemblerFactory.GetAssembler(program);
-				machineCode = assembler.Assemble();
-			} else {
-				throw new Exception("Unrecognized assembler selection (this should never happen)");
-			}
+			var instructionList = assembler.CompileInstructionList(context, program);
+			var renderedInstructions = assembler.RenderInstructions(context, instructionList);
+			machineCode = assembler.AssembleMachineCode(context, renderedInstructions);
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {

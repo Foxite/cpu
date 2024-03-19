@@ -46,8 +46,8 @@ public class AssemblyContext {
 	public InstructionArgumentAst GetSymbolValue(string name) {
 		InstructionArgumentAst ret = GetSymbol(name, false)!.Value;
 
-		while (ret.Type == InstructionArgumentType.Symbol) {
-			ret = GetSymbol(ret.RslsValue!, false)!.Value;
+		while (ret is SymbolAst symbolAst) {
+			ret = GetSymbol(symbolAst.Value, false)!.Value;
 		}
 
 		return ret;
@@ -58,12 +58,12 @@ public class AssemblyContext {
 	}
 	
 	public bool IsSymbolDefined(string name) {
-		var symbol = GetSymbol(name, true);
+		SymbolDefinition? ret = GetSymbol(name, true);
 
-		while (symbol != null && symbol.Value.Type == InstructionArgumentType.Symbol) {
-			symbol = GetSymbol(symbol.Value.RslsValue!, true);
+		while (ret != null && ret.Value is SymbolAst symbolValue) {
+			ret = GetSymbol(symbolValue.Value, true);
 		}
 
-		return symbol != null;
+		return ret != null;
 	}
 }

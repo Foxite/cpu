@@ -1,5 +1,6 @@
 namespace Assembler.Ast;
 
+/*
 public enum InstructionArgumentType {
 	Constant,
 	Register,
@@ -9,3 +10,4 @@ public enum InstructionArgumentType {
 	Symbol,
 	String,
 }
+*/

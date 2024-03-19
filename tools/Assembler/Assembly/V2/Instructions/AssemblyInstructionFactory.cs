@@ -15,13 +15,14 @@ public class AssemblyInstructionFactory {
 	}
 
 	private CommandInstruction CreateCommandInstruction(AssemblyContext context, ProgramStatementAst statement) {
+		// TODO command map similar to InstructionConverter
 		return statement.Instruction.Mnemonic[1..] switch {
 			// TODO validation of the arguments on all these commands
-			"const"  => new DefineSymbolCommandInstruction(statement.Label, statement.Instruction.Arguments[0].RslsValue!, statement.Instruction.Arguments[1]),
-			"reg"    => new DefineSymbolCommandInstruction(statement.Label, statement.Instruction.Arguments[0].RslsValue!, statement.Instruction.Arguments[1]),
-			"define" => new DefineSymbolCommandInstruction(statement.Label, statement.Instruction.Arguments[0].RslsValue!, statement.Instruction.Arguments[1]),
+			"const"  => new DefineSymbolCommandInstruction(statement.Label, ((SymbolAst) statement.Instruction.Arguments[0]).Value, statement.Instruction.Arguments[1]),
+			"reg"    => new DefineSymbolCommandInstruction(statement.Label, ((SymbolAst) statement.Instruction.Arguments[0]).Value, statement.Instruction.Arguments[1]),
+			"define" => new DefineSymbolCommandInstruction(statement.Label, ((SymbolAst) statement.Instruction.Arguments[0]).Value, statement.Instruction.Arguments[1]),
 			"bytes"  => new OutputWordsCommandInstruction(statement.Label, statement.Instruction.Arguments),
-			"ascii"  => new OutputAsciiInstruction(statement.Label, statement.Instruction.Arguments[0].RslsValue!),
+			"ascii"  => new OutputAsciiInstruction(statement.Label, ((StringAst) statement.Instruction.Arguments[0]).Value),
 		};
 	}
 }

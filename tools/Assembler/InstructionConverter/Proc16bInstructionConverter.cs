@@ -1,5 +1,4 @@
 using Assembler.Ast;
-using IAT = Assembler.Ast.InstructionArgumentType;
 
 namespace Assembler.Assembly;
 
@@ -55,106 +54,96 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 		instruction = AssemblyUtil.SetBit(instruction, bit, value);
 	}
 	
-	private static int RegisterToBits(InstructionArgumentAst registerArg) {
-		return registerArg.RslsValue switch {
+	private static int RegisterToBits(RegisterAst registerArg) {
+		return registerArg.Value switch {
 			"a" => 0b00,
 			"b" => 0b01,
 			"c" => 0b10,
 			"d" => 0b11,
 		};
 	}
-
-	private abstract record Proc16bInstruction(params InstructionArgumentType[] Types) : Instruction {
-		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			if (!args.Select(arg => arg.Type).SequenceEqual(Types)) {
-				return InstructionSupport.ParameterType;
-			}
-			
-			return InstructionSupport.Supported;
-		}
-	}
 	
-	private record ldcInstruction() : Proc16bInstruction(IAT.Register, IAT.Constant) {
-		public override InstructionSupport Validate(IReadOnlyList<InstructionArgumentAst> args) {
-			InstructionSupport baseValidation = base.Validate(args);
-			if (baseValidation != InstructionSupport.Supported) {
-				return baseValidation;
-			}
-
-			if (args[1].ConstantValue!.Value > 0x0FFF) {
+	private record ldcInstruction : Instruction {
+		[Validator]
+		protected InstructionSupport Validate(RegisterAst register, ConstantAst constant) {
+			if (constant.Value > 0x0FFF) {
 				return InstructionSupport.OtherError;
 			}
 			
 			return InstructionSupport.Supported;
 		}
 
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+		protected ushort Convert(RegisterAst register, ConstantAst constant) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, false);
 			SetInstructionBit(ref ret, 14, false);
 			
-			ret |= (ushort) (RegisterToBits(args[0]) << 12);
+			ret |= (ushort) (RegisterToBits(register) << 12);
 
-			ret |= (ushort) args[1].ConstantValue!.Value;
+			ret |= (ushort) constant.Value;
 
 			return ret;
 		}
 	}
 
-	private record aluInstruction(ushort Opcode) : Proc16bInstruction(IAT.Register, IAT.Register, IAT.Register) {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record aluInstruction(ushort Opcode) : Instruction {
+		[Converter]
+		protected ushort Convert(RegisterAst target, RegisterAst lhs, RegisterAst rhs) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, false);
 			SetInstructionBit(ref ret, 14, true);
 			
-			ret |= (ushort) (RegisterToBits(args[1]) << 12);
-			ret |= (ushort) (RegisterToBits(args[2]) << 10);
-			ret |= (ushort) (RegisterToBits(args[0]) << 8);
+			ret |= (ushort) (RegisterToBits(lhs) << 12);
+			ret |= (ushort) (RegisterToBits(rhs) << 10);
+			ret |= (ushort) (RegisterToBits(target) << 8);
 			ret |= (ushort) (Opcode << 3);
 
 			return ret;
 		}
 	}
 
-	private record jumpInstruction(int CompareMode) : Proc16bInstruction(IAT.Register, IAT.Register, IAT.Register) {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record jumpInstruction(int CompareMode) : Instruction() {
+		[Converter]
+		protected ushort Convert(RegisterAst target, RegisterAst lhs, RegisterAst rhs) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 14, false);
 			SetInstructionBit(ref ret, 13, false);
 			
-			ret |= (ushort) (RegisterToBits(args[1]) << 11);
-			ret |= (ushort) (RegisterToBits(args[2]) << 09);
-			ret |= (ushort) (RegisterToBits(args[0]) << 07);
+			ret |= (ushort) (RegisterToBits(lhs) << 11);
+			ret |= (ushort) (RegisterToBits(rhs) << 09);
+			ret |= (ushort) (RegisterToBits(target) << 07);
 			ret |= (ushort) (CompareMode << 4);
 
 			return ret;
 		}
 	}
 
-	private record jumpAlwaysInstruction() : Proc16bInstruction(IAT.Register) {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record jumpAlwaysInstruction : Instruction {
+		[Converter]
+		protected ushort Convert(RegisterAst target) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 14, false);
 			SetInstructionBit(ref ret, 13, false);
 			
-			ret |= (ushort) (RegisterToBits(args[0]) << 07);
+			ret |= (ushort) (RegisterToBits(target) << 07);
 			ret |= (ushort) (0b111 << 4);
 
 			return ret;
 		}
 	}
 
-	private record movInstruction() : Proc16bInstruction(IAT.Register, IAT.Register) {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record movInstruction : Instruction {
+		[Converter]
+		protected ushort Convert(RegisterAst source, RegisterAst target) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 14, false);
 			SetInstructionBit(ref ret, 13, true);
 			SetInstructionBit(ref ret, 12, false);
 
-			ret |= (ushort) (args[0].RslsValue switch {
+			ret |= (ushort) (source.Value switch {
 				"a" => 0b0000,
 				"b" => 0b0001,
 				"c" => 0b0010,
@@ -163,7 +152,7 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 				"o" => 0b1001,
 			} << 8);
 			
-			ret |= (ushort) (args[1].RslsValue switch {
+			ret |= (ushort) (target.Value switch {
 				"a" => 0b000,
 				"b" => 0b001,
 				"c" => 0b010,
@@ -174,8 +163,9 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 		}
 	}
 
-	private record busInstruction(bool Store) : Proc16bInstruction(IAT.Register, IAT.Register) {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record busInstruction(bool Store) : Instruction {
+		[Converter]
+		protected ushort Convert(RegisterAst address, RegisterAst value) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, true);
 			SetInstructionBit(ref ret, 14, false);
@@ -184,14 +174,14 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 			
 			SetInstructionBit(ref ret, 11, Store);
 
-			ret |= (ushort) (args[0].RslsValue switch {
+			ret |= (ushort) (address.Value switch {
 				"a" => 0b000,
 				"b" => 0b001,
 				"c" => 0b010,
 				"d" => 0b011,
 			} << 8);
 			
-			ret |= (ushort) (args[1].RslsValue switch {
+			ret |= (ushort) (value.Value switch {
 				"a" => 0b000,
 				"b" => 0b001,
 				"c" => 0b010,
@@ -202,14 +192,16 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 		}
 	}
 
-	private record noopInstruction() : Proc16bInstruction() {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record noopInstruction : Instruction {
+		[Converter]
+		protected ushort Convert() {
 			return 0b1110_0000_0000_0000;
 		}
 	}
 
-	private record brkInstruction() : Proc16bInstruction() {
-		public override ushort Convert(IReadOnlyList<InstructionArgumentAst> args) {
+	private record brkInstruction : Instruction {
+		[Converter]
+		protected ushort Convert() {
 			return 0b1110_0000_0000_0001;
 		}
 	}
