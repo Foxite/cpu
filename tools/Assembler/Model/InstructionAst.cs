@@ -1,7 +1,12 @@
 namespace Assembler.Ast;
 
-public record InstructionAst(string Mnemonic, IReadOnlyList<InstructionArgumentAst> Arguments) : IAssemblyAst {
-	public InstructionAst(string mnemonic, params InstructionArgumentAst[] arguments) : this(mnemonic, (IReadOnlyList<InstructionArgumentAst>) arguments) { }
+public record InstructionAst(string File, int LineNumber, int Column, string Mnemonic, IReadOnlyList<InstructionArgumentAst> Arguments) : IAssemblyAst {
+	/// <summary>
+	/// USE IN TESTS ONLY
+	/// </summary>
+	/// <param name="mnemonic"></param>
+	/// <param name="arguments"></param>
+	public InstructionAst(string mnemonic, params InstructionArgumentAst[] arguments) : this("TEST", 0, 0, mnemonic, (IReadOnlyList<InstructionArgumentAst>) arguments) { }
 
 	public override string ToString() {
 		string ret = Mnemonic;

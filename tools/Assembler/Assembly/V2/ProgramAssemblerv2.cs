@@ -54,9 +54,12 @@ public class ProgramAssemblerv2 {
 	}
 
 	public IReadOnlyList<ushort> AssembleMachineCode(AssemblyContext context, IReadOnlyList<AssemblyInstruction> renderedInstructions) {
-		// TODO validate instructions
 		var ret = new List<ushort>();
 		foreach (var renderedInstruction in renderedInstructions) {
+			// TODO validation
+			// Validation needs to happen AFTER rendering symbols and BEFORE rendering macros.
+			// When returning information on invalid instructions, include the file, line, column
+			
 			ret.AddRange(renderedInstruction.Assemble(context));
 		}
 

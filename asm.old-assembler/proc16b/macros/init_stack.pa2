@@ -1,0 +1,9 @@
+# globals: STACK_BEGIN, STACK_PTR
+# description:
+# STACK_PTR, lets say $0, is a memory address that holds the address of the top stack item PLUS ONE, which is initially STACK_BEGIN, lets say $256.
+# when pushing items to the stack, that item is written to the address stored in STACK_PTR and then the value stored in STACK_PTR is incremented.
+# when popping, the value in STACK_PTR is decremented and the address stored in STACK_PTR is loaded.
+
+ldc %a, STACK_BEGIN
+ldc %b, STACK_PTR
+stb %b, %a

@@ -1,0 +1,46 @@
+# run a test to verify that macros work in the assembler. we also verify that symbols are properly passed into a macro's parameters are usable inside that macro.
+# to start, stb 0x88 into 0x0000 to indicate the test is not finished.
+# use a macro to ldc 0x10 into a and b.
+# then add a and b, and check if the result is 0x20.
+# if it is, stb 0x11 into 0x0000 (test successful), and if it's not (meaning the machine code is not correct) stb 0x44 into 0x0000 (test failed).
+
+
+.const theConst, $0x10
+
+# pre test: *0 = 0x88
+ldc %a, $0
+ldc %b, $0x88
+stb %a, %b
+
+@ldcs theConst
+
+add %c, %a, %b
+
+ldc %d, $0x20
+
+ldc %a, succeed
+jeq %a, %c, %d
+
+
+fail:
+# *0 = 0x44
+ldc %a, $0
+ldc %b, $0x44
+stb %a, %b
+
+ldc %a, end
+jump %a
+
+succeed:
+# *0 = 0x11
+ldc %a, $0
+ldc %b, $0x11
+stb %a, %b
+
+#ldc %a, end
+#jump %a
+
+
+end:
+brk
+

@@ -31,6 +31,12 @@ public record MacroInstruction(string? Label, string Name, string Path, IReadOnl
 	}
 	
 	public override bool HasUnrenderedSymbols() => throw new Exception($"Logic error: {nameof(MacroInstruction)} should not be present in rendered instructions");
+	
+	public override void Validate(AssemblyContext context) {
+		foreach (AssemblyInstruction instruction in Instructions) {
+			instruction.Validate(ScopeContext(context, true));
+		}
+	}
 
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) {
 		return outerContext.Assembler.AssembleMachineCode(ScopeContext(outerContext, true), Instructions);

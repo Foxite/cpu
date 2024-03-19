@@ -3,7 +3,7 @@
 	ldi %b, $0
 
 next:
-	mov %sb, %b
+	mov *b, %b
 	add %b, %b, $1
 	ldi %a, next
 	jmp %a

@@ -21,19 +21,22 @@ public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 	}
 
 	public override IAssemblyAst VisitProgram(ProcAssemblyV2Grammar.ProgramContext context) {
-		return new ProgramAst(context.programStatement().Select(Visit).Cast<ProgramStatementAst>().ToList());
+		return new ProgramAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, context.programStatement().Select(Visit).Cast<ProgramStatementAst>().ToList());
 	}
 
 	public override IAssemblyAst VisitProgramStatement(ProcAssemblyV2Grammar.ProgramStatementContext context) {
 		ITerminalNode? labelSymbol = context.SYMBOL();
 		string? labelValue = labelSymbol?.GetText();
 
-		return new ProgramStatementAst(labelValue, (InstructionAst) Visit(context.instruction()));
+		return new ProgramStatementAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, labelValue, (InstructionAst) Visit(context.instruction()));
 	}
 
 	public override IAssemblyAst VisitInstruction(ProcAssemblyV2Grammar.InstructionContext context) {
 		ProcAssemblyV2Grammar.InstructionMnemonicContext mnemonic = context.instructionMnemonic();
 		return new InstructionAst(
+			context.Start.TokenSource.SourceName,
+			context.Start.Line,
+			context.Start.Column,
 			//(InstructionMnemonicAst) Visit(context.instructionMnemonic()),
 			mnemonic.DOT()?.GetText() + mnemonic.ATSIGN()?.GetText() + mnemonic.SYMBOL().GetText(),
 			context.instructionArgument().Select(Visit).Cast<InstructionArgumentAst>().ToList()
@@ -42,14 +45,14 @@ public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 
 	public override IAssemblyAst VisitInstructionArgument(ProcAssemblyV2Grammar.InstructionArgumentContext context) {
 		if (context.SYMBOL() != null) {
-			return InstructionArgumentAst.Symbol(context.SYMBOL().GetText());
+			return new SymbolAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, context.SYMBOL().GetText());
 		} else if (context.IMMEDIATE() != null) {
-			return InstructionArgumentAst.Constant(ParseNumber(context.IMMEDIATE().GetText()[1..]));
+			return new ConstantAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, ParseNumber(context.IMMEDIATE().GetText()[1..]));
 		} else if (context.REGISTER() != null) {
 			string registerName = context.REGISTER().GetText()[1..];
-			return InstructionArgumentAst.Register(registerName);
+			return new RegisterAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, registerName);
 		} else if (context.STRING() != null) {
-			return InstructionArgumentAst.String(context.STRING().GetText()[1..^1]);
+			return new StringAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, context.STRING().GetText()[1..^1]);
 		} else {
 			throw new ParserException("Unable to recognize rule " + context);
 		}

@@ -1,0 +1,14 @@
+# increment A forever.
+# Tests data words, ALU to A, ALU to B, jumping unconditionally.
+
+.reg address, %a
+.reg one,     %b
+.reg label,   %c
+
+	ldc address, $0    # 0b00 00 000000000000
+	ldc one,     $1    # 0b00 01 000000000001
+	ldc label,   loop  # 0b00 10 000000000011
+	
+loop:
+	add address, address, one  # 0b01 00 01 00 00000 000
+	jmp label                  # 0b100 00 00 10 111 0000

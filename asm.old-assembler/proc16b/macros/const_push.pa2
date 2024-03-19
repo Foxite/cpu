@@ -1,0 +1,14 @@
+# globals: STACK_PTR
+# mangles: %a, %b
+# arguments:
+# - constant to push
+
+.const constantToPush, macro0
+
+# description:
+# store constant in **STACK_PTR
+# increment *STACK_PTR
+
+ldc %b, constantToPush
+
+@reg_push %b # 7

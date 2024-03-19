@@ -2,9 +2,9 @@
 
 start:
     ldi %a, $0x6000
-    mov %b, %sa
+    mov %b, *a
     ldi %a, $0x0000
-    mov %sa, %sb
+    mov *a, %b
 
     ldi %a, start
     jmp %a

@@ -7,5 +7,6 @@ public abstract record AssemblyInstruction(string? Label) {
 	public abstract IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context);
 	public abstract IEnumerable<AssemblyInstruction> Render(AssemblyContext context);
 	public abstract bool HasUnrenderedSymbols();
+	public abstract void Validate(AssemblyContext context);
 	public abstract IEnumerable<ushort> Assemble(AssemblyContext outerContext);
 }

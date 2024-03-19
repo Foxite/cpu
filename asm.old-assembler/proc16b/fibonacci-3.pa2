@@ -1,0 +1,27 @@
+# Compute fibonacci numbers entirely in cpu registers, and output the last one to the bus at 0x0000.
+
+	# a: fib(n-1)
+	# b: fib(n)
+	# c: fib(n+1)
+	# d: 0x0000 and computeNext
+
+.reg fib0,  %a
+.reg fib1,  %b
+.reg fib2,  %c
+.reg other, %d
+.const busOutput, $0
+
+	ldc fib0, $1
+	ldc fib1, $1
+	ldc other, busOutput
+
+computeNext:
+	add fib2, fib0, fib1   # c = a + b
+	mov fib1, fib0         # a = b
+	mov fib2, fib1         # b = c
+
+	ldc other, busOutput
+	stb other, fib1        # *0 = b
+
+	ldc other, computeNext
+	jmp other

@@ -1,11 +1,11 @@
 start:
     # read the button device connected to 0x6000.
     ldi %a, $0x6000
-    mov %b, %sa
+    mov %b, *a
     
     # output its value to 0x0000.
     ldi %a, $0x0000
-    mov %sa, %b
+    mov *a, %b
     
     
     # output the 4 most significant bits to 0x4000.
@@ -16,12 +16,12 @@ start:
     
     # output
     ldi %a, $0x4000
-    mov %sa, %b
+    mov *a, %b
 
     
     # read device
     ldi %a, $0x6000
-    mov %b, %sa
+    mov %b, *a
     
     # output the 4 least significant bits to 0x4001.
     ldi %a, $0b0000_0000_0000_1111
@@ -29,7 +29,7 @@ start:
     
     # output
     ldi %a, $0x4001
-    mov %sa, %b
+    mov *a, %b
 
 
     # loop

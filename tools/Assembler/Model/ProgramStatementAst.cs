@@ -1,6 +1,6 @@
 namespace Assembler.Ast;
 
-public record ProgramStatementAst(string? Label, InstructionAst Instruction) : IAssemblyAst {
+public record ProgramStatementAst(string File, int LineNumber, int Column, string? Label, InstructionAst Instruction) : IAssemblyAst {
 	public override string ToString() {
 		string ret = Instruction.ToString()!;
 

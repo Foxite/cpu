@@ -36,8 +36,8 @@ public abstract class InstructionMapInstructionConverter : IInstructionConverter
 			MethodInfo? converter = GetType()
 				.GetMethods(BindingFlags.Instance)
 				.SingleOrDefault(method =>
-					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes) &&
-					method.GetCustomAttribute<ConverterAttribute>() != null
+					method.GetCustomAttribute<ConverterAttribute>() != null &&
+					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes)
 				);
 			
 			MethodInfo? validator = GetType()
@@ -62,9 +62,9 @@ public abstract class InstructionMapInstructionConverter : IInstructionConverter
 			MethodInfo overload = GetType()
 				.GetMethods(BindingFlags.Instance)
 				.SingleOrDefault(method =>
-					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes) &&
-					method.GetCustomAttribute<ConverterAttribute>() != null
-				) ?? throw new Exception("No overload is available. This should have been caught during validation");
+					method.GetCustomAttribute<ConverterAttribute>() != null &&
+					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes)
+				) ?? throw new Exception($"No overload is available. This should have been caught during validation. {GetType().Name} {string.Join(", ", arguments.Select(arg => arg.GetType().Name))}");
 
 			return (ushort) overload.Invoke(this, arguments.Cast<object?>().ToArray())!;
 		}

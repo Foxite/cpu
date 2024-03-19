@@ -1,0 +1,32 @@
+# read the button device connected to 0x6000 and output its value to 0x0000, infinitely.
+
+.reg    buttondevice,  %a
+.reg    output,        %b
+.reg    value,         %c
+.reg    label,         %d
+
+    #ldc %c, $0x07FF
+    #ldc %d, $0
+    #stb %d, %c
+    #brk
+    
+    # buttondevice = 0x6000 = 0b0110_0000_0000_0000 = 0b11 << 14
+    ldc %a, $0b11
+    ldc %b, $14
+    shl buttondevice, %a, %b
+    
+    ldc %c, $0
+    stb %c, buttondevice
+    ldc %d, $0
+    brk
+    
+    jmp %d
+    
+    
+    ldc output,       $0x0000
+    ldc label,        start
+
+start:
+    ldb buttondevice, value
+    stb value, output
+    jmp label
