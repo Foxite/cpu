@@ -2,15 +2,14 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record OutputWordsCommandInstruction(string? Label, IReadOnlyList<InstructionArgumentAst> Words) : CommandInstruction(Label) {
+public record OutputWordsCommandInstruction(string File, int Line, string? Label, IReadOnlyList<InstructionArgumentAst> Words) : CommandInstruction(File, Line, Label) {
 	public override int GetWordCount(AssemblyContext context) => Words.Count;
+	
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
 	
-	public override IEnumerable<AssemblyInstruction> Render(AssemblyContext context) {
-		return new[] {
-			this with {
-				Words = context.ReplaceSymbols(Words)
-			}
+	public override AssemblyInstruction RenderSymbols(AssemblyContext context) {
+		return this with {
+			Words = context.ReplaceSymbols(Words)
 		};
 	}
 	

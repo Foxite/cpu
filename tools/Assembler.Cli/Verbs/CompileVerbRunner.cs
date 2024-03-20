@@ -85,12 +85,12 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			var context = contextFactory.CreateContext(globalSymbols, assembler);
 
 			var instructionList = assembler.CompileInstructionList(context, program);
-			var renderedInstructions = assembler.RenderInstructions(context, instructionList);
+			var renderedInstructions = assembler.RenderSymbols(context, instructionList);
 			machineCode = assembler.AssembleMachineCode(context, renderedInstructions);
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {
-				Console.WriteLine($"Statement {invalidInstruction.Index}: {invalidInstruction.Instruction}: {invalidInstruction.Message}");
+				Console.WriteLine($"{invalidInstruction.Instruction.File}:{invalidInstruction.Instruction.LineNumber}:{invalidInstruction.Instruction.Column} {invalidInstruction.Instruction}: {invalidInstruction.Message}");
 			}
 			
 			return ExitCode.ProgramNotSupported;

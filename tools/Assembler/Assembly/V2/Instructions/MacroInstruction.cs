@@ -2,7 +2,7 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record MacroInstruction(string? Label, string Name, string Path, IReadOnlyList<AssemblyInstruction> Instructions, IReadOnlyList<InstructionArgumentAst> Arguments) : AssemblyInstruction(Label) {
+public record MacroInstruction(string File, int Line, string? Label, string Path, IReadOnlyList<AssemblyInstruction> Instructions, IReadOnlyList<InstructionArgumentAst> Arguments) : AssemblyInstruction(File, Line, Label) {
 	private AssemblyContext ScopeContext(AssemblyContext outerContext, bool resolveSymbols) {
 		AssemblyContext innerContext = outerContext.CreateScope();
 		
@@ -19,26 +19,18 @@ public record MacroInstruction(string? Label, string Name, string Path, IReadOnl
 	}
 	
 	public override int GetWordCount(AssemblyContext context) => Instructions.Sum(instruction => instruction.GetWordCount(ScopeContext(context, false)));
-	
+
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
 	
-	public override IEnumerable<AssemblyInstruction> Render(AssemblyContext outerContext) {
-		//AssemblyContext innerContext = ScopeContext(outerContext, true);
-		//return Instructions.SelectMany(instruction => instruction.Render(innerContext));
+	public override AssemblyInstruction RenderSymbols(AssemblyContext outerContext) => this with {
+		Instructions = outerContext.Assembler.RenderSymbols(ScopeContext(outerContext, true), Instructions),
+	};
 
-		AssemblyContext innerContext = ScopeContext(outerContext, true);
-		return outerContext.Assembler.RenderInstructions(innerContext, Instructions);
-	}
+	public override bool HasUnrenderedSymbols() => Instructions.Any(instruction => instruction.HasUnrenderedSymbols());
 	
-	public override bool HasUnrenderedSymbols() => throw new Exception($"Logic error: {nameof(MacroInstruction)} should not be present in rendered instructions");
-	
-	public override void Validate(AssemblyContext context) {
-		foreach (AssemblyInstruction instruction in Instructions) {
-			instruction.Validate(ScopeContext(context, true));
-		}
-	}
+	public override IEnumerable<InvalidInstruction> Validate(AssemblyContext context) => context.Assembler.ValidateInstructions(ScopeContext(context, true), Instructions);
 
-	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) {
-		return outerContext.Assembler.AssembleMachineCode(ScopeContext(outerContext, true), Instructions);
-	}
+	public override IEnumerable<AssemblyInstruction> RenderInstructions(AssemblyContext outerContext) => outerContext.Assembler.RenderInstructions(ScopeContext(outerContext, true), Instructions);
+
+	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) => outerContext.Assembler.AssembleMachineCode(ScopeContext(outerContext, true), Instructions);
 }
