@@ -1,0 +1,10 @@
+# pop a value, pop a memory address, then write the value to the memory address.
+# mangles: %a, %b, %c
+
+.reg val,  %c
+.reg addr, %a
+
+@pop_reg val
+@pop_reg addr
+
+stb addr, val

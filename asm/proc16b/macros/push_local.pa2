@@ -1,0 +1,12 @@
+# load the given local and push it on the stack.
+
+.const slot, macro0
+
+# %a = locs[slot]
+ldc %a, FUNC_LOCS
+ldb %a, %a         # %a = &locs
+ldc %b, slot
+add %a, %a, %b     # %a = &locs + slot
+ldb %a, %b         # %b = locs[slot] = *(&locs + slot)
+
+@push_reg %b

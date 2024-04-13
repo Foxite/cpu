@@ -1,0 +1,21 @@
+# pop a value and write it to the given local slot.
+# 
+# globals:
+# - FUNC_LOCS
+
+.const slot, macro0
+
+@pop_reg %a
+
+
+
+# %c = &locals
+ldc %c, FUNC_LOCS
+ldb %c, %c
+
+# %b = &(locals[slot]) = &locals + slot
+ldc %b, slot
+add %b, %b, %c
+
+# locals[slot] = %a
+stb %b, %a

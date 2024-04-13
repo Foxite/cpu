@@ -1,0 +1,12 @@
+# given a memory address, pop a value, then write the value to the memory address.
+# mangles: %a, %b
+
+# note: the call macro depends on the fact that this macro does not mangle %d.
+
+.reg   val,  %a
+.const addr, macro0
+
+@pop_reg val
+
+ldc %b, addr
+stb %b, val

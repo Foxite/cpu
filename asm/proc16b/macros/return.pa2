@@ -1,0 +1,10 @@
+# return from a function body.
+
+@pop_mem_v FUNC_RETV
+@push_mem  FUNC_LOCS
+@pop_reg %b
+ldc %a, STACK_PTR
+stb %a, %b
+
+@pop_reg %a
+jump %a

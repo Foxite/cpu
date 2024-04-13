@@ -1,0 +1,10 @@
+# pop right-hand, pop left-hand, XOR them, and push the result.
+
+.reg lhs, %c
+.reg rhs, %d
+.reg result, %d
+
+@pop_reg lhs
+@pop_reg rhs
+xor result, lhs, rhs
+@push_reg result

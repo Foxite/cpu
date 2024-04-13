@@ -1,0 +1,12 @@
+# given a memory address, load it, and push the value.
+# arguments:
+# - the address
+# mangles: %a, %b
+
+.reg addr,   %b
+.reg value,  %b
+
+ldc addr, macro0
+ldb addr, value
+
+@push_reg value

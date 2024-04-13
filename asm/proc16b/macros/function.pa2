@@ -1,0 +1,33 @@
+# header instructions for a callable function.
+# must be prefixed with the name of the function as a label.
+# the function MUST end by using the return macro!
+# 
+# globals:
+# - FUNC_LOCS: memory address containing the address for the function's locals array. &&locals
+# 
+# arguments:
+# - function local count
+# 
+# before a function is called, all of its arguments have been pushed onto the stack.
+# when running a function:
+# - *FUNC_LOCS is pushed
+# - *FUNC_LOCS is set to [*STACK_PTR].
+# - *STACK_PTR is incremented by loccount.
+# 
+# *FUNC_LOCS will be restored by the return macro.
+
+.const loccount, macro0
+
+.reg stackptrptr, %a
+.reg stackptr,    %b
+
+# *FUNC_LOCS = *STACK_PTR
+ldc stackptrptr, STACK_PTR
+ldb stackptrptr, stackptr
+ldc %c, FUNC_LOCS
+stb %c, stackptr
+
+# *STACK_PTR = *STACK_PTR + loccount
+ldc %c, loccount
+add stackptr, stackptr, %c
+stb stackptrptr, stackptr

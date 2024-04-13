@@ -1,7 +1,7 @@
 # globals: STACK_PTR
 # mangles: %a, %b
 # arguments:
-# - constant to push
+# - constant to push (less than 0x0FFF)
 
 .const constantToPush, macro0
 
@@ -11,4 +11,4 @@
 
 ldc %b, constantToPush
 
-@reg_push %b # 7
+@push_reg %b # 7

@@ -1,0 +1,11 @@
+# pop a memory address, load it, and push the value.
+# mangles: %a, %b
+
+.reg val,  %c
+.reg addr, %d
+
+@pop_reg addr
+
+ldb addr, val
+
+@push_reg val

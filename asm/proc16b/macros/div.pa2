@@ -1,0 +1,10 @@
+# pop right-hand, pop left-hand, divide them, and push the result.
+
+.reg lhs, %c
+.reg rhs, %d
+.reg result, %d
+
+@pop_reg lhs
+@pop_reg rhs
+div result, lhs, rhs
+@push_reg result

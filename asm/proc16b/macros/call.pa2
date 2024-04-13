@@ -1,0 +1,58 @@
+# call a function marked by the function macro.
+# arguments:
+# - symbol of the function's jump label.
+# - argument count. this many values on the stack will be used as the function's arguments.
+# 
+# globals:
+# - FUNC_RETV: memory address containing return value when the function returns. &return
+# - FUNC_ARGS: memory address containing the address for the function's arguments array. &&args
+# - FUNC_LOCS: memory address containing the address for the function's locals array. &&locals
+
+#.const functionLabel, macro0
+.const argcount,      macro0
+
+# push current *FUNC_ARGS and *FUNC_LOCS so they can be restored later
+@push_mem_a FUNC_ARGS
+@push_mem_a FUNC_LOCS
+
+# push the address that the return macro will jump to
+@push_const return
+
+# compute the position of the arguments array, and push it.
+# this is the current *STACK_PTR, minus the 3 values we just pushed, and minus the argument count.
+# overwrite *FUNC_ARGS with it.
+@push_mem   STACK_PTR
+#@push_const [$3 + argcount]
+@push_const $3
+@push_const argcount
+@add
+@sub
+@pop_mem_v  FUNC_ARGS
+
+
+# return macro will jump to the 3rd value we pushed, which is right here.
+return:
+
+# restore *FUNC_LOCS
+@pop_mem_v FUNC_LOCS
+
+# later on: restore *STACK_PTR to what it was before the function arguments were pushed on the stack, which is *FUNC_ARGS.
+# tmp_args = *FUNC_ARGS
+.reg tmp_args, %c
+ldc tmp_args, FUNC_ARGS
+ldb tmp_args, tmp_args
+
+# restore *FUNC_ARGS
+@pop_mem_v FUNC_ARGS
+
+# restore *STACK_PTR as we prepared above.
+# *STACK_PTR = tmp_args
+ldc %a, STACK_PTR
+stb %a, tmp_args
+
+# push the function return value on the stack.
+ldc %a, FUNC_RETV
+stb %a, %c
+@push_reg %c
+
+# doñe

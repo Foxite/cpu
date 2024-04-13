@@ -1,0 +1,12 @@
+# load the given argument and push it on the stack.
+
+.const slot, macro0
+
+# %a = args[slot]
+ldc %a, FUNC_ARGS
+ldb %a, %a         # %a = &args
+ldc %b, slot
+add %a, %a, %b     # %a = &args + slot
+ldb %a, %b         # %b = args[slot] = *(&args + slot)
+
+@push_reg %b
