@@ -2,7 +2,7 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record DefineSymbolCommandInstruction(string File, int Line, string? Label, string Name, InstructionArgumentAst Value) : CommandInstruction(File, Line, Label) {
+public record DefineSymbolCommandInstruction(string File, int Line, string? Label, int Position, string Name, InstructionArgumentAst Value) : CommandInstruction(File, Line, Label, Position) {
 	public override int GetWordCount(AssemblyContext context) => 0;
 	
 	public override IReadOnlyDictionary<string, InstructionArgumentAst> GetDefinedSymbols(AssemblyContext context) {
@@ -20,4 +20,6 @@ public record DefineSymbolCommandInstruction(string File, int Line, string? Labe
 	public override bool HasUnrenderedSymbols() => Value is SymbolAst;
 	
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) => Array.Empty<ushort>();
+
+	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] .define {Name}, {Value}";
 }

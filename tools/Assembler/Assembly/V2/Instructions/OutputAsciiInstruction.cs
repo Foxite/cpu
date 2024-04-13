@@ -3,7 +3,7 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record OutputAsciiInstruction(string File, int Line, string? Label, string Ascii) : CommandInstruction(File, Line, Label) {
+public record OutputAsciiInstruction(string File, int Line, string? Label, int Position, string Ascii) : CommandInstruction(File, Line, Label, Position) {
 	public override int GetWordCount(AssemblyContext context) => Ascii.Length;
 	
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
@@ -15,4 +15,6 @@ public record OutputAsciiInstruction(string File, int Line, string? Label, strin
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) {
 		return Encoding.ASCII.GetBytes(Ascii).Select(word => (ushort) word);
 	}
+
+	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] .ascii \"{Ascii}\"";
 }

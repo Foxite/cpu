@@ -82,7 +82,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		try {
 			var assembler = new ProgramAssemblerv2();
 			var contextFactory = AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
-			var context = contextFactory.CreateContext(globalSymbols, assembler);
+			var context = contextFactory.CreateContext(globalSymbols, assembler, 0);
 			machineCode = assembler.AssembleAst(context, program);
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");

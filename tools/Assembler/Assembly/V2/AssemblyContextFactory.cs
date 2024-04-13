@@ -13,8 +13,8 @@ public class AssemblyContextFactory {
 		m_InstructionConverter = instructionConverter;
 	}
 	
-	public AssemblyContext CreateContext(IReadOnlyDictionary<string, InstructionArgumentAst>? globalSymbols, ProgramAssemblerv2 assembler) {
-		var ret = new AssemblyContext(m_MacroProvider, m_InstructionConverter, assembler);
+	public AssemblyContext CreateContext(IReadOnlyDictionary<string, InstructionArgumentAst>? globalSymbols, ProgramAssemblerv2 assembler, int outputOffset) {
+		var ret = new AssemblyContext(m_MacroProvider, m_InstructionConverter, assembler, outputOffset, 0);
 
 		if (globalSymbols != null) {
 			foreach ((string key, InstructionArgumentAst value) in globalSymbols) {

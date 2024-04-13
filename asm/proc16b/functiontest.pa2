@@ -1,22 +1,36 @@
+@init_stack
 @push_const $0x20
 @push_const $0x30
-@call write_1_to_2
 
+@call write_1_to_2, $2
 
 ldc %a, hang
 hang:
-#noop
 jump %a
 
 
 
 write_1_to_2:
-@function $2
+@function $0
 
-@push_arg $2
 @push_arg $1
+@push_arg $0
 @pop_mem_va
 
-brk
+@push_const $0xFFE # nil
 
 @return
+
+
+
+# this point should never be reached
+brk
+
+# write 0x0FFF to 0x0000 to signal this
+ldc %a, $0
+ldc %b, $0x0FFF
+stb %a, %b
+
+ldc %a, hang2
+hang2:
+jump %a

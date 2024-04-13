@@ -2,7 +2,7 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record OutputWordsCommandInstruction(string File, int Line, string? Label, IReadOnlyList<InstructionArgumentAst> Words) : CommandInstruction(File, Line, Label) {
+public record OutputWordsCommandInstruction(string File, int Line, string? Label, int Position, IReadOnlyList<InstructionArgumentAst> Words) : CommandInstruction(File, Line, Label, Position) {
 	public override int GetWordCount(AssemblyContext context) => Words.Count;
 	
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
@@ -18,4 +18,6 @@ public record OutputWordsCommandInstruction(string File, int Line, string? Label
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) {
 		return Words.Select(argument => (ushort) ((ConstantAst) argument).Value);
 	}
+
+	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] .words {string.Join(", ", Words)}";
 }

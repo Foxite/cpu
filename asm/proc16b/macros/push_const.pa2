@@ -11,4 +11,4 @@
 
 ldc %b, constantToPush
 
-@push_reg %b # 7
+@push_reg %b

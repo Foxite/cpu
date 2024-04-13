@@ -1,10 +1,23 @@
 # return from a function body.
 
-@pop_mem_v FUNC_RETV
-@push_mem  FUNC_LOCS
-@pop_reg %b
-ldc %a, STACK_PTR
-stb %a, %b
+.reg returnInstructionPtr, %d
+.reg restoreRegister,      %c
 
-@pop_reg %a
-jump %a
+# pop the return value and write it to FUNC_RETV.
+@pop_mem_v FUNC_RETV
+
+brk
+@pop_reg returnInstructionPtr
+
+# restore FUNC_LOCS
+@pop_reg restoreRegister
+ldc %a, FUNC_LOCS
+stb %a, restoreRegister
+
+# restore FUNC_ARGS
+@pop_reg restoreRegister
+ldc %a, FUNC_ARGS
+stb %a, restoreRegister
+
+brk
+jump returnInstructionPtr

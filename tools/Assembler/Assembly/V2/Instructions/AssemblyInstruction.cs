@@ -2,7 +2,7 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public abstract record AssemblyInstruction(string File, int Line, string? Label) {
+public abstract record AssemblyInstruction(string File, int Line, string? Label, int Position) {
 	public abstract int GetWordCount(AssemblyContext context);
 	public abstract IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context);
 	public abstract AssemblyInstruction RenderSymbols(AssemblyContext context);

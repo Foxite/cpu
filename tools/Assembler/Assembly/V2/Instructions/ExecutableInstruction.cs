@@ -2,7 +2,7 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record ExecutableInstruction(string File, int Line, string? Label, InstructionAst InstructionAst) : AssemblyInstruction(File, Line, Label) {
+public record ExecutableInstruction(string File, int Line, string? Label, int Position, InstructionAst InstructionAst) : AssemblyInstruction(File, Line, Label, Position) {
 	public override int GetWordCount(AssemblyContext context) => 1;
 	
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
@@ -23,4 +23,6 @@ public record ExecutableInstruction(string File, int Line, string? Label, Instru
 	}
 	
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) => new[] { outerContext.InstructionConverter.ConvertInstruction(InstructionAst) };
+
+	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] {InstructionAst}";
 }

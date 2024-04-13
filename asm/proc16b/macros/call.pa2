@@ -8,12 +8,12 @@
 # - FUNC_ARGS: memory address containing the address for the function's arguments array. &&args
 # - FUNC_LOCS: memory address containing the address for the function's locals array. &&locals
 
-#.const functionLabel, macro0
-.const argcount,      macro0
+.const functionLabel, macro0
+.const argcount,      macro1
 
 # push current *FUNC_ARGS and *FUNC_LOCS so they can be restored later
-@push_mem_a FUNC_ARGS
-@push_mem_a FUNC_LOCS
+@push_mem FUNC_ARGS
+@push_mem FUNC_LOCS
 
 # push the address that the return macro will jump to
 @push_const return
@@ -29,6 +29,8 @@
 @sub
 @pop_mem_v  FUNC_ARGS
 
+ldc %a, functionLabel
+jmp %a
 
 # return macro will jump to the 3rd value we pushed, which is right here.
 return:

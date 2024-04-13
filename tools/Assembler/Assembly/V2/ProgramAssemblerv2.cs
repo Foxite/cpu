@@ -30,18 +30,30 @@ public class ProgramAssemblerv2 {
 	}
 
 	public IReadOnlyList<AssemblyInstruction> RenderSymbols(AssemblyContext context, IReadOnlyList<AssemblyInstruction> instructions) {
-		// bug: jump labels inside macros
-		int labelIndex = context.OutputOffset;
+		var positionAssignedInstructions = new List<AssemblyInstruction>();
+		int position = context.OutputOffset;
 		foreach (AssemblyInstruction instruction in instructions) {
 			if (instruction.Label != null) {
-				context.SetSymbol(new SymbolDefinition(instruction.Label, false, new ConstantAst(instruction.File, instruction.Line, -1, labelIndex))); // TODO this kinda sucks
+				// TODO this kinda sucks
+				// Replace the AST currently used as the symbol/argument value with some kind of value object that tracks both the actual value and the symbol that defined it, with the full file/line/column for both
+				context.SetSymbol(new SymbolDefinition(instruction.Label, false, new ConstantAst(instruction.File, instruction.Line, -1, position)));
 			}
 
-			labelIndex += instruction.GetWordCount(context);
+			positionAssignedInstructions.Add(instruction with {
+				Position = position,
+			});
+			
+			position += instruction.GetWordCount(context);
+		}
+
+		void LogIfNecessary(object obj) {
+			Console.WriteLine(new string('\t', context.NestLevel) + obj);
 		}
 		
+		LogIfNecessary("{");
+		
 		var symbolRenderedInstructions = new List<AssemblyInstruction>();
-		foreach (AssemblyInstruction instruction in instructions) {
+		foreach (AssemblyInstruction instruction in positionAssignedInstructions) {
 			var definedSymbols = instruction.GetDefinedSymbols(context);
 			if (definedSymbols != null) {
 				foreach ((string? key, InstructionArgumentAst? value) in definedSymbols) {
@@ -49,12 +61,24 @@ public class ProgramAssemblerv2 {
 				}
 			}
 
-			symbolRenderedInstructions.Add(instruction.RenderSymbols(context));
+			LogIfNecessary(instruction);
+			LogIfNecessary(instruction.GetWordCount(context));
+			AssemblyInstruction rendered = instruction.RenderSymbols(context);
+			LogIfNecessary(rendered);
+			LogIfNecessary("");
+			LogIfNecessary("");
+			symbolRenderedInstructions.Add(rendered);
 		}
-
+		
+		LogIfNecessary("}");
+		
 		foreach (var renderedInstruction in symbolRenderedInstructions) {
 			if (renderedInstruction.HasUnrenderedSymbols()) {
 				throw new Exception($"Logic error: rendered instruction has unrendered symbols: {renderedInstruction}");
+			}
+
+			if (renderedInstruction.Position == -1) {
+				throw new Exception($"Logic error: rendered instruction has unset position: {renderedInstruction}");
 			}
 		}
 
