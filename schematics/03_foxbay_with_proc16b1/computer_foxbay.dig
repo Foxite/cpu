@@ -16,7 +16,7 @@
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>1000</int>
+          <int>20</int>
         </entry>
       </elementAttributes>
       <pos x="-720" y="280"/>
@@ -108,7 +108,7 @@
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/Documents/cpu/doc/test programs/proc16b/readbuttons-display.out</file>
+          <file>/home/foxite/dev/cpu/asm/proc16b/functiontest.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
@@ -609,7 +609,7 @@ UDLRABXY</string>
       <elementAttributes>
         <entry>
           <string>RectHeight</string>
-          <int>28</int>
+          <int>55</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -617,7 +617,7 @@ UDLRABXY</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>63</int>
+          <int>64</int>
         </entry>
       </elementAttributes>
       <pos x="-100" y="660"/>
@@ -1308,7 +1308,7 @@ all other bits are unconnected</string>
     <visualElement>
       <elementName>bus_driver.dig</elementName>
       <elementAttributes/>
-      <pos x="540" y="1060"/>
+      <pos x="560" y="1220"/>
     </visualElement>
     <visualElement>
       <elementName>bus_driver.dig</elementName>
@@ -1348,7 +1348,7 @@ all other bits are unconnected</string>
           <string>addr_dec</string>
         </entry>
       </elementAttributes>
-      <pos x="680" y="1080"/>
+      <pos x="700" y="1240"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1358,7 +1358,7 @@ all other bits are unconnected</string>
           <string>in_proc</string>
         </entry>
       </elementAttributes>
-      <pos x="680" y="1120"/>
+      <pos x="700" y="1280"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1420,7 +1420,7 @@ all other bits are unconnected</string>
           <string>out_dev</string>
         </entry>
       </elementAttributes>
-      <pos x="520" y="1120"/>
+      <pos x="540" y="1280"/>
     </visualElement>
     <visualElement>
       <elementName>Decoder</elementName>
@@ -1496,7 +1496,7 @@ all other bits are unconnected</string>
           <string>enable_dev</string>
         </entry>
       </elementAttributes>
-      <pos x="520" y="1100"/>
+      <pos x="540" y="1260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1657,133 +1657,6 @@ all other bits are unconnected</string>
       <pos x="1340" y="220"/>
     </visualElement>
     <visualElement>
-      <elementName>Rectangle</elementName>
-      <elementAttributes>
-        <entry>
-          <string>RectHeight</string>
-          <int>42</int>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>midi device</string>
-        </entry>
-        <entry>
-          <string>RectWidth</string>
-          <int>63</int>
-        </entry>
-      </elementAttributes>
-      <pos x="-100" y="1840"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>write_bus</string>
-        </entry>
-      </elementAttributes>
-      <pos x="220" y="2580"/>
-    </visualElement>
-    <visualElement>
-      <elementName>And</elementName>
-      <elementAttributes>
-        <entry>
-          <string>wideShape</string>
-          <boolean>true</boolean>
-        </entry>
-      </elementAttributes>
-      <pos x="240" y="2540"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>enable_dev_midi</string>
-        </entry>
-      </elementAttributes>
-      <pos x="220" y="2540"/>
-    </visualElement>
-    <visualElement>
-      <elementName>MIDI</elementName>
-      <elementAttributes>
-        <entry>
-          <string>midiInstrument</string>
-          <string>Violin</string>
-        </entry>
-      </elementAttributes>
-      <pos x="840" y="2320"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>clock</string>
-        </entry>
-      </elementAttributes>
-      <pos x="820" y="2400"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>out_proc</string>
-        </entry>
-      </elementAttributes>
-      <pos x="140" y="2260"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Text</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Description</string>
-          <string>0x00: midi flags
-.......0: enable
-.......1: OnOff
-0x01: midi note
-0x02: midi volume</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-40" y="1900"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Demultiplexer</elementName>
-      <elementAttributes/>
-      <pos x="160" y="2240"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>addr_dec</string>
-        </entry>
-      </elementAttributes>
-      <pos x="140" y="2300"/>
-    </visualElement>
-    <visualElement>
       <elementName>Tunnel</elementName>
       <elementAttributes>
         <entry>
@@ -1805,7 +1678,7 @@ all other bits are unconnected</string>
           <string>addr_dec_internal</string>
         </entry>
       </elementAttributes>
-      <pos x="100" y="1080"/>
+      <pos x="40" y="1240"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1839,12 +1712,12 @@ all other bits are unconnected</string>
       <elementName>ROM</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>device offset</string>
-        </entry>
-        <entry>
           <string>AddrBits</string>
           <int>3</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>device offset</string>
         </entry>
         <entry>
           <string>Bits</string>
@@ -1855,7 +1728,7 @@ all other bits are unconnected</string>
           <data>0,1,2,2,2</data>
         </entry>
       </elementAttributes>
-      <pos x="200" y="1080"/>
+      <pos x="220" y="1240"/>
     </visualElement>
     <visualElement>
       <elementName>Splitter</elementName>
@@ -1869,12 +1742,17 @@ all other bits are unconnected</string>
           <string>3,13</string>
         </entry>
       </elementAttributes>
-      <pos x="140" y="1080"/>
+      <pos x="80" y="1240"/>
     </visualElement>
     <visualElement>
       <elementName>Sub</elementName>
-      <elementAttributes/>
-      <pos x="340" y="1080"/>
+      <elementAttributes>
+        <entry>
+          <string>Bits</string>
+          <int>16</int>
+        </entry>
+      </elementAttributes>
+      <pos x="360" y="1240"/>
     </visualElement>
     <visualElement>
       <elementName>ROM</elementName>
@@ -1902,7 +1780,7 @@ all other bits are unconnected</string>
           <rotation rotation="1"/>
         </entry>
       </elementAttributes>
-      <pos x="180" y="1120"/>
+      <pos x="200" y="1280"/>
     </visualElement>
     <visualElement>
       <elementName>VDD</elementName>
@@ -1932,6 +1810,1195 @@ all other bits are unconnected</string>
       </elementAttributes>
       <pos x="240" y="900"/>
     </visualElement>
+    <visualElement>
+      <elementName>ROM</elementName>
+      <elementAttributes>
+        <entry>
+          <string>AddrBits</string>
+          <int>3</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>device enablement</string>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>3</int>
+        </entry>
+        <entry>
+          <string>Data</string>
+          <data>0,1,2,2,2,4,4,4</data>
+        </entry>
+      </elementAttributes>
+      <pos x="220" y="1360"/>
+    </visualElement>
+    <visualElement>
+      <elementName>VDD</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="1"/>
+        </entry>
+      </elementAttributes>
+      <pos x="200" y="1400"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>enable_dev_btn</string>
+        </entry>
+      </elementAttributes>
+      <pos x="380" y="1420"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Demultiplexer</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Selector Bits</string>
+          <int>3</int>
+        </entry>
+        <entry>
+          <string>flipSelPos</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="1420"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>enable_dev</string>
+        </entry>
+      </elementAttributes>
+      <pos x="280" y="1500"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>enable_dev_fbswitch</string>
+        </entry>
+      </elementAttributes>
+      <pos x="380" y="1440"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>enable_dev_midi</string>
+        </entry>
+      </elementAttributes>
+      <pos x="380" y="1460"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>RectHeight</string>
+          <int>42</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>midi device v2</string>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>63</int>
+        </entry>
+      </elementAttributes>
+      <pos x="-100" y="1840"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="580" y="1940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>out_proc</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="2040"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Text</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>06-00: N
+13-07: V
+14: OnOff
+15: program change</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-40" y="1880"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Demultiplexer</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Selector Bits</string>
+          <int>3</int>
+        </entry>
+        <entry>
+          <string>flipSelPos</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="240" y="2220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2040"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Splitter</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Input Splitting</string>
+          <string>16</string>
+        </entry>
+        <entry>
+          <string>Output Splitting</string>
+          <string>7,7,1,1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="140" y="2040"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="2040"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="2060"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="2080"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="2100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="1940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="1960"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="1980"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2000"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C2</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2240"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C3</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2260"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2020"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C2</string>
+        </entry>
+      </elementAttributes>
+      <pos x="800" y="1940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2040"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="1940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="1960"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="1980"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2000"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C2</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2020"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C3</string>
+        </entry>
+      </elementAttributes>
+      <pos x="580" y="2120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C3</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2200"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="800" y="2120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2200"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>addr_dec</string>
+        </entry>
+      </elementAttributes>
+      <pos x="160" y="2180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Splitter</elementName>
+      <elementAttributes>
+        <entry>
+          <string>mirror</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>Input Splitting</string>
+          <string>16</string>
+        </entry>
+        <entry>
+          <string>Output Splitting</string>
+          <string>3,13</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="2180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C5</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C6</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2320"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C7</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2340"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>midi C8</string>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="2360"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C5</string>
+        </entry>
+      </elementAttributes>
+      <pos x="580" y="2300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2400"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2320"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2340"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2360"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C5</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2380"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C6</string>
+        </entry>
+      </elementAttributes>
+      <pos x="800" y="2300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2400"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2320"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2340"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2360"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C6</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2380"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C7</string>
+        </entry>
+      </elementAttributes>
+      <pos x="580" y="2480"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2580"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2480"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2500"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2520"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2540"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C7</string>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="2560"/>
+    </visualElement>
+    <visualElement>
+      <elementName>MIDI</elementName>
+      <elementAttributes>
+        <entry>
+          <string>midiProgChange</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>midiInstrument</string>
+          <string>Violin</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>C8</string>
+        </entry>
+      </elementAttributes>
+      <pos x="800" y="2480"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2580"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi N</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2480"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi V</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2500"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi OnOff</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2520"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi PC</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2540"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>midi C8</string>
+        </entry>
+      </elementAttributes>
+      <pos x="780" y="2560"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>write_bus</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="2320"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes>
+        <entry>
+          <string>wideShape</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="120" y="2280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>enable_dev_midi</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="2280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Ground</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="1"/>
+        </entry>
+      </elementAttributes>
+      <pos x="340" y="1280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>VDD</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="1"/>
+        </entry>
+      </elementAttributes>
+      <pos x="220" y="940"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>
@@ -1943,8 +3010,28 @@ all other bits are unconnected</string>
       <p2 x="100" y="0"/>
     </wire>
     <wire>
-      <p1 x="320" y="2560"/>
-      <p2 x="340" y="2560"/>
+      <p1 x="680" y="1280"/>
+      <p2 x="700" y="1280"/>
+    </wire>
+    <wire>
+      <p1 x="540" y="1280"/>
+      <p2 x="560" y="1280"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="1280"/>
+      <p2 x="220" y="1280"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="1280"/>
+      <p2 x="360" y="1280"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2560"/>
+      <p2 x="580" y="2560"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2560"/>
+      <p2 x="800" y="2560"/>
     </wire>
     <wire>
       <p1 x="-20" y="-260"/>
@@ -1991,6 +3078,22 @@ all other bits are unconnected</string>
       <p2 x="240" y="900"/>
     </wire>
     <wire>
+      <p1 x="560" y="2180"/>
+      <p2 x="580" y="2180"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2180"/>
+      <p2 x="800" y="2180"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="2180"/>
+      <p2 x="180" y="2180"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="2180"/>
+      <p2 x="260" y="2180"/>
+    </wire>
+    <wire>
       <p1 x="680" y="520"/>
       <p2 x="700" y="520"/>
     </wire>
@@ -2019,6 +3122,14 @@ all other bits are unconnected</string>
       <p2 x="380" y="780"/>
     </wire>
     <wire>
+      <p1 x="340" y="1420"/>
+      <p2 x="380" y="1420"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="2060"/>
+      <p2 x="180" y="2060"/>
+    </wire>
+    <wire>
       <p1 x="680" y="400"/>
       <p2 x="700" y="400"/>
     </wire>
@@ -2035,12 +3146,40 @@ all other bits are unconnected</string>
       <p2 x="-300" y="1680"/>
     </wire>
     <wire>
+      <p1 x="280" y="2320"/>
+      <p2 x="300" y="2320"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2320"/>
+      <p2 x="580" y="2320"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2320"/>
+      <p2 x="800" y="2320"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="2320"/>
+      <p2 x="120" y="2320"/>
+    </wire>
+    <wire>
       <p1 x="120" y="-20"/>
       <p2 x="360" y="-20"/>
     </wire>
     <wire>
-      <p1 x="220" y="2580"/>
-      <p2 x="240" y="2580"/>
+      <p1 x="560" y="1940"/>
+      <p2 x="580" y="1940"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="1940"/>
+      <p2 x="800" y="1940"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2580"/>
+      <p2 x="580" y="2580"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2580"/>
+      <p2 x="800" y="2580"/>
     </wire>
     <wire>
       <p1 x="-20" y="-280"/>
@@ -2095,12 +3234,32 @@ all other bits are unconnected</string>
       <p2 x="180" y="920"/>
     </wire>
     <wire>
+      <p1 x="560" y="2200"/>
+      <p2 x="580" y="2200"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2200"/>
+      <p2 x="800" y="2200"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="1180"/>
+      <p2 x="340" y="1180"/>
+    </wire>
+    <wire>
       <p1 x="1540" y="800"/>
       <p2 x="1660" y="800"/>
     </wire>
     <wire>
       <p1 x="360" y="800"/>
       <p2 x="380" y="800"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="1440"/>
+      <p2 x="380" y="1440"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="2080"/>
+      <p2 x="180" y="2080"/>
     </wire>
     <wire>
       <p1 x="-300" y="420"/>
@@ -2111,8 +3270,28 @@ all other bits are unconnected</string>
       <p2 x="-580" y="420"/>
     </wire>
     <wire>
+      <p1 x="280" y="2340"/>
+      <p2 x="300" y="2340"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2340"/>
+      <p2 x="580" y="2340"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2340"/>
+      <p2 x="800" y="2340"/>
+    </wire>
+    <wire>
       <p1 x="120" y="-40"/>
       <p2 x="260" y="-40"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="1960"/>
+      <p2 x="580" y="1960"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="1960"/>
+      <p2 x="800" y="1960"/>
     </wire>
     <wire>
       <p1 x="-380" y="300"/>
@@ -2151,8 +3330,32 @@ all other bits are unconnected</string>
       <p2 x="440" y="940"/>
     </wire>
     <wire>
+      <p1 x="220" y="940"/>
+      <p2 x="240" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2220"/>
+      <p2 x="580" y="2220"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2220"/>
+      <p2 x="800" y="2220"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="2220"/>
+      <p2 x="300" y="2220"/>
+    </wire>
+    <wire>
       <p1 x="680" y="560"/>
       <p2 x="700" y="560"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2480"/>
+      <p2 x="580" y="2480"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2480"/>
+      <p2 x="800" y="2480"/>
     </wire>
     <wire>
       <p1 x="-20" y="-180"/>
@@ -2179,6 +3382,14 @@ all other bits are unconnected</string>
       <p2 x="-300" y="1460"/>
     </wire>
     <wire>
+      <p1 x="340" y="1460"/>
+      <p2 x="380" y="1460"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="2100"/>
+      <p2 x="180" y="2100"/>
+    </wire>
+    <wire>
       <p1 x="-360" y="1720"/>
       <p2 x="-340" y="1720"/>
     </wire>
@@ -2199,28 +3410,16 @@ all other bits are unconnected</string>
       <p2 x="700" y="440"/>
     </wire>
     <wire>
-      <p1 x="660" y="1080"/>
-      <p2 x="680" y="1080"/>
+      <p1 x="280" y="2360"/>
+      <p2 x="300" y="2360"/>
     </wire>
     <wire>
-      <p1 x="100" y="1080"/>
-      <p2 x="120" y="1080"/>
+      <p1 x="560" y="2360"/>
+      <p2 x="580" y="2360"/>
     </wire>
     <wire>
-      <p1 x="160" y="1080"/>
-      <p2 x="200" y="1080"/>
-    </wire>
-    <wire>
-      <p1 x="320" y="1080"/>
-      <p2 x="340" y="1080"/>
-    </wire>
-    <wire>
-      <p1 x="400" y="1080"/>
-      <p2 x="540" y="1080"/>
-    </wire>
-    <wire>
-      <p1 x="120" y="1080"/>
-      <p2 x="140" y="1080"/>
+      <p1 x="780" y="2360"/>
+      <p2 x="800" y="2360"/>
     </wire>
     <wire>
       <p1 x="120" y="-60"/>
@@ -2245,6 +3444,14 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="1700" y="700"/>
       <p2 x="1740" y="700"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="1980"/>
+      <p2 x="580" y="1980"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="1980"/>
+      <p2 x="800" y="1980"/>
     </wire>
     <wire>
       <p1 x="-480" y="320"/>
@@ -2283,6 +3490,18 @@ all other bits are unconnected</string>
       <p2 x="340" y="960"/>
     </wire>
     <wire>
+      <p1 x="280" y="2240"/>
+      <p2 x="300" y="2240"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2500"/>
+      <p2 x="580" y="2500"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2500"/>
+      <p2 x="800" y="2500"/>
+    </wire>
+    <wire>
       <p1 x="-20" y="-200"/>
       <p2 x="0" y="-200"/>
     </wire>
@@ -2311,6 +3530,14 @@ all other bits are unconnected</string>
       <p2 x="700" y="200"/>
     </wire>
     <wire>
+      <p1 x="560" y="2120"/>
+      <p2 x="580" y="2120"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2120"/>
+      <p2 x="800" y="2120"/>
+    </wire>
+    <wire>
       <p1 x="-720" y="460"/>
       <p2 x="-700" y="460"/>
     </wire>
@@ -2331,12 +3558,16 @@ all other bits are unconnected</string>
       <p2 x="-480" y="460"/>
     </wire>
     <wire>
-      <p1 x="520" y="1100"/>
-      <p2 x="540" y="1100"/>
+      <p1 x="560" y="2380"/>
+      <p2 x="580" y="2380"/>
     </wire>
     <wire>
-      <p1 x="260" y="1100"/>
-      <p2 x="340" y="1100"/>
+      <p1 x="780" y="2380"/>
+      <p2 x="800" y="2380"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1360"/>
+      <p2 x="220" y="1360"/>
     </wire>
     <wire>
       <p1 x="1400" y="720"/>
@@ -2345,6 +3576,14 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="200" y="720"/>
       <p2 x="240" y="720"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2000"/>
+      <p2 x="580" y="2000"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2000"/>
+      <p2 x="800" y="2000"/>
     </wire>
     <wire>
       <p1 x="-500" y="340"/>
@@ -2367,6 +3606,10 @@ all other bits are unconnected</string>
       <p2 x="220" y="340"/>
     </wire>
     <wire>
+      <p1 x="-360" y="1620"/>
+      <p2 x="-300" y="1620"/>
+    </wire>
+    <wire>
       <p1 x="1400" y="980"/>
       <p2 x="1420" y="980"/>
     </wire>
@@ -2375,12 +3618,44 @@ all other bits are unconnected</string>
       <p2 x="1560" y="980"/>
     </wire>
     <wire>
-      <p1 x="-360" y="1620"/>
-      <p2 x="-300" y="1620"/>
+      <p1 x="280" y="2260"/>
+      <p2 x="300" y="2260"/>
     </wire>
     <wire>
-      <p1 x="140" y="2260"/>
-      <p2 x="160" y="2260"/>
+      <p1 x="680" y="1240"/>
+      <p2 x="700" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="40" y="1240"/>
+      <p2 x="60" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="1240"/>
+      <p2 x="140" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="1240"/>
+      <p2 x="360" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="1240"/>
+      <p2 x="560" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="1240"/>
+      <p2 x="80" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1240"/>
+      <p2 x="220" y="1240"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2520"/>
+      <p2 x="580" y="2520"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2520"/>
+      <p2 x="800" y="2520"/>
     </wire>
     <wire>
       <p1 x="-20" y="-220"/>
@@ -2423,20 +3698,16 @@ all other bits are unconnected</string>
       <p2 x="1700" y="220"/>
     </wire>
     <wire>
-      <p1 x="660" y="1120"/>
-      <p2 x="680" y="1120"/>
+      <p1 x="280" y="1500"/>
+      <p2 x="300" y="1500"/>
     </wire>
     <wire>
-      <p1 x="520" y="1120"/>
-      <p2 x="540" y="1120"/>
+      <p1 x="560" y="2140"/>
+      <p2 x="580" y="2140"/>
     </wire>
     <wire>
-      <p1 x="180" y="1120"/>
-      <p2 x="200" y="1120"/>
-    </wire>
-    <wire>
-      <p1 x="820" y="2400"/>
-      <p2 x="840" y="2400"/>
+      <p1 x="780" y="2140"/>
+      <p2 x="800" y="2140"/>
     </wire>
     <wire>
       <p1 x="-400" y="480"/>
@@ -2449,6 +3720,18 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="680" y="480"/>
       <p2 x="700" y="480"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2400"/>
+      <p2 x="580" y="2400"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2400"/>
+      <p2 x="800" y="2400"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="1380"/>
+      <p2 x="320" y="1380"/>
     </wire>
     <wire>
       <p1 x="300" y="740"/>
@@ -2479,6 +3762,22 @@ all other bits are unconnected</string>
       <p2 x="180" y="740"/>
     </wire>
     <wire>
+      <p1 x="560" y="2020"/>
+      <p2 x="580" y="2020"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2020"/>
+      <p2 x="800" y="2020"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="2280"/>
+      <p2 x="300" y="2280"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="2280"/>
+      <p2 x="120" y="2280"/>
+    </wire>
+    <wire>
       <p1 x="-520" y="1640"/>
       <p2 x="-500" y="1640"/>
     </wire>
@@ -2503,12 +3802,32 @@ all other bits are unconnected</string>
       <p2 x="1540" y="1000"/>
     </wire>
     <wire>
-      <p1 x="220" y="2540"/>
-      <p2 x="240" y="2540"/>
+      <p1 x="560" y="2540"/>
+      <p2 x="580" y="2540"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2540"/>
+      <p2 x="800" y="2540"/>
+    </wire>
+    <wire>
+      <p1 x="540" y="1260"/>
+      <p2 x="560" y="1260"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="1260"/>
+      <p2 x="360" y="1260"/>
     </wire>
     <wire>
       <p1 x="-20" y="-240"/>
       <p2 x="0" y="-240"/>
+    </wire>
+    <wire>
+      <p1 x="560" y="2160"/>
+      <p2 x="580" y="2160"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2160"/>
+      <p2 x="800" y="2160"/>
     </wire>
     <wire>
       <p1 x="780" y="880"/>
@@ -2547,6 +3866,26 @@ all other bits are unconnected</string>
       <p2 x="0" y="-120"/>
     </wire>
     <wire>
+      <p1 x="560" y="2040"/>
+      <p2 x="580" y="2040"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="2040"/>
+      <p2 x="140" y="2040"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="2040"/>
+      <p2 x="180" y="2040"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2040"/>
+      <p2 x="800" y="2040"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="1400"/>
+      <p2 x="220" y="1400"/>
+    </wire>
+    <wire>
       <p1 x="360" y="760"/>
       <p2 x="380" y="760"/>
     </wire>
@@ -2563,12 +3902,20 @@ all other bits are unconnected</string>
       <p2 x="1440" y="760"/>
     </wire>
     <wire>
-      <p1 x="120" y="1020"/>
-      <p2 x="320" y="1020"/>
+      <p1 x="280" y="2300"/>
+      <p2 x="300" y="2300"/>
     </wire>
     <wire>
-      <p1 x="1400" y="1020"/>
-      <p2 x="1420" y="1020"/>
+      <p1 x="560" y="2300"/>
+      <p2 x="580" y="2300"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2300"/>
+      <p2 x="800" y="2300"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="2300"/>
+      <p2 x="240" y="2300"/>
     </wire>
     <wire>
       <p1 x="-300" y="380"/>
@@ -2583,16 +3930,16 @@ all other bits are unconnected</string>
       <p2 x="-520" y="1660"/>
     </wire>
     <wire>
-      <p1 x="140" y="2300"/>
-      <p2 x="180" y="2300"/>
+      <p1 x="1400" y="1020"/>
+      <p2 x="1420" y="1020"/>
     </wire>
     <wire>
       <p1 x="960" y="260"/>
       <p2 x="960" y="280"/>
     </wire>
     <wire>
-      <p1 x="320" y="1020"/>
-      <p2 x="320" y="1080"/>
+      <p1 x="320" y="1380"/>
+      <p2 x="320" y="1420"/>
     </wire>
     <wire>
       <p1 x="-260" y="280"/>
@@ -2613,6 +3960,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="260" y="-80"/>
       <p2 x="260" y="-40"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="2180"/>
+      <p2 x="260" y="2220"/>
     </wire>
     <wire>
       <p1 x="1540" y="980"/>
@@ -2649,6 +4000,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="140" y="740"/>
       <p2 x="140" y="920"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1240"/>
+      <p2 x="140" y="1360"/>
     </wire>
     <wire>
       <p1 x="140" y="920"/>
@@ -2689,6 +4044,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="-20" y="-180"/>
       <p2 x="-20" y="-120"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="1180"/>
+      <p2 x="340" y="1240"/>
     </wire>
     <wire>
       <p1 x="340" y="740"/>
@@ -2735,6 +4094,10 @@ all other bits are unconnected</string>
       <p2 x="-360" y="1540"/>
     </wire>
     <wire>
+      <p1 x="360" y="-80"/>
+      <p2 x="360" y="-20"/>
+    </wire>
+    <wire>
       <p1 x="680" y="480"/>
       <p2 x="680" y="520"/>
     </wire>
@@ -2749,10 +4112,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="680" y="400"/>
       <p2 x="680" y="440"/>
-    </wire>
-    <wire>
-      <p1 x="360" y="-80"/>
-      <p2 x="360" y="-20"/>
     </wire>
     <wire>
       <p1 x="1640" y="860"/>
@@ -2787,20 +4146,12 @@ all other bits are unconnected</string>
       <p2 x="180" y="-60"/>
     </wire>
     <wire>
-      <p1 x="180" y="2280"/>
-      <p2 x="180" y="2300"/>
-    </wire>
-    <wire>
       <p1 x="180" y="-60"/>
       <p2 x="180" y="20"/>
     </wire>
     <wire>
       <p1 x="-440" y="1520"/>
       <p2 x="-440" y="1680"/>
-    </wire>
-    <wire>
-      <p1 x="120" y="1020"/>
-      <p2 x="120" y="1080"/>
     </wire>
     <wire>
       <p1 x="-700" y="440"/>
@@ -2817,6 +4168,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="380" y="-80"/>
       <p2 x="380" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="1180"/>
+      <p2 x="60" y="1240"/>
     </wire>
     <wire>
       <p1 x="-320" y="1680"/>
