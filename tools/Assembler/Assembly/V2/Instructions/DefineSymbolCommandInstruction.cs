@@ -13,7 +13,7 @@ public record DefineSymbolCommandInstruction(string File, int Line, string? Labe
 
 	public override AssemblyInstruction RenderSymbols(AssemblyContext context) {
 		return this with {
-			Value = Value is SymbolAst valueSymbol ? context.GetSymbolValue(valueSymbol.Value) : Value
+			Value = Value is SymbolAst valueSymbol ? context.GetSymbolValue(valueSymbol.Value, this) : Value
 		};
 	}
 	

@@ -9,7 +9,7 @@ public class AssemblyContext {
 	public IInstructionConverter InstructionConverter { get; }
 	public ProgramAssemblerv2 Assembler { get; }
 	
-	public int OutputIndex { get; private set; }
+	public int OutputOffset { get; }
 	
 	public AssemblyContext(IMacroProvider macroProvider, IInstructionConverter instructionConverter, ProgramAssemblerv2 assembler) {
 		MacroProvider = macroProvider;
@@ -29,25 +29,27 @@ public class AssemblyContext {
 		return ret;
 	}
 
-	public void IncreaseOutputIndex(int wordCount) {
-		OutputIndex += wordCount;
-	}
-
-	private SymbolDefinition? GetSymbol(string name, bool optional) {
+	private SymbolDefinition GetSymbol(string name, AssemblyInstruction instruction) {
 		if (m_Symbols.TryGetValue(name, out SymbolDefinition? ret)) {
 			return ret;
-		} else if (optional) {
-			return null;
 		} else {
-			throw new SymbolNotDefinedException(name);
+			throw new SymbolNotDefinedException(name, instruction);
 		}
 	}
 
-	public InstructionArgumentAst GetSymbolValue(string name) {
-		InstructionArgumentAst ret = GetSymbol(name, false)!.Value;
+	private SymbolDefinition? GetSymbolOptional(string name) {
+		if (m_Symbols.TryGetValue(name, out SymbolDefinition? ret)) {
+			return ret;
+		} else {
+			return null;
+		}
+	}
+
+	public InstructionArgumentAst GetSymbolValue(string name, AssemblyInstruction instruction) {
+		InstructionArgumentAst ret = GetSymbol(name, instruction).Value;
 
 		while (ret is SymbolAst symbolAst) {
-			ret = GetSymbol(symbolAst.Value, false)!.Value;
+			ret = GetSymbol(symbolAst.Value, instruction).Value;
 		}
 
 		return ret;
@@ -58,10 +60,10 @@ public class AssemblyContext {
 	}
 	
 	public bool IsSymbolDefined(string name) {
-		SymbolDefinition? ret = GetSymbol(name, true);
+		SymbolDefinition? ret = GetSymbolOptional(name);
 
 		while (ret != null && ret.Value is SymbolAst symbolValue) {
-			ret = GetSymbol(symbolValue.Value, true);
+			ret = GetSymbolOptional(symbolValue.Value);
 		}
 
 		return ret != null;

@@ -62,7 +62,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		var parser = new ProcAssemblyParser();
 		AssemblerProgram program;
 		try {
-			program = new AssemblerProgram("main", fullInputPath, parser.Parse(sourceCode));
+			program = new AssemblerProgram("main", fullInputPath, parser.Parse(opts.Input, sourceCode));
 		} catch (ParserException e) {
 			//Console.Error.WriteLine(e.ToString());
 			return ExitCode.CompileParseError;
@@ -73,26 +73,23 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 			string name = item[..split];
 			string value = item[(split + 1)..];
 
-			return new KeyValuePair<string, InstructionArgumentAst>(name, parser.ParseSymbolValue(value));
+			return new KeyValuePair<string, InstructionArgumentAst>(name, parser.ParseSymbolValue("Global symbol definitions", value));
 		}));
 
 		var macroProvider = new FileMacroProvider(parser, opts.MacroPath.ToArray());
 		
 		IReadOnlyList<ushort> machineCode;
 		try {
-			var assembler = new Assembler.Assembly.V2.ProgramAssemblerv2();
-			var contextFactory = Assembler.Assembly.V2.AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
+			var assembler = new ProgramAssemblerv2();
+			var contextFactory = AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
 			var context = contextFactory.CreateContext(globalSymbols, assembler);
-
-			var instructionList = assembler.CompileInstructionList(context, program);
-			var renderedInstructions = assembler.RenderSymbols(context, instructionList);
-			machineCode = assembler.AssembleMachineCode(context, renderedInstructions);
+			machineCode = assembler.AssembleAst(context, program);
 		} catch (InvalidProcAssemblyProgramException ex) {
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {
 				Console.WriteLine($"{invalidInstruction.Instruction.File}:{invalidInstruction.Instruction.LineNumber}:{invalidInstruction.Instruction.Column} {invalidInstruction.Instruction}: {invalidInstruction.Message}");
 			}
-			
+
 			return ExitCode.ProgramNotSupported;
 		}
 

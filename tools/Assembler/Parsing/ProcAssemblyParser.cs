@@ -4,11 +4,14 @@ using Assembler.Ast;
 namespace Assembler.Parsing.Antlr;
 
 public class ProcAssemblyParser {
-	private T UseParser<T>(string sourceCode, Func<ProcAssemblyV2Grammar, T> callback) {
+	private T UseParser<T>(string sourceName, string sourceCode, Func<ProcAssemblyV2Grammar, T> callback) {
 		var charStream = new AntlrInputStream(sourceCode);
 		Lexer lexer = new ProcAssemblyV2Lexer(charStream);
 		var tokens = new CommonTokenStream(lexer);
 		var parser = new ProcAssemblyV2Grammar(tokens);
+
+		charStream.name = sourceName;
+		
 		//parser.ErrorHandler = new RecoveringErrorStrategy();
 		//parser.ErrorHandler = new DefaultErrorStrategy();
 		//parser.ErrorHandler = new BailErrorStrategy();
@@ -32,11 +35,11 @@ public class ProcAssemblyParser {
 		return ret;
 	}
 	
-	public ProgramAst Parse(string sourceCode) {
-		return UseParser(sourceCode, parser => (ProgramAst) new BasicVisitor().Visit(parser.program()));
+	public ProgramAst Parse(string sourceName, string sourceCode) {
+		return UseParser(sourceName, sourceCode, parser => (ProgramAst) new BasicVisitor().Visit(parser.program()));
 	}
 	
-	public InstructionArgumentAst ParseSymbolValue(string value) {
-		return UseParser(value, parser => (InstructionArgumentAst) new BasicVisitor().VisitInstructionArgument(parser.instructionArgument()));
+	public InstructionArgumentAst ParseSymbolValue(string sourceName, string value) {
+		return UseParser(sourceName, value, parser => (InstructionArgumentAst) new BasicVisitor().VisitInstructionArgument(parser.instructionArgument()));
 	}
 }

@@ -30,7 +30,8 @@ public class ProgramAssemblerv2 {
 	}
 
 	public IReadOnlyList<AssemblyInstruction> RenderSymbols(AssemblyContext context, IReadOnlyList<AssemblyInstruction> instructions) {
-		int labelIndex = context.OutputIndex;
+		// bug: jump labels inside macros
+		int labelIndex = context.OutputOffset;
 		foreach (AssemblyInstruction instruction in instructions) {
 			if (instruction.Label != null) {
 				context.SetSymbol(new SymbolDefinition(instruction.Label, false, new ConstantAst(instruction.File, instruction.Line, -1, labelIndex))); // TODO this kinda sucks

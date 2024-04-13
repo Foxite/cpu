@@ -9,7 +9,7 @@ public record ExecutableInstruction(string File, int Line, string? Label, Instru
 
 	public override AssemblyInstruction RenderSymbols(AssemblyContext context) => this with {
 		InstructionAst = InstructionAst with {
-			Arguments = context.ReplaceSymbols(InstructionAst.Arguments),
+			Arguments = context.ReplaceSymbols(InstructionAst.Arguments, this),
 		},
 	};
 

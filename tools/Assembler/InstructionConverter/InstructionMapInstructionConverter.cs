@@ -34,14 +34,14 @@ public abstract class InstructionMapInstructionConverter : IInstructionConverter
 			List<Type> argumentTypes = arguments.Select(arg => arg.GetType()).ToList();
 
 			MethodInfo? converter = GetType()
-				.GetMethods(BindingFlags.Instance)
+				.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
 				.SingleOrDefault(method =>
 					method.GetCustomAttribute<ConverterAttribute>() != null &&
 					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes)
 				);
 			
 			MethodInfo? validator = GetType()
-				.GetMethods(BindingFlags.Instance)
+				.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
 				.SingleOrDefault(method =>
 					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes) &&
 					method.GetCustomAttribute<ValidatorAttribute>() != null
@@ -60,7 +60,7 @@ public abstract class InstructionMapInstructionConverter : IInstructionConverter
 			List<Type> argumentTypes = arguments.Select(arg => arg.GetType()).ToList();
 
 			MethodInfo overload = GetType()
-				.GetMethods(BindingFlags.Instance)
+				.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
 				.SingleOrDefault(method =>
 					method.GetCustomAttribute<ConverterAttribute>() != null &&
 					method.GetParameters().Select(param => param.ParameterType).SequenceEqual(argumentTypes)

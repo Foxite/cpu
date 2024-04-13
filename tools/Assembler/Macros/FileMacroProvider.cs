@@ -19,7 +19,7 @@ public class FileMacroProvider : IMacroProvider {
 	
 	public AssemblerProgram GetMacro(string name) {
 		string path = GetMacroPath(name);
-		return new AssemblerProgram(name, path, m_Parser.Parse(File.ReadAllText(path)));
+		return new AssemblerProgram(name, path, m_Parser.Parse(name, File.ReadAllText(path)));
 	}
 	
 	private string GetMacroPath(string name) {

@@ -2,14 +2,14 @@ using Assembler.Ast;
 
 namespace Assembler.Assembly.V2;
 
-public record MacroInstruction(string File, int Line, string? Label, string Path, IReadOnlyList<AssemblyInstruction> Instructions, IReadOnlyList<InstructionArgumentAst> Arguments) : AssemblyInstruction(File, Line, Label) {
+public record MacroInstruction(string File, int Line, string? Label, string MacroPath, IReadOnlyList<AssemblyInstruction> Instructions, IReadOnlyList<InstructionArgumentAst> Arguments) : AssemblyInstruction(File, Line, Label) {
 	private AssemblyContext ScopeContext(AssemblyContext outerContext, bool resolveSymbols) {
 		AssemblyContext innerContext = outerContext.CreateScope();
 		
 		for (int i = 0; i < Arguments.Count; i++) {
 			var argument = Arguments[i];
 			if (resolveSymbols && argument is SymbolAst symbolArgument) {
-				argument = outerContext.GetSymbolValue(symbolArgument.Value);
+				argument = outerContext.GetSymbolValue(symbolArgument.Value, this);
 			}
 			
 			innerContext.SetSymbol(new SymbolDefinition($"macro{i}", false, argument));
@@ -23,6 +23,7 @@ public record MacroInstruction(string File, int Line, string? Label, string Path
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
 	
 	public override AssemblyInstruction RenderSymbols(AssemblyContext outerContext) => this with {
+		Arguments = outerContext.ReplaceSymbols(Arguments, this),
 		Instructions = outerContext.Assembler.RenderSymbols(ScopeContext(outerContext, true), Instructions),
 	};
 

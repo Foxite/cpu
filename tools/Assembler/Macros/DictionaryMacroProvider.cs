@@ -20,6 +20,6 @@ public class DictionaryMacroProvider : IMacroProvider {
 	}
 	
 	public AssemblerProgram GetMacro(string name) {
-		return new AssemblerProgram(name, "dictionary", m_Parser.Parse(GetMacroSource(name)));
+		return new AssemblerProgram(name, "dictionary", m_Parser.Parse(name, GetMacroSource(name)));
 	}
 }

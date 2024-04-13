@@ -9,7 +9,7 @@ public record OutputWordsCommandInstruction(string File, int Line, string? Label
 	
 	public override AssemblyInstruction RenderSymbols(AssemblyContext context) {
 		return this with {
-			Words = context.ReplaceSymbols(Words)
+			Words = context.ReplaceSymbols(Words, this),
 		};
 	}
 	

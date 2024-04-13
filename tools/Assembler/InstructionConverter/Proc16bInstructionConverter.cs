@@ -73,6 +73,7 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 			return InstructionSupport.Supported;
 		}
 
+		[Converter]
 		protected ushort Convert(RegisterAst register, ConstantAst constant) {
 			ushort ret = 0;
 			SetInstructionBit(ref ret, 15, false);
