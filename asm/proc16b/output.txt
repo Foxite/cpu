@@ -1,0 +1,1740 @@
+{
+functiontest.pa2:8 (0)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/init_stack.pa2 
+3
+	{
+	init_stack:7 (0)  [] ldc Register a, Symbol STACK_BEGIN
+	1
+	init_stack:7 (0)  [] ldc Register a, Constant 256
+	
+	
+	init_stack:8 (1)  [] ldc Register b, Symbol STACK_PTR
+	1
+	init_stack:8 (1)  [] ldc Register b, Constant 0
+	
+	
+	init_stack:9 (2)  [] stb Register b, Register a
+	1
+	init_stack:9 (2)  [] stb Register b, Register a
+	
+	
+	}
+functiontest.pa2:8 (0)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/init_stack.pa2 
+
+
+functiontest.pa2:9 (3)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 32
+8
+	{
+	push_const:6 (3)  [] .define constantToPush, Symbol macro0
+	0
+	push_const:6 (3)  [] .define constantToPush, Constant 32
+	
+	
+	push_const:12 (3)  [] ldc Register b, Symbol constantToPush
+	1
+	push_const:12 (3)  [] ldc Register b, Constant 32
+	
+	
+	push_const:14 (4)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	7
+		{
+		push_reg:10 (4)  [] .define registerToPush, Symbol macro0
+		0
+		push_reg:10 (4)  [] .define registerToPush, Register b
+		
+		
+		push_reg:13 (4)  [] ldc Register a, Symbol STACK_PTR
+		1
+		push_reg:13 (4)  [] ldc Register a, Constant 0
+		
+		
+		push_reg:14 (5)  [] ldb Register a, Register a
+		1
+		push_reg:14 (5)  [] ldb Register a, Register a
+		
+		
+		push_reg:15 (6)  [] stb Register a, Symbol registerToPush
+		1
+		push_reg:15 (6)  [] stb Register a, Register b
+		
+		
+		push_reg:19 (7)  [] ldc Register b, Constant 1
+		1
+		push_reg:19 (7)  [] ldc Register b, Constant 1
+		
+		
+		push_reg:20 (8)  [] add Register a, Register a, Register b
+		1
+		push_reg:20 (8)  [] add Register a, Register a, Register b
+		
+		
+		push_reg:21 (9)  [] ldc Register b, Symbol STACK_PTR
+		1
+		push_reg:21 (9)  [] ldc Register b, Constant 0
+		
+		
+		push_reg:22 (10)  [] stb Register b, Register a
+		1
+		push_reg:22 (10)  [] stb Register b, Register a
+		
+		
+		}
+	push_const:14 (4)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	
+	
+	}
+functiontest.pa2:9 (3)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 32
+
+
+functiontest.pa2:10 (11)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 48
+8
+	{
+	push_const:6 (11)  [] .define constantToPush, Symbol macro0
+	0
+	push_const:6 (11)  [] .define constantToPush, Constant 48
+	
+	
+	push_const:12 (11)  [] ldc Register b, Symbol constantToPush
+	1
+	push_const:12 (11)  [] ldc Register b, Constant 48
+	
+	
+	push_const:14 (12)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	7
+		{
+		push_reg:10 (12)  [] .define registerToPush, Symbol macro0
+		0
+		push_reg:10 (12)  [] .define registerToPush, Register b
+		
+		
+		push_reg:13 (12)  [] ldc Register a, Symbol STACK_PTR
+		1
+		push_reg:13 (12)  [] ldc Register a, Constant 0
+		
+		
+		push_reg:14 (13)  [] ldb Register a, Register a
+		1
+		push_reg:14 (13)  [] ldb Register a, Register a
+		
+		
+		push_reg:15 (14)  [] stb Register a, Symbol registerToPush
+		1
+		push_reg:15 (14)  [] stb Register a, Register b
+		
+		
+		push_reg:19 (15)  [] ldc Register b, Constant 1
+		1
+		push_reg:19 (15)  [] ldc Register b, Constant 1
+		
+		
+		push_reg:20 (16)  [] add Register a, Register a, Register b
+		1
+		push_reg:20 (16)  [] add Register a, Register a, Register b
+		
+		
+		push_reg:21 (17)  [] ldc Register b, Symbol STACK_PTR
+		1
+		push_reg:21 (17)  [] ldc Register b, Constant 0
+		
+		
+		push_reg:22 (18)  [] stb Register b, Register a
+		1
+		push_reg:22 (18)  [] stb Register b, Register a
+		
+		
+		}
+	push_const:14 (12)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	
+	
+	}
+functiontest.pa2:10 (11)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 48
+
+
+functiontest.pa2:12 (19)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/call.pa2 Symbol write_1_to_2, Constant 2
+113
+	{
+	call:11 (19)  [] .define functionLabel, Symbol macro0
+	0
+	call:11 (19)  [] .define functionLabel, Constant 134
+	
+	
+	call:12 (19)  [] .define argcount, Symbol macro1
+	0
+	call:12 (19)  [] .define argcount, Constant 2
+	
+	
+	call:15 (19)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_mem.pa2 Symbol FUNC_ARGS
+	9
+		{
+		push_mem:6 (19)  [] .define addr, Register b
+		0
+		push_mem:6 (19)  [] .define addr, Register b
+		
+		
+		push_mem:7 (19)  [] .define value, Register b
+		0
+		push_mem:7 (19)  [] .define value, Register b
+		
+		
+		push_mem:9 (19)  [] ldc Symbol addr, Symbol macro0
+		1
+		push_mem:9 (19)  [] ldc Register b, Constant 2
+		
+		
+		push_mem:10 (20)  [] ldb Symbol addr, Symbol value
+		1
+		push_mem:10 (20)  [] ldb Register b, Register b
+		
+		
+		push_mem:12 (21)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Symbol value
+		7
+			{
+			push_reg:10 (21)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (21)  [] .define registerToPush, Register b
+			
+			
+			push_reg:13 (21)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (21)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (22)  [] ldb Register a, Register a
+			1
+			push_reg:14 (22)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (23)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (23)  [] stb Register a, Register b
+			
+			
+			push_reg:19 (24)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (24)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (25)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (25)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (26)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (26)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (27)  [] stb Register b, Register a
+			1
+			push_reg:22 (27)  [] stb Register b, Register a
+			
+			
+			}
+		push_mem:12 (21)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		
+		
+		}
+	call:15 (19)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_mem.pa2 Constant 2
+	
+	
+	call:16 (28)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_mem.pa2 Symbol FUNC_LOCS
+	9
+		{
+		push_mem:6 (28)  [] .define addr, Register b
+		0
+		push_mem:6 (28)  [] .define addr, Register b
+		
+		
+		push_mem:7 (28)  [] .define value, Register b
+		0
+		push_mem:7 (28)  [] .define value, Register b
+		
+		
+		push_mem:9 (28)  [] ldc Symbol addr, Symbol macro0
+		1
+		push_mem:9 (28)  [] ldc Register b, Constant 3
+		
+		
+		push_mem:10 (29)  [] ldb Symbol addr, Symbol value
+		1
+		push_mem:10 (29)  [] ldb Register b, Register b
+		
+		
+		push_mem:12 (30)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Symbol value
+		7
+			{
+			push_reg:10 (30)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (30)  [] .define registerToPush, Register b
+			
+			
+			push_reg:13 (30)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (30)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (31)  [] ldb Register a, Register a
+			1
+			push_reg:14 (31)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (32)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (32)  [] stb Register a, Register b
+			
+			
+			push_reg:19 (33)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (33)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (34)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (34)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (35)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (35)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (36)  [] stb Register b, Register a
+			1
+			push_reg:22 (36)  [] stb Register b, Register a
+			
+			
+			}
+		push_mem:12 (30)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		
+		
+		}
+	call:16 (28)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_mem.pa2 Constant 3
+	
+	
+	call:19 (37)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Symbol return
+	8
+		{
+		push_const:6 (37)  [] .define constantToPush, Symbol macro0
+		0
+		push_const:6 (37)  [] .define constantToPush, Constant 125
+		
+		
+		push_const:12 (37)  [] ldc Register b, Symbol constantToPush
+		1
+		push_const:12 (37)  [] ldc Register b, Constant 125
+		
+		
+		push_const:14 (38)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		7
+			{
+			push_reg:10 (38)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (38)  [] .define registerToPush, Register b
+			
+			
+			push_reg:13 (38)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (38)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (39)  [] ldb Register a, Register a
+			1
+			push_reg:14 (39)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (40)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (40)  [] stb Register a, Register b
+			
+			
+			push_reg:19 (41)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (41)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (42)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (42)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (43)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (43)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (44)  [] stb Register b, Register a
+			1
+			push_reg:22 (44)  [] stb Register b, Register a
+			
+			
+			}
+		push_const:14 (38)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		
+		
+		}
+	call:19 (37)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 125
+	
+	
+	call:24 (45)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_mem.pa2 Symbol STACK_PTR
+	9
+		{
+		push_mem:6 (45)  [] .define addr, Register b
+		0
+		push_mem:6 (45)  [] .define addr, Register b
+		
+		
+		push_mem:7 (45)  [] .define value, Register b
+		0
+		push_mem:7 (45)  [] .define value, Register b
+		
+		
+		push_mem:9 (45)  [] ldc Symbol addr, Symbol macro0
+		1
+		push_mem:9 (45)  [] ldc Register b, Constant 0
+		
+		
+		push_mem:10 (46)  [] ldb Symbol addr, Symbol value
+		1
+		push_mem:10 (46)  [] ldb Register b, Register b
+		
+		
+		push_mem:12 (47)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Symbol value
+		7
+			{
+			push_reg:10 (47)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (47)  [] .define registerToPush, Register b
+			
+			
+			push_reg:13 (47)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (47)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (48)  [] ldb Register a, Register a
+			1
+			push_reg:14 (48)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (49)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (49)  [] stb Register a, Register b
+			
+			
+			push_reg:19 (50)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (50)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (51)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (51)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (52)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (52)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (53)  [] stb Register b, Register a
+			1
+			push_reg:22 (53)  [] stb Register b, Register a
+			
+			
+			}
+		push_mem:12 (47)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		
+		
+		}
+	call:24 (45)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_mem.pa2 Constant 0
+	
+	
+	call:26 (54)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 3
+	8
+		{
+		push_const:6 (54)  [] .define constantToPush, Symbol macro0
+		0
+		push_const:6 (54)  [] .define constantToPush, Constant 3
+		
+		
+		push_const:12 (54)  [] ldc Register b, Symbol constantToPush
+		1
+		push_const:12 (54)  [] ldc Register b, Constant 3
+		
+		
+		push_const:14 (55)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		7
+			{
+			push_reg:10 (55)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (55)  [] .define registerToPush, Register b
+			
+			
+			push_reg:13 (55)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (55)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (56)  [] ldb Register a, Register a
+			1
+			push_reg:14 (56)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (57)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (57)  [] stb Register a, Register b
+			
+			
+			push_reg:19 (58)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (58)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (59)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (59)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (60)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (60)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (61)  [] stb Register b, Register a
+			1
+			push_reg:22 (61)  [] stb Register b, Register a
+			
+			
+			}
+		push_const:14 (55)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		
+		
+		}
+	call:26 (54)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 3
+	
+	
+	call:27 (62)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Symbol argcount
+	8
+		{
+		push_const:6 (62)  [] .define constantToPush, Symbol macro0
+		0
+		push_const:6 (62)  [] .define constantToPush, Constant 2
+		
+		
+		push_const:12 (62)  [] ldc Register b, Symbol constantToPush
+		1
+		push_const:12 (62)  [] ldc Register b, Constant 2
+		
+		
+		push_const:14 (63)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		7
+			{
+			push_reg:10 (63)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (63)  [] .define registerToPush, Register b
+			
+			
+			push_reg:13 (63)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (63)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (64)  [] ldb Register a, Register a
+			1
+			push_reg:14 (64)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (65)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (65)  [] stb Register a, Register b
+			
+			
+			push_reg:19 (66)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (66)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (67)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (67)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (68)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (68)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (69)  [] stb Register b, Register a
+			1
+			push_reg:22 (69)  [] stb Register b, Register a
+			
+			
+			}
+		push_const:14 (63)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+		
+		
+		}
+	call:27 (62)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 2
+	
+	
+	call:28 (70)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/add.pa2 
+	22
+		{
+		add:3 (70)  [] .define lhs, Register c
+		0
+		add:3 (70)  [] .define lhs, Register c
+		
+		
+		add:4 (70)  [] .define rhs, Register d
+		0
+		add:4 (70)  [] .define rhs, Register d
+		
+		
+		add:5 (70)  [] .define result, Register d
+		0
+		add:5 (70)  [] .define result, Register d
+		
+		
+		add:7 (70)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol lhs
+		7
+			{
+			pop_reg:10 (70)  [] .define registerToLoad, Symbol macro0
+			0
+			pop_reg:10 (70)  [] .define registerToLoad, Register c
+			
+			
+			pop_reg:13 (70)  [] ldc Register a, Symbol STACK_PTR
+			1
+			pop_reg:13 (70)  [] ldc Register a, Constant 0
+			
+			
+			pop_reg:14 (71)  [] ldb Register a, Register a
+			1
+			pop_reg:14 (71)  [] ldb Register a, Register a
+			
+			
+			pop_reg:15 (72)  [] ldc Register b, Constant 1
+			1
+			pop_reg:15 (72)  [] ldc Register b, Constant 1
+			
+			
+			pop_reg:16 (73)  [] sub Register a, Register a, Register b
+			1
+			pop_reg:16 (73)  [] sub Register a, Register a, Register b
+			
+			
+			pop_reg:17 (74)  [] ldc Register b, Symbol STACK_PTR
+			1
+			pop_reg:17 (74)  [] ldc Register b, Constant 0
+			
+			
+			pop_reg:18 (75)  [] stb Register b, Register a
+			1
+			pop_reg:18 (75)  [] stb Register b, Register a
+			
+			
+			pop_reg:22 (76)  [] ldb Register a, Symbol registerToLoad
+			1
+			pop_reg:22 (76)  [] ldb Register a, Register c
+			
+			
+			}
+		add:7 (70)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register c
+		
+		
+		add:8 (77)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol rhs
+		7
+			{
+			pop_reg:10 (77)  [] .define registerToLoad, Symbol macro0
+			0
+			pop_reg:10 (77)  [] .define registerToLoad, Register d
+			
+			
+			pop_reg:13 (77)  [] ldc Register a, Symbol STACK_PTR
+			1
+			pop_reg:13 (77)  [] ldc Register a, Constant 0
+			
+			
+			pop_reg:14 (78)  [] ldb Register a, Register a
+			1
+			pop_reg:14 (78)  [] ldb Register a, Register a
+			
+			
+			pop_reg:15 (79)  [] ldc Register b, Constant 1
+			1
+			pop_reg:15 (79)  [] ldc Register b, Constant 1
+			
+			
+			pop_reg:16 (80)  [] sub Register a, Register a, Register b
+			1
+			pop_reg:16 (80)  [] sub Register a, Register a, Register b
+			
+			
+			pop_reg:17 (81)  [] ldc Register b, Symbol STACK_PTR
+			1
+			pop_reg:17 (81)  [] ldc Register b, Constant 0
+			
+			
+			pop_reg:18 (82)  [] stb Register b, Register a
+			1
+			pop_reg:18 (82)  [] stb Register b, Register a
+			
+			
+			pop_reg:22 (83)  [] ldb Register a, Symbol registerToLoad
+			1
+			pop_reg:22 (83)  [] ldb Register a, Register d
+			
+			
+			}
+		add:8 (77)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register d
+		
+		
+		add:9 (84)  [] add Symbol result, Symbol lhs, Symbol rhs
+		1
+		add:9 (84)  [] add Register d, Register c, Register d
+		
+		
+		add:10 (85)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Symbol result
+		7
+			{
+			push_reg:10 (85)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (85)  [] .define registerToPush, Register d
+			
+			
+			push_reg:13 (85)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (85)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (86)  [] ldb Register a, Register a
+			1
+			push_reg:14 (86)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (87)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (87)  [] stb Register a, Register d
+			
+			
+			push_reg:19 (88)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (88)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (89)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (89)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (90)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (90)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (91)  [] stb Register b, Register a
+			1
+			push_reg:22 (91)  [] stb Register b, Register a
+			
+			
+			}
+		add:10 (85)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register d
+		
+		
+		}
+	call:28 (70)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/add.pa2 
+	
+	
+	call:29 (92)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/sub.pa2 
+	22
+		{
+		sub:3 (92)  [] .define lhs, Register c
+		0
+		sub:3 (92)  [] .define lhs, Register c
+		
+		
+		sub:4 (92)  [] .define rhs, Register d
+		0
+		sub:4 (92)  [] .define rhs, Register d
+		
+		
+		sub:5 (92)  [] .define result, Register d
+		0
+		sub:5 (92)  [] .define result, Register d
+		
+		
+		sub:7 (92)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol rhs
+		7
+			{
+			pop_reg:10 (92)  [] .define registerToLoad, Symbol macro0
+			0
+			pop_reg:10 (92)  [] .define registerToLoad, Register d
+			
+			
+			pop_reg:13 (92)  [] ldc Register a, Symbol STACK_PTR
+			1
+			pop_reg:13 (92)  [] ldc Register a, Constant 0
+			
+			
+			pop_reg:14 (93)  [] ldb Register a, Register a
+			1
+			pop_reg:14 (93)  [] ldb Register a, Register a
+			
+			
+			pop_reg:15 (94)  [] ldc Register b, Constant 1
+			1
+			pop_reg:15 (94)  [] ldc Register b, Constant 1
+			
+			
+			pop_reg:16 (95)  [] sub Register a, Register a, Register b
+			1
+			pop_reg:16 (95)  [] sub Register a, Register a, Register b
+			
+			
+			pop_reg:17 (96)  [] ldc Register b, Symbol STACK_PTR
+			1
+			pop_reg:17 (96)  [] ldc Register b, Constant 0
+			
+			
+			pop_reg:18 (97)  [] stb Register b, Register a
+			1
+			pop_reg:18 (97)  [] stb Register b, Register a
+			
+			
+			pop_reg:22 (98)  [] ldb Register a, Symbol registerToLoad
+			1
+			pop_reg:22 (98)  [] ldb Register a, Register d
+			
+			
+			}
+		sub:7 (92)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register d
+		
+		
+		sub:8 (99)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol lhs
+		7
+			{
+			pop_reg:10 (99)  [] .define registerToLoad, Symbol macro0
+			0
+			pop_reg:10 (99)  [] .define registerToLoad, Register c
+			
+			
+			pop_reg:13 (99)  [] ldc Register a, Symbol STACK_PTR
+			1
+			pop_reg:13 (99)  [] ldc Register a, Constant 0
+			
+			
+			pop_reg:14 (100)  [] ldb Register a, Register a
+			1
+			pop_reg:14 (100)  [] ldb Register a, Register a
+			
+			
+			pop_reg:15 (101)  [] ldc Register b, Constant 1
+			1
+			pop_reg:15 (101)  [] ldc Register b, Constant 1
+			
+			
+			pop_reg:16 (102)  [] sub Register a, Register a, Register b
+			1
+			pop_reg:16 (102)  [] sub Register a, Register a, Register b
+			
+			
+			pop_reg:17 (103)  [] ldc Register b, Symbol STACK_PTR
+			1
+			pop_reg:17 (103)  [] ldc Register b, Constant 0
+			
+			
+			pop_reg:18 (104)  [] stb Register b, Register a
+			1
+			pop_reg:18 (104)  [] stb Register b, Register a
+			
+			
+			pop_reg:22 (105)  [] ldb Register a, Symbol registerToLoad
+			1
+			pop_reg:22 (105)  [] ldb Register a, Register c
+			
+			
+			}
+		sub:8 (99)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register c
+		
+		
+		sub:9 (106)  [] sub Symbol result, Symbol lhs, Symbol rhs
+		1
+		sub:9 (106)  [] sub Register d, Register c, Register d
+		
+		
+		sub:10 (107)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Symbol result
+		7
+			{
+			push_reg:10 (107)  [] .define registerToPush, Symbol macro0
+			0
+			push_reg:10 (107)  [] .define registerToPush, Register d
+			
+			
+			push_reg:13 (107)  [] ldc Register a, Symbol STACK_PTR
+			1
+			push_reg:13 (107)  [] ldc Register a, Constant 0
+			
+			
+			push_reg:14 (108)  [] ldb Register a, Register a
+			1
+			push_reg:14 (108)  [] ldb Register a, Register a
+			
+			
+			push_reg:15 (109)  [] stb Register a, Symbol registerToPush
+			1
+			push_reg:15 (109)  [] stb Register a, Register d
+			
+			
+			push_reg:19 (110)  [] ldc Register b, Constant 1
+			1
+			push_reg:19 (110)  [] ldc Register b, Constant 1
+			
+			
+			push_reg:20 (111)  [] add Register a, Register a, Register b
+			1
+			push_reg:20 (111)  [] add Register a, Register a, Register b
+			
+			
+			push_reg:21 (112)  [] ldc Register b, Symbol STACK_PTR
+			1
+			push_reg:21 (112)  [] ldc Register b, Constant 0
+			
+			
+			push_reg:22 (113)  [] stb Register b, Register a
+			1
+			push_reg:22 (113)  [] stb Register b, Register a
+			
+			
+			}
+		sub:10 (107)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register d
+		
+		
+		}
+	call:29 (92)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/sub.pa2 
+	
+	
+	call:30 (114)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_mem_v.pa2 Symbol FUNC_ARGS
+	9
+		{
+		pop_mem_v:6 (114)  [] .define val, Register a
+		0
+		pop_mem_v:6 (114)  [] .define val, Register a
+		
+		
+		pop_mem_v:7 (114)  [] .define addr, Symbol macro0
+		0
+		pop_mem_v:7 (114)  [] .define addr, Constant 2
+		
+		
+		pop_mem_v:9 (114)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol val
+		7
+			{
+			pop_reg:10 (114)  [] .define registerToLoad, Symbol macro0
+			0
+			pop_reg:10 (114)  [] .define registerToLoad, Register a
+			
+			
+			pop_reg:13 (114)  [] ldc Register a, Symbol STACK_PTR
+			1
+			pop_reg:13 (114)  [] ldc Register a, Constant 0
+			
+			
+			pop_reg:14 (115)  [] ldb Register a, Register a
+			1
+			pop_reg:14 (115)  [] ldb Register a, Register a
+			
+			
+			pop_reg:15 (116)  [] ldc Register b, Constant 1
+			1
+			pop_reg:15 (116)  [] ldc Register b, Constant 1
+			
+			
+			pop_reg:16 (117)  [] sub Register a, Register a, Register b
+			1
+			pop_reg:16 (117)  [] sub Register a, Register a, Register b
+			
+			
+			pop_reg:17 (118)  [] ldc Register b, Symbol STACK_PTR
+			1
+			pop_reg:17 (118)  [] ldc Register b, Constant 0
+			
+			
+			pop_reg:18 (119)  [] stb Register b, Register a
+			1
+			pop_reg:18 (119)  [] stb Register b, Register a
+			
+			
+			pop_reg:22 (120)  [] ldb Register a, Symbol registerToLoad
+			1
+			pop_reg:22 (120)  [] ldb Register a, Register a
+			
+			
+			}
+		pop_mem_v:9 (114)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register a
+		
+		
+		pop_mem_v:11 (121)  [] ldc Register b, Symbol addr
+		1
+		pop_mem_v:11 (121)  [] ldc Register b, Constant 2
+		
+		
+		pop_mem_v:12 (122)  [] stb Register b, Symbol val
+		1
+		pop_mem_v:12 (122)  [] stb Register b, Register a
+		
+		
+		}
+	call:30 (114)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_mem_v.pa2 Constant 2
+	
+	
+	call:32 (123)  [] ldc Register a, Symbol functionLabel
+	1
+	call:32 (123)  [] ldc Register a, Constant 134
+	
+	
+	call:33 (124)  [] jmp Register a
+	1
+	call:33 (124)  [] jmp Register a
+	
+	
+	call:38 (125)  [return] brk
+	1
+	call:38 (125)  [return] brk
+	
+	
+	call:43 (126)  [] ldc Register a, Symbol STACK_PTR
+	1
+	call:43 (126)  [] ldc Register a, Constant 0
+	
+	
+	call:44 (127)  [] ldb Register a, Register b
+	1
+	call:44 (127)  [] ldb Register a, Register b
+	
+	
+	call:45 (128)  [] ldc Register d, Symbol argcount
+	1
+	call:45 (128)  [] ldc Register d, Constant 2
+	
+	
+	call:46 (129)  [] sub Register b, Register b, Register d
+	1
+	call:46 (129)  [] sub Register b, Register b, Register d
+	
+	
+	call:47 (130)  [] stb Register a, Register b
+	1
+	call:47 (130)  [] stb Register a, Register b
+	
+	
+	call:49 (131)  [] brk
+	1
+	call:49 (131)  [] brk
+	
+	
+	}
+functiontest.pa2:12 (19)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/call.pa2 Constant 134, Constant 2
+
+
+functiontest.pa2:14 (132)  [] ldc Register a, Symbol hang
+1
+functiontest.pa2:14 (132)  [] ldc Register a, Constant 133
+
+
+functiontest.pa2:15 (133)  [hang] jump Register a
+1
+functiontest.pa2:15 (133)  [hang] jump Register a
+
+
+functiontest.pa2:20 (134)  [write_1_to_2] @/home/foxite/dev/cpu/asm/proc16b/macros/function.pa2 Constant 0
+7
+	{
+	function:19 (134)  [] .define loccount, Symbol macro0
+	0
+	function:19 (134)  [] .define loccount, Constant 0
+	
+	
+	function:21 (134)  [] .define stackptrptr, Register a
+	0
+	function:21 (134)  [] .define stackptrptr, Register a
+	
+	
+	function:22 (134)  [] .define stackptr, Register b
+	0
+	function:22 (134)  [] .define stackptr, Register b
+	
+	
+	function:25 (134)  [] ldc Symbol stackptrptr, Symbol STACK_PTR
+	1
+	function:25 (134)  [] ldc Register a, Constant 0
+	
+	
+	function:26 (135)  [] ldb Symbol stackptrptr, Symbol stackptr
+	1
+	function:26 (135)  [] ldb Register a, Register b
+	
+	
+	function:27 (136)  [] ldc Register c, Symbol FUNC_LOCS
+	1
+	function:27 (136)  [] ldc Register c, Constant 3
+	
+	
+	function:28 (137)  [] stb Register c, Symbol stackptr
+	1
+	function:28 (137)  [] stb Register c, Register b
+	
+	
+	function:31 (138)  [] ldc Register c, Symbol loccount
+	1
+	function:31 (138)  [] ldc Register c, Constant 0
+	
+	
+	function:32 (139)  [] add Symbol stackptr, Symbol stackptr, Register c
+	1
+	function:32 (139)  [] add Register b, Register b, Register c
+	
+	
+	function:33 (140)  [] stb Symbol stackptrptr, Symbol stackptr
+	1
+	function:33 (140)  [] stb Register a, Register b
+	
+	
+	}
+functiontest.pa2:20 (134)  [write_1_to_2] @/home/foxite/dev/cpu/asm/proc16b/macros/function.pa2 Constant 0
+
+
+functiontest.pa2:23 (141)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_arg.pa2 Constant 1
+12
+	{
+	push_arg:3 (141)  [] .define slot, Symbol macro0
+	0
+	push_arg:3 (141)  [] .define slot, Constant 1
+	
+	
+	push_arg:6 (141)  [] ldc Register a, Symbol FUNC_ARGS
+	1
+	push_arg:6 (141)  [] ldc Register a, Constant 2
+	
+	
+	push_arg:7 (142)  [] ldb Register a, Register a
+	1
+	push_arg:7 (142)  [] ldb Register a, Register a
+	
+	
+	push_arg:8 (143)  [] ldc Register b, Symbol slot
+	1
+	push_arg:8 (143)  [] ldc Register b, Constant 1
+	
+	
+	push_arg:9 (144)  [] add Register a, Register a, Register b
+	1
+	push_arg:9 (144)  [] add Register a, Register a, Register b
+	
+	
+	push_arg:10 (145)  [] ldb Register a, Register b
+	1
+	push_arg:10 (145)  [] ldb Register a, Register b
+	
+	
+	push_arg:12 (146)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	7
+		{
+		push_reg:10 (146)  [] .define registerToPush, Symbol macro0
+		0
+		push_reg:10 (146)  [] .define registerToPush, Register b
+		
+		
+		push_reg:13 (146)  [] ldc Register a, Symbol STACK_PTR
+		1
+		push_reg:13 (146)  [] ldc Register a, Constant 0
+		
+		
+		push_reg:14 (147)  [] ldb Register a, Register a
+		1
+		push_reg:14 (147)  [] ldb Register a, Register a
+		
+		
+		push_reg:15 (148)  [] stb Register a, Symbol registerToPush
+		1
+		push_reg:15 (148)  [] stb Register a, Register b
+		
+		
+		push_reg:19 (149)  [] ldc Register b, Constant 1
+		1
+		push_reg:19 (149)  [] ldc Register b, Constant 1
+		
+		
+		push_reg:20 (150)  [] add Register a, Register a, Register b
+		1
+		push_reg:20 (150)  [] add Register a, Register a, Register b
+		
+		
+		push_reg:21 (151)  [] ldc Register b, Symbol STACK_PTR
+		1
+		push_reg:21 (151)  [] ldc Register b, Constant 0
+		
+		
+		push_reg:22 (152)  [] stb Register b, Register a
+		1
+		push_reg:22 (152)  [] stb Register b, Register a
+		
+		
+		}
+	push_arg:12 (146)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	
+	
+	}
+functiontest.pa2:23 (141)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_arg.pa2 Constant 1
+
+
+functiontest.pa2:24 (153)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_arg.pa2 Constant 0
+12
+	{
+	push_arg:3 (153)  [] .define slot, Symbol macro0
+	0
+	push_arg:3 (153)  [] .define slot, Constant 0
+	
+	
+	push_arg:6 (153)  [] ldc Register a, Symbol FUNC_ARGS
+	1
+	push_arg:6 (153)  [] ldc Register a, Constant 2
+	
+	
+	push_arg:7 (154)  [] ldb Register a, Register a
+	1
+	push_arg:7 (154)  [] ldb Register a, Register a
+	
+	
+	push_arg:8 (155)  [] ldc Register b, Symbol slot
+	1
+	push_arg:8 (155)  [] ldc Register b, Constant 0
+	
+	
+	push_arg:9 (156)  [] add Register a, Register a, Register b
+	1
+	push_arg:9 (156)  [] add Register a, Register a, Register b
+	
+	
+	push_arg:10 (157)  [] ldb Register a, Register b
+	1
+	push_arg:10 (157)  [] ldb Register a, Register b
+	
+	
+	push_arg:12 (158)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	7
+		{
+		push_reg:10 (158)  [] .define registerToPush, Symbol macro0
+		0
+		push_reg:10 (158)  [] .define registerToPush, Register b
+		
+		
+		push_reg:13 (158)  [] ldc Register a, Symbol STACK_PTR
+		1
+		push_reg:13 (158)  [] ldc Register a, Constant 0
+		
+		
+		push_reg:14 (159)  [] ldb Register a, Register a
+		1
+		push_reg:14 (159)  [] ldb Register a, Register a
+		
+		
+		push_reg:15 (160)  [] stb Register a, Symbol registerToPush
+		1
+		push_reg:15 (160)  [] stb Register a, Register b
+		
+		
+		push_reg:19 (161)  [] ldc Register b, Constant 1
+		1
+		push_reg:19 (161)  [] ldc Register b, Constant 1
+		
+		
+		push_reg:20 (162)  [] add Register a, Register a, Register b
+		1
+		push_reg:20 (162)  [] add Register a, Register a, Register b
+		
+		
+		push_reg:21 (163)  [] ldc Register b, Symbol STACK_PTR
+		1
+		push_reg:21 (163)  [] ldc Register b, Constant 0
+		
+		
+		push_reg:22 (164)  [] stb Register b, Register a
+		1
+		push_reg:22 (164)  [] stb Register b, Register a
+		
+		
+		}
+	push_arg:12 (158)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	
+	
+	}
+functiontest.pa2:24 (153)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_arg.pa2 Constant 0
+
+
+functiontest.pa2:25 (165)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_mem_va.pa2 
+15
+	{
+	pop_mem_va:4 (165)  [] .define val, Register c
+	0
+	pop_mem_va:4 (165)  [] .define val, Register c
+	
+	
+	pop_mem_va:5 (165)  [] .define addr, Register a
+	0
+	pop_mem_va:5 (165)  [] .define addr, Register a
+	
+	
+	pop_mem_va:7 (165)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol val
+	7
+		{
+		pop_reg:10 (165)  [] .define registerToLoad, Symbol macro0
+		0
+		pop_reg:10 (165)  [] .define registerToLoad, Register c
+		
+		
+		pop_reg:13 (165)  [] ldc Register a, Symbol STACK_PTR
+		1
+		pop_reg:13 (165)  [] ldc Register a, Constant 0
+		
+		
+		pop_reg:14 (166)  [] ldb Register a, Register a
+		1
+		pop_reg:14 (166)  [] ldb Register a, Register a
+		
+		
+		pop_reg:15 (167)  [] ldc Register b, Constant 1
+		1
+		pop_reg:15 (167)  [] ldc Register b, Constant 1
+		
+		
+		pop_reg:16 (168)  [] sub Register a, Register a, Register b
+		1
+		pop_reg:16 (168)  [] sub Register a, Register a, Register b
+		
+		
+		pop_reg:17 (169)  [] ldc Register b, Symbol STACK_PTR
+		1
+		pop_reg:17 (169)  [] ldc Register b, Constant 0
+		
+		
+		pop_reg:18 (170)  [] stb Register b, Register a
+		1
+		pop_reg:18 (170)  [] stb Register b, Register a
+		
+		
+		pop_reg:22 (171)  [] ldb Register a, Symbol registerToLoad
+		1
+		pop_reg:22 (171)  [] ldb Register a, Register c
+		
+		
+		}
+	pop_mem_va:7 (165)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register c
+	
+	
+	pop_mem_va:8 (172)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol addr
+	7
+		{
+		pop_reg:10 (172)  [] .define registerToLoad, Symbol macro0
+		0
+		pop_reg:10 (172)  [] .define registerToLoad, Register a
+		
+		
+		pop_reg:13 (172)  [] ldc Register a, Symbol STACK_PTR
+		1
+		pop_reg:13 (172)  [] ldc Register a, Constant 0
+		
+		
+		pop_reg:14 (173)  [] ldb Register a, Register a
+		1
+		pop_reg:14 (173)  [] ldb Register a, Register a
+		
+		
+		pop_reg:15 (174)  [] ldc Register b, Constant 1
+		1
+		pop_reg:15 (174)  [] ldc Register b, Constant 1
+		
+		
+		pop_reg:16 (175)  [] sub Register a, Register a, Register b
+		1
+		pop_reg:16 (175)  [] sub Register a, Register a, Register b
+		
+		
+		pop_reg:17 (176)  [] ldc Register b, Symbol STACK_PTR
+		1
+		pop_reg:17 (176)  [] ldc Register b, Constant 0
+		
+		
+		pop_reg:18 (177)  [] stb Register b, Register a
+		1
+		pop_reg:18 (177)  [] stb Register b, Register a
+		
+		
+		pop_reg:22 (178)  [] ldb Register a, Symbol registerToLoad
+		1
+		pop_reg:22 (178)  [] ldb Register a, Register a
+		
+		
+		}
+	pop_mem_va:8 (172)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register a
+	
+	
+	pop_mem_va:10 (179)  [] stb Symbol addr, Symbol val
+	1
+	pop_mem_va:10 (179)  [] stb Register a, Register c
+	
+	
+	}
+functiontest.pa2:25 (165)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_mem_va.pa2 
+
+
+functiontest.pa2:27 (180)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 4094
+8
+	{
+	push_const:6 (180)  [] .define constantToPush, Symbol macro0
+	0
+	push_const:6 (180)  [] .define constantToPush, Constant 4094
+	
+	
+	push_const:12 (180)  [] ldc Register b, Symbol constantToPush
+	1
+	push_const:12 (180)  [] ldc Register b, Constant 4094
+	
+	
+	push_const:14 (181)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	7
+		{
+		push_reg:10 (181)  [] .define registerToPush, Symbol macro0
+		0
+		push_reg:10 (181)  [] .define registerToPush, Register b
+		
+		
+		push_reg:13 (181)  [] ldc Register a, Symbol STACK_PTR
+		1
+		push_reg:13 (181)  [] ldc Register a, Constant 0
+		
+		
+		push_reg:14 (182)  [] ldb Register a, Register a
+		1
+		push_reg:14 (182)  [] ldb Register a, Register a
+		
+		
+		push_reg:15 (183)  [] stb Register a, Symbol registerToPush
+		1
+		push_reg:15 (183)  [] stb Register a, Register b
+		
+		
+		push_reg:19 (184)  [] ldc Register b, Constant 1
+		1
+		push_reg:19 (184)  [] ldc Register b, Constant 1
+		
+		
+		push_reg:20 (185)  [] add Register a, Register a, Register b
+		1
+		push_reg:20 (185)  [] add Register a, Register a, Register b
+		
+		
+		push_reg:21 (186)  [] ldc Register b, Symbol STACK_PTR
+		1
+		push_reg:21 (186)  [] ldc Register b, Constant 0
+		
+		
+		push_reg:22 (187)  [] stb Register b, Register a
+		1
+		push_reg:22 (187)  [] stb Register b, Register a
+		
+		
+		}
+	push_const:14 (181)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_reg.pa2 Register b
+	
+	
+	}
+functiontest.pa2:27 (180)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/push_const.pa2 Constant 4094
+
+
+functiontest.pa2:29 (188)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/return.pa2 
+35
+	{
+	return:3 (188)  [] .define returnInstructionPtr, Register d
+	0
+	return:3 (188)  [] .define returnInstructionPtr, Register d
+	
+	
+	return:4 (188)  [] .define restoreRegister, Register c
+	0
+	return:4 (188)  [] .define restoreRegister, Register c
+	
+	
+	return:8 (188)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_mem_v.pa2 Symbol FUNC_RETV
+	9
+		{
+		pop_mem_v:6 (188)  [] .define val, Register a
+		0
+		pop_mem_v:6 (188)  [] .define val, Register a
+		
+		
+		pop_mem_v:7 (188)  [] .define addr, Symbol macro0
+		0
+		pop_mem_v:7 (188)  [] .define addr, Constant 1
+		
+		
+		pop_mem_v:9 (188)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol val
+		7
+			{
+			pop_reg:10 (188)  [] .define registerToLoad, Symbol macro0
+			0
+			pop_reg:10 (188)  [] .define registerToLoad, Register a
+			
+			
+			pop_reg:13 (188)  [] ldc Register a, Symbol STACK_PTR
+			1
+			pop_reg:13 (188)  [] ldc Register a, Constant 0
+			
+			
+			pop_reg:14 (189)  [] ldb Register a, Register a
+			1
+			pop_reg:14 (189)  [] ldb Register a, Register a
+			
+			
+			pop_reg:15 (190)  [] ldc Register b, Constant 1
+			1
+			pop_reg:15 (190)  [] ldc Register b, Constant 1
+			
+			
+			pop_reg:16 (191)  [] sub Register a, Register a, Register b
+			1
+			pop_reg:16 (191)  [] sub Register a, Register a, Register b
+			
+			
+			pop_reg:17 (192)  [] ldc Register b, Symbol STACK_PTR
+			1
+			pop_reg:17 (192)  [] ldc Register b, Constant 0
+			
+			
+			pop_reg:18 (193)  [] stb Register b, Register a
+			1
+			pop_reg:18 (193)  [] stb Register b, Register a
+			
+			
+			pop_reg:22 (194)  [] ldb Register a, Symbol registerToLoad
+			1
+			pop_reg:22 (194)  [] ldb Register a, Register a
+			
+			
+			}
+		pop_mem_v:9 (188)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register a
+		
+		
+		pop_mem_v:11 (195)  [] ldc Register b, Symbol addr
+		1
+		pop_mem_v:11 (195)  [] ldc Register b, Constant 1
+		
+		
+		pop_mem_v:12 (196)  [] stb Register b, Symbol val
+		1
+		pop_mem_v:12 (196)  [] stb Register b, Register a
+		
+		
+		}
+	return:8 (188)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_mem_v.pa2 Constant 1
+	
+	
+	return:10 (197)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol returnInstructionPtr
+	7
+		{
+		pop_reg:10 (197)  [] .define registerToLoad, Symbol macro0
+		0
+		pop_reg:10 (197)  [] .define registerToLoad, Register d
+		
+		
+		pop_reg:13 (197)  [] ldc Register a, Symbol STACK_PTR
+		1
+		pop_reg:13 (197)  [] ldc Register a, Constant 0
+		
+		
+		pop_reg:14 (198)  [] ldb Register a, Register a
+		1
+		pop_reg:14 (198)  [] ldb Register a, Register a
+		
+		
+		pop_reg:15 (199)  [] ldc Register b, Constant 1
+		1
+		pop_reg:15 (199)  [] ldc Register b, Constant 1
+		
+		
+		pop_reg:16 (200)  [] sub Register a, Register a, Register b
+		1
+		pop_reg:16 (200)  [] sub Register a, Register a, Register b
+		
+		
+		pop_reg:17 (201)  [] ldc Register b, Symbol STACK_PTR
+		1
+		pop_reg:17 (201)  [] ldc Register b, Constant 0
+		
+		
+		pop_reg:18 (202)  [] stb Register b, Register a
+		1
+		pop_reg:18 (202)  [] stb Register b, Register a
+		
+		
+		pop_reg:22 (203)  [] ldb Register a, Symbol registerToLoad
+		1
+		pop_reg:22 (203)  [] ldb Register a, Register d
+		
+		
+		}
+	return:10 (197)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register d
+	
+	
+	return:13 (204)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol restoreRegister
+	7
+		{
+		pop_reg:10 (204)  [] .define registerToLoad, Symbol macro0
+		0
+		pop_reg:10 (204)  [] .define registerToLoad, Register c
+		
+		
+		pop_reg:13 (204)  [] ldc Register a, Symbol STACK_PTR
+		1
+		pop_reg:13 (204)  [] ldc Register a, Constant 0
+		
+		
+		pop_reg:14 (205)  [] ldb Register a, Register a
+		1
+		pop_reg:14 (205)  [] ldb Register a, Register a
+		
+		
+		pop_reg:15 (206)  [] ldc Register b, Constant 1
+		1
+		pop_reg:15 (206)  [] ldc Register b, Constant 1
+		
+		
+		pop_reg:16 (207)  [] sub Register a, Register a, Register b
+		1
+		pop_reg:16 (207)  [] sub Register a, Register a, Register b
+		
+		
+		pop_reg:17 (208)  [] ldc Register b, Symbol STACK_PTR
+		1
+		pop_reg:17 (208)  [] ldc Register b, Constant 0
+		
+		
+		pop_reg:18 (209)  [] stb Register b, Register a
+		1
+		pop_reg:18 (209)  [] stb Register b, Register a
+		
+		
+		pop_reg:22 (210)  [] ldb Register a, Symbol registerToLoad
+		1
+		pop_reg:22 (210)  [] ldb Register a, Register c
+		
+		
+		}
+	return:13 (204)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register c
+	
+	
+	return:14 (211)  [] ldc Register a, Symbol FUNC_LOCS
+	1
+	return:14 (211)  [] ldc Register a, Constant 3
+	
+	
+	return:15 (212)  [] stb Register a, Symbol restoreRegister
+	1
+	return:15 (212)  [] stb Register a, Register c
+	
+	
+	return:18 (213)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Symbol restoreRegister
+	7
+		{
+		pop_reg:10 (213)  [] .define registerToLoad, Symbol macro0
+		0
+		pop_reg:10 (213)  [] .define registerToLoad, Register c
+		
+		
+		pop_reg:13 (213)  [] ldc Register a, Symbol STACK_PTR
+		1
+		pop_reg:13 (213)  [] ldc Register a, Constant 0
+		
+		
+		pop_reg:14 (214)  [] ldb Register a, Register a
+		1
+		pop_reg:14 (214)  [] ldb Register a, Register a
+		
+		
+		pop_reg:15 (215)  [] ldc Register b, Constant 1
+		1
+		pop_reg:15 (215)  [] ldc Register b, Constant 1
+		
+		
+		pop_reg:16 (216)  [] sub Register a, Register a, Register b
+		1
+		pop_reg:16 (216)  [] sub Register a, Register a, Register b
+		
+		
+		pop_reg:17 (217)  [] ldc Register b, Symbol STACK_PTR
+		1
+		pop_reg:17 (217)  [] ldc Register b, Constant 0
+		
+		
+		pop_reg:18 (218)  [] stb Register b, Register a
+		1
+		pop_reg:18 (218)  [] stb Register b, Register a
+		
+		
+		pop_reg:22 (219)  [] ldb Register a, Symbol registerToLoad
+		1
+		pop_reg:22 (219)  [] ldb Register a, Register c
+		
+		
+		}
+	return:18 (213)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/pop_reg.pa2 Register c
+	
+	
+	return:19 (220)  [] ldc Register a, Symbol FUNC_ARGS
+	1
+	return:19 (220)  [] ldc Register a, Constant 2
+	
+	
+	return:20 (221)  [] stb Register a, Symbol restoreRegister
+	1
+	return:20 (221)  [] stb Register a, Register c
+	
+	
+	return:22 (222)  [] jump Symbol returnInstructionPtr
+	1
+	return:22 (222)  [] jump Register d
+	
+	
+	}
+functiontest.pa2:29 (188)  [] @/home/foxite/dev/cpu/asm/proc16b/macros/return.pa2 
+
+
+functiontest.pa2:34 (223)  [] brk
+1
+functiontest.pa2:34 (223)  [] brk
+
+
+functiontest.pa2:37 (224)  [] ldc Register a, Constant 0
+1
+functiontest.pa2:37 (224)  [] ldc Register a, Constant 0
+
+
+functiontest.pa2:38 (225)  [] ldc Register b, Constant 4095
+1
+functiontest.pa2:38 (225)  [] ldc Register b, Constant 4095
+
+
+functiontest.pa2:39 (226)  [] stb Register a, Register b
+1
+functiontest.pa2:39 (226)  [] stb Register a, Register b
+
+
+functiontest.pa2:41 (227)  [] ldc Register a, Symbol hang2
+1
+functiontest.pa2:41 (227)  [] ldc Register a, Constant 228
+
+
+functiontest.pa2:42 (228)  [hang2] jump Register a
+1
+functiontest.pa2:42 (228)  [hang2] jump Register a
+
+
+}

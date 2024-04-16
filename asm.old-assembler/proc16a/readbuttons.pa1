@@ -1,9 +1,0 @@
-# read the button device connected to 0x6000 and output its value to 0x0000, infinitely.
-
-start:
-A = 0x6000
-B = *A
-A = 0x0000
-*A = B
-A = start
-true JMP A
