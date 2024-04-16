@@ -1,3 +1,10 @@
+# Expected result:
+# - 0x20 is written to 0x30.
+# - 0x7D is written to the stack as it is the return label in the call macro.
+# - Cpu hangs at the hang label.
+# - Cpu never breaks.
+# - 0x0FFF is not written to 0x0.
+
 @init_stack
 @push_const $0x20
 @push_const $0x30

@@ -32,29 +32,17 @@
 ldc %a, functionLabel
 jmp %a
 
-# return macro will jump to the 3rd value we pushed, which is right here.
+
+# after popping all the values we pushed,
+# the return macro will jump to the 3rd value we pushed, which is right here.
 return:
 
-# restore *FUNC_LOCS
-@pop_mem_v FUNC_LOCS
-
-# later on: restore *STACK_PTR to what it was before the function arguments were pushed on the stack, which is *FUNC_ARGS.
-# tmp_args = *FUNC_ARGS
-.reg tmp_args, %c
-ldc tmp_args, FUNC_ARGS
-ldb tmp_args, tmp_args
-
-# restore *FUNC_ARGS
-@pop_mem_v FUNC_ARGS
-
-# restore *STACK_PTR as we prepared above.
-# *STACK_PTR = tmp_args
+# to preserve the calling convention, we pop an amount of items equal to the argument count.
+# *STACK_PTR = *STACK_PTR - argcount
 ldc %a, STACK_PTR
-stb %a, tmp_args
-
-# push the function return value on the stack.
-ldc %a, FUNC_RETV
-stb %a, %c
-@push_reg %c
+ldb %a, %b          # %b = *STACK_PTR
+ldc %d, argcount
+sub %b, %b, %d      # %b = *STACK_PTR - argcount
+stb %a, %b          # *STACK_PTR = %b
 
 # doñe

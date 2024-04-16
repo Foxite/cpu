@@ -3,10 +3,10 @@
 .reg returnInstructionPtr, %d
 .reg restoreRegister,      %c
 
+
 # pop the return value and write it to FUNC_RETV.
 @pop_mem_v FUNC_RETV
 
-brk
 @pop_reg returnInstructionPtr
 
 # restore FUNC_LOCS
@@ -19,5 +19,4 @@ stb %a, restoreRegister
 ldc %a, FUNC_ARGS
 stb %a, restoreRegister
 
-brk
 jump returnInstructionPtr
