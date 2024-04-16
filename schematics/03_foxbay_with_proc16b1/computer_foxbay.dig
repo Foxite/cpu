@@ -188,9 +188,7 @@ TODO better address space layout</string>
           <string>devices:
 0x6000: button inputs
 0x6001: framebuffer switch
-0x6002: midi flags register
-0x6003: midi volume register
-0x6004: midi note register</string>
+0x6002 - 0x600A: midi channel 1-8</string>
         </entry>
       </elementAttributes>
       <pos x="-680" y="940"/>
@@ -617,7 +615,7 @@ UDLRABXY</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>64</int>
+          <int>63</int>
         </entry>
       </elementAttributes>
       <pos x="-100" y="660"/>
@@ -634,7 +632,7 @@ UDLRABXY</string>
           <string>addr</string>
         </entry>
       </elementAttributes>
-      <pos x="20" y="740"/>
+      <pos x="20" y="840"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
@@ -1308,17 +1306,17 @@ all other bits are unconnected</string>
     <visualElement>
       <elementName>bus_driver.dig</elementName>
       <elementAttributes/>
-      <pos x="560" y="1220"/>
+      <pos x="740" y="1340"/>
     </visualElement>
     <visualElement>
       <elementName>bus_driver.dig</elementName>
       <elementAttributes/>
-      <pos x="800" y="840"/>
+      <pos x="740" y="940"/>
     </visualElement>
     <visualElement>
       <elementName>bus_driver.dig</elementName>
       <elementAttributes/>
-      <pos x="800" y="720"/>
+      <pos x="740" y="820"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1328,7 +1326,7 @@ all other bits are unconnected</string>
           <string>addr_dec</string>
         </entry>
       </elementAttributes>
-      <pos x="940" y="740"/>
+      <pos x="880" y="840"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1338,7 +1336,7 @@ all other bits are unconnected</string>
           <string>addr_dec</string>
         </entry>
       </elementAttributes>
-      <pos x="940" y="860"/>
+      <pos x="880" y="960"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1348,7 +1346,7 @@ all other bits are unconnected</string>
           <string>addr_dec</string>
         </entry>
       </elementAttributes>
-      <pos x="700" y="1240"/>
+      <pos x="880" y="1360"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1358,7 +1356,7 @@ all other bits are unconnected</string>
           <string>in_proc</string>
         </entry>
       </elementAttributes>
-      <pos x="700" y="1280"/>
+      <pos x="880" y="1400"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1368,7 +1366,7 @@ all other bits are unconnected</string>
           <string>in_proc</string>
         </entry>
       </elementAttributes>
-      <pos x="940" y="900"/>
+      <pos x="880" y="1000"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1378,7 +1376,7 @@ all other bits are unconnected</string>
           <string>in_proc</string>
         </entry>
       </elementAttributes>
-      <pos x="940" y="780"/>
+      <pos x="880" y="880"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1392,7 +1390,7 @@ all other bits are unconnected</string>
           <string>out_ram</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="780"/>
+      <pos x="720" y="880"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1406,7 +1404,7 @@ all other bits are unconnected</string>
           <string>out_gram</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="900"/>
+      <pos x="720" y="1000"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1420,7 +1418,7 @@ all other bits are unconnected</string>
           <string>out_dev</string>
         </entry>
       </elementAttributes>
-      <pos x="540" y="1280"/>
+      <pos x="720" y="1400"/>
     </visualElement>
     <visualElement>
       <elementName>Decoder</elementName>
@@ -1434,15 +1432,11 @@ all other bits are unconnected</string>
           <boolean>true</boolean>
         </entry>
       </elementAttributes>
-      <pos x="320" y="760"/>
+      <pos x="320" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>Splitter</elementName>
       <elementAttributes>
-        <entry>
-          <string>mirror</string>
-          <boolean>true</boolean>
-        </entry>
         <entry>
           <string>Input Splitting</string>
           <string>16</string>
@@ -1452,7 +1446,7 @@ all other bits are unconnected</string>
           <string>13,2,1</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="740"/>
+      <pos x="180" y="840"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1462,7 +1456,7 @@ all other bits are unconnected</string>
           <string>enable_ram</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="760"/>
+      <pos x="380" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1472,7 +1466,7 @@ all other bits are unconnected</string>
           <string>enable_gram</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="780"/>
+      <pos x="380" y="920"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1482,7 +1476,7 @@ all other bits are unconnected</string>
           <string>enable_dev</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="800"/>
+      <pos x="380" y="940"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1496,7 +1490,7 @@ all other bits are unconnected</string>
           <string>enable_dev</string>
         </entry>
       </elementAttributes>
-      <pos x="540" y="1260"/>
+      <pos x="720" y="1380"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1510,7 +1504,7 @@ all other bits are unconnected</string>
           <string>enable_gram</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="880"/>
+      <pos x="720" y="980"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1524,15 +1518,11 @@ all other bits are unconnected</string>
           <string>enable_ram</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="760"/>
+      <pos x="720" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Splitter</elementName>
       <elementAttributes>
-        <entry>
-          <string>mirror</string>
-          <boolean>true</boolean>
-        </entry>
         <entry>
           <string>Input Splitting</string>
           <string>16</string>
@@ -1542,7 +1532,7 @@ all other bits are unconnected</string>
           <string>13,2,1</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="920"/>
+      <pos x="180" y="1000"/>
     </visualElement>
     <visualElement>
       <elementName>And</elementName>
@@ -1556,7 +1546,7 @@ all other bits are unconnected</string>
           <boolean>true</boolean>
         </entry>
       </elementAttributes>
-      <pos x="340" y="920"/>
+      <pos x="340" y="1040"/>
     </visualElement>
     <visualElement>
       <elementName>Button</elementName>
@@ -1664,7 +1654,7 @@ all other bits are unconnected</string>
           <string>addr_dec_internal</string>
         </entry>
       </elementAttributes>
-      <pos x="440" y="940"/>
+      <pos x="440" y="1060"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1678,7 +1668,7 @@ all other bits are unconnected</string>
           <string>addr_dec_internal</string>
         </entry>
       </elementAttributes>
-      <pos x="40" y="1240"/>
+      <pos x="120" y="1360"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1692,7 +1682,7 @@ all other bits are unconnected</string>
           <string>addr_dec_internal</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="860"/>
+      <pos x="720" y="960"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1706,7 +1696,7 @@ all other bits are unconnected</string>
           <string>addr_dec_internal</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="740"/>
+      <pos x="720" y="840"/>
     </visualElement>
     <visualElement>
       <elementName>ROM</elementName>
@@ -1728,7 +1718,7 @@ all other bits are unconnected</string>
           <data>0,1,2,2,2</data>
         </entry>
       </elementAttributes>
-      <pos x="220" y="1240"/>
+      <pos x="300" y="1360"/>
     </visualElement>
     <visualElement>
       <elementName>Splitter</elementName>
@@ -1742,7 +1732,7 @@ all other bits are unconnected</string>
           <string>3,13</string>
         </entry>
       </elementAttributes>
-      <pos x="80" y="1240"/>
+      <pos x="160" y="1360"/>
     </visualElement>
     <visualElement>
       <elementName>Sub</elementName>
@@ -1752,7 +1742,7 @@ all other bits are unconnected</string>
           <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="360" y="1240"/>
+      <pos x="440" y="1360"/>
     </visualElement>
     <visualElement>
       <elementName>ROM</elementName>
@@ -1770,7 +1760,7 @@ all other bits are unconnected</string>
           <data>0,1,0,2</data>
         </entry>
       </elementAttributes>
-      <pos x="240" y="720"/>
+      <pos x="240" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>VDD</elementName>
@@ -1780,7 +1770,7 @@ all other bits are unconnected</string>
           <rotation rotation="1"/>
         </entry>
       </elementAttributes>
-      <pos x="200" y="1280"/>
+      <pos x="280" y="1400"/>
     </visualElement>
     <visualElement>
       <elementName>VDD</elementName>
@@ -1790,7 +1780,7 @@ all other bits are unconnected</string>
           <rotation rotation="1"/>
         </entry>
       </elementAttributes>
-      <pos x="220" y="760"/>
+      <pos x="220" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>ROM</elementName>
@@ -1808,7 +1798,7 @@ all other bits are unconnected</string>
           <data>7fff,1fff,7fff,1fff</data>
         </entry>
       </elementAttributes>
-      <pos x="240" y="900"/>
+      <pos x="240" y="1020"/>
     </visualElement>
     <visualElement>
       <elementName>ROM</elementName>
@@ -1830,7 +1820,7 @@ all other bits are unconnected</string>
           <data>0,1,2,2,2,4,4,4</data>
         </entry>
       </elementAttributes>
-      <pos x="220" y="1360"/>
+      <pos x="300" y="1480"/>
     </visualElement>
     <visualElement>
       <elementName>VDD</elementName>
@@ -1840,7 +1830,7 @@ all other bits are unconnected</string>
           <rotation rotation="1"/>
         </entry>
       </elementAttributes>
-      <pos x="200" y="1400"/>
+      <pos x="280" y="1520"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1850,7 +1840,7 @@ all other bits are unconnected</string>
           <string>enable_dev_btn</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="1420"/>
+      <pos x="460" y="1540"/>
     </visualElement>
     <visualElement>
       <elementName>Demultiplexer</elementName>
@@ -1864,7 +1854,7 @@ all other bits are unconnected</string>
           <boolean>true</boolean>
         </entry>
       </elementAttributes>
-      <pos x="300" y="1420"/>
+      <pos x="380" y="1540"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1878,7 +1868,7 @@ all other bits are unconnected</string>
           <string>enable_dev</string>
         </entry>
       </elementAttributes>
-      <pos x="280" y="1500"/>
+      <pos x="360" y="1620"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1888,7 +1878,7 @@ all other bits are unconnected</string>
           <string>enable_dev_fbswitch</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="1440"/>
+      <pos x="460" y="1560"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1898,7 +1888,7 @@ all other bits are unconnected</string>
           <string>enable_dev_midi</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="1460"/>
+      <pos x="460" y="1580"/>
     </visualElement>
     <visualElement>
       <elementName>Rectangle</elementName>
@@ -2987,7 +2977,7 @@ all other bits are unconnected</string>
           <rotation rotation="1"/>
         </entry>
       </elementAttributes>
-      <pos x="340" y="1280"/>
+      <pos x="420" y="1400"/>
     </visualElement>
     <visualElement>
       <elementName>VDD</elementName>
@@ -2997,7 +2987,43 @@ all other bits are unconnected</string>
           <rotation rotation="1"/>
         </entry>
       </elementAttributes>
-      <pos x="220" y="940"/>
+      <pos x="220" y="1060"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>map region selector</string>
+        </entry>
+        <entry>
+          <string>RectHeight</string>
+          <int>25</int>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>59</int>
+        </entry>
+      </elementAttributes>
+      <pos x="-60" y="720"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>device selector</string>
+        </entry>
+        <entry>
+          <string>RectHeight</string>
+          <int>22</int>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>59</int>
+        </entry>
+      </elementAttributes>
+      <pos x="-60" y="1280"/>
     </visualElement>
   </visualElements>
   <wires>
@@ -3008,22 +3034,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="80" y="0"/>
       <p2 x="100" y="0"/>
-    </wire>
-    <wire>
-      <p1 x="680" y="1280"/>
-      <p2 x="700" y="1280"/>
-    </wire>
-    <wire>
-      <p1 x="540" y="1280"/>
-      <p2 x="560" y="1280"/>
-    </wire>
-    <wire>
-      <p1 x="200" y="1280"/>
-      <p2 x="220" y="1280"/>
-    </wire>
-    <wire>
-      <p1 x="340" y="1280"/>
-      <p2 x="360" y="1280"/>
     </wire>
     <wire>
       <p1 x="560" y="2560"/>
@@ -3054,6 +3064,10 @@ all other bits are unconnected</string>
       <p2 x="-460" y="1540"/>
     </wire>
     <wire>
+      <p1 x="420" y="1540"/>
+      <p2 x="460" y="1540"/>
+    </wire>
+    <wire>
       <p1 x="860" y="260"/>
       <p2 x="960" y="260"/>
     </wire>
@@ -3064,18 +3078,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="960" y="260"/>
       <p2 x="980" y="260"/>
-    </wire>
-    <wire>
-      <p1 x="780" y="900"/>
-      <p2 x="800" y="900"/>
-    </wire>
-    <wire>
-      <p1 x="920" y="900"/>
-      <p2 x="940" y="900"/>
-    </wire>
-    <wire>
-      <p1 x="200" y="900"/>
-      <p2 x="240" y="900"/>
     </wire>
     <wire>
       <p1 x="560" y="2180"/>
@@ -3094,6 +3096,14 @@ all other bits are unconnected</string>
       <p2 x="260" y="2180"/>
     </wire>
     <wire>
+      <p1 x="360" y="900"/>
+      <p2 x="380" y="900"/>
+    </wire>
+    <wire>
+      <p1 x="220" y="900"/>
+      <p2 x="240" y="900"/>
+    </wire>
+    <wire>
       <p1 x="680" y="520"/>
       <p2 x="700" y="520"/>
     </wire>
@@ -3108,22 +3118,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="1640" y="780"/>
       <p2 x="1660" y="780"/>
-    </wire>
-    <wire>
-      <p1 x="780" y="780"/>
-      <p2 x="800" y="780"/>
-    </wire>
-    <wire>
-      <p1 x="920" y="780"/>
-      <p2 x="940" y="780"/>
-    </wire>
-    <wire>
-      <p1 x="360" y="780"/>
-      <p2 x="380" y="780"/>
-    </wire>
-    <wire>
-      <p1 x="340" y="1420"/>
-      <p2 x="380" y="1420"/>
     </wire>
     <wire>
       <p1 x="160" y="2060"/>
@@ -3162,6 +3156,10 @@ all other bits are unconnected</string>
       <p2 x="120" y="2320"/>
     </wire>
     <wire>
+      <p1 x="300" y="1040"/>
+      <p2 x="340" y="1040"/>
+    </wire>
+    <wire>
       <p1 x="120" y="-20"/>
       <p2 x="360" y="-20"/>
     </wire>
@@ -3180,6 +3178,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="780" y="2580"/>
       <p2 x="800" y="2580"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1300"/>
+      <p2 x="420" y="1300"/>
     </wire>
     <wire>
       <p1 x="-20" y="-280"/>
@@ -3226,12 +3228,8 @@ all other bits are unconnected</string>
       <p2 x="1500" y="920"/>
     </wire>
     <wire>
-      <p1 x="300" y="920"/>
-      <p2 x="340" y="920"/>
-    </wire>
-    <wire>
-      <p1 x="140" y="920"/>
-      <p2 x="180" y="920"/>
+      <p1 x="360" y="920"/>
+      <p2 x="380" y="920"/>
     </wire>
     <wire>
       <p1 x="560" y="2200"/>
@@ -3242,24 +3240,24 @@ all other bits are unconnected</string>
       <p2 x="800" y="2200"/>
     </wire>
     <wire>
-      <p1 x="60" y="1180"/>
-      <p2 x="340" y="1180"/>
+      <p1 x="420" y="1560"/>
+      <p2 x="460" y="1560"/>
     </wire>
     <wire>
       <p1 x="1540" y="800"/>
       <p2 x="1660" y="800"/>
     </wire>
     <wire>
-      <p1 x="360" y="800"/>
-      <p2 x="380" y="800"/>
-    </wire>
-    <wire>
-      <p1 x="340" y="1440"/>
-      <p2 x="380" y="1440"/>
-    </wire>
-    <wire>
       <p1 x="160" y="2080"/>
       <p2 x="180" y="2080"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="1060"/>
+      <p2 x="440" y="1060"/>
+    </wire>
+    <wire>
+      <p1 x="220" y="1060"/>
+      <p2 x="240" y="1060"/>
     </wire>
     <wire>
       <p1 x="-300" y="420"/>
@@ -3294,6 +3292,26 @@ all other bits are unconnected</string>
       <p2 x="800" y="1960"/>
     </wire>
     <wire>
+      <p1 x="360" y="940"/>
+      <p2 x="380" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="1540" y="940"/>
+      <p2 x="1560" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="1580"/>
+      <p2 x="460" y="1580"/>
+    </wire>
+    <wire>
+      <p1 x="-320" y="1580"/>
+      <p2 x="-300" y="1580"/>
+    </wire>
+    <wire>
+      <p1 x="-540" y="1580"/>
+      <p2 x="-480" y="1580"/>
+    </wire>
+    <wire>
       <p1 x="-380" y="300"/>
       <p2 x="-360" y="300"/>
     </wire>
@@ -3312,26 +3330,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="180" y="300"/>
       <p2 x="220" y="300"/>
-    </wire>
-    <wire>
-      <p1 x="-320" y="1580"/>
-      <p2 x="-300" y="1580"/>
-    </wire>
-    <wire>
-      <p1 x="-540" y="1580"/>
-      <p2 x="-480" y="1580"/>
-    </wire>
-    <wire>
-      <p1 x="1540" y="940"/>
-      <p2 x="1560" y="940"/>
-    </wire>
-    <wire>
-      <p1 x="420" y="940"/>
-      <p2 x="440" y="940"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="940"/>
-      <p2 x="240" y="940"/>
     </wire>
     <wire>
       <p1 x="560" y="2220"/>
@@ -3362,6 +3360,14 @@ all other bits are unconnected</string>
       <p2 x="0" y="-180"/>
     </wire>
     <wire>
+      <p1 x="-540" y="1460"/>
+      <p2 x="-520" y="1460"/>
+    </wire>
+    <wire>
+      <p1 x="-320" y="1460"/>
+      <p2 x="-300" y="1460"/>
+    </wire>
+    <wire>
       <p1 x="1640" y="820"/>
       <p2 x="1660" y="820"/>
     </wire>
@@ -3374,20 +3380,12 @@ all other bits are unconnected</string>
       <p2 x="1760" y="820"/>
     </wire>
     <wire>
-      <p1 x="-540" y="1460"/>
-      <p2 x="-520" y="1460"/>
-    </wire>
-    <wire>
-      <p1 x="-320" y="1460"/>
-      <p2 x="-300" y="1460"/>
-    </wire>
-    <wire>
-      <p1 x="340" y="1460"/>
-      <p2 x="380" y="1460"/>
-    </wire>
-    <wire>
       <p1 x="160" y="2100"/>
       <p2 x="180" y="2100"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1080"/>
+      <p2 x="340" y="1080"/>
     </wire>
     <wire>
       <p1 x="-360" y="1720"/>
@@ -3486,8 +3484,12 @@ all other bits are unconnected</string>
       <p2 x="1640" y="960"/>
     </wire>
     <wire>
-      <p1 x="140" y="960"/>
-      <p2 x="340" y="960"/>
+      <p1 x="860" y="960"/>
+      <p2 x="880" y="960"/>
+    </wire>
+    <wire>
+      <p1 x="720" y="960"/>
+      <p2 x="740" y="960"/>
     </wire>
     <wire>
       <p1 x="280" y="2240"/>
@@ -3506,6 +3508,14 @@ all other bits are unconnected</string>
       <p2 x="0" y="-200"/>
     </wire>
     <wire>
+      <p1 x="220" y="1480"/>
+      <p2 x="300" y="1480"/>
+    </wire>
+    <wire>
+      <p1 x="-420" y="1480"/>
+      <p2 x="-300" y="1480"/>
+    </wire>
+    <wire>
       <p1 x="1500" y="840"/>
       <p2 x="1660" y="840"/>
     </wire>
@@ -3514,12 +3524,24 @@ all other bits are unconnected</string>
       <p2 x="1420" y="840"/>
     </wire>
     <wire>
+      <p1 x="20" y="840"/>
+      <p2 x="140" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="860" y="840"/>
+      <p2 x="880" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="720" y="840"/>
+      <p2 x="740" y="840"/>
+    </wire>
+    <wire>
       <p1 x="1420" y="840"/>
       <p2 x="1460" y="840"/>
     </wire>
     <wire>
-      <p1 x="-420" y="1480"/>
-      <p2 x="-300" y="1480"/>
+      <p1 x="140" y="840"/>
+      <p2 x="180" y="840"/>
     </wire>
     <wire>
       <p1 x="860" y="200"/>
@@ -3566,16 +3588,36 @@ all other bits are unconnected</string>
       <p2 x="800" y="2380"/>
     </wire>
     <wire>
-      <p1 x="140" y="1360"/>
+      <p1 x="860" y="1360"/>
+      <p2 x="880" y="1360"/>
+    </wire>
+    <wire>
+      <p1 x="120" y="1360"/>
+      <p2 x="140" y="1360"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="1360"/>
       <p2 x="220" y="1360"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="1360"/>
+      <p2 x="440" y="1360"/>
+    </wire>
+    <wire>
+      <p1 x="500" y="1360"/>
+      <p2 x="740" y="1360"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1360"/>
+      <p2 x="160" y="1360"/>
+    </wire>
+    <wire>
+      <p1 x="220" y="1360"/>
+      <p2 x="300" y="1360"/>
     </wire>
     <wire>
       <p1 x="1400" y="720"/>
       <p2 x="1440" y="720"/>
-    </wire>
-    <wire>
-      <p1 x="200" y="720"/>
-      <p2 x="240" y="720"/>
     </wire>
     <wire>
       <p1 x="560" y="2000"/>
@@ -3584,6 +3626,14 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="780" y="2000"/>
       <p2 x="800" y="2000"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="1620"/>
+      <p2 x="380" y="1620"/>
+    </wire>
+    <wire>
+      <p1 x="-360" y="1620"/>
+      <p2 x="-300" y="1620"/>
     </wire>
     <wire>
       <p1 x="-500" y="340"/>
@@ -3606,10 +3656,6 @@ all other bits are unconnected</string>
       <p2 x="220" y="340"/>
     </wire>
     <wire>
-      <p1 x="-360" y="1620"/>
-      <p2 x="-300" y="1620"/>
-    </wire>
-    <wire>
       <p1 x="1400" y="980"/>
       <p2 x="1420" y="980"/>
     </wire>
@@ -3618,36 +3664,12 @@ all other bits are unconnected</string>
       <p2 x="1560" y="980"/>
     </wire>
     <wire>
+      <p1 x="720" y="980"/>
+      <p2 x="740" y="980"/>
+    </wire>
+    <wire>
       <p1 x="280" y="2260"/>
       <p2 x="300" y="2260"/>
-    </wire>
-    <wire>
-      <p1 x="680" y="1240"/>
-      <p2 x="700" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="40" y="1240"/>
-      <p2 x="60" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="100" y="1240"/>
-      <p2 x="140" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="340" y="1240"/>
-      <p2 x="360" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="420" y="1240"/>
-      <p2 x="560" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="1240"/>
-      <p2 x="80" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="140" y="1240"/>
-      <p2 x="220" y="1240"/>
     </wire>
     <wire>
       <p1 x="560" y="2520"/>
@@ -3662,16 +3684,20 @@ all other bits are unconnected</string>
       <p2 x="0" y="-220"/>
     </wire>
     <wire>
+      <p1 x="200" y="860"/>
+      <p2 x="240" y="860"/>
+    </wire>
+    <wire>
       <p1 x="1640" y="860"/>
       <p2 x="1660" y="860"/>
     </wire>
     <wire>
-      <p1 x="920" y="860"/>
-      <p2 x="940" y="860"/>
+      <p1 x="720" y="860"/>
+      <p2 x="740" y="860"/>
     </wire>
     <wire>
-      <p1 x="780" y="860"/>
-      <p2 x="800" y="860"/>
+      <p1 x="360" y="1500"/>
+      <p2 x="400" y="1500"/>
     </wire>
     <wire>
       <p1 x="-720" y="220"/>
@@ -3696,10 +3722,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="1360" y="220"/>
       <p2 x="1700" y="220"/>
-    </wire>
-    <wire>
-      <p1 x="280" y="1500"/>
-      <p2 x="300" y="1500"/>
     </wire>
     <wire>
       <p1 x="560" y="2140"/>
@@ -3730,36 +3752,20 @@ all other bits are unconnected</string>
       <p2 x="800" y="2400"/>
     </wire>
     <wire>
-      <p1 x="280" y="1380"/>
-      <p2 x="320" y="1380"/>
+      <p1 x="720" y="1380"/>
+      <p2 x="740" y="1380"/>
     </wire>
     <wire>
-      <p1 x="300" y="740"/>
-      <p2 x="340" y="740"/>
-    </wire>
-    <wire>
-      <p1 x="20" y="740"/>
-      <p2 x="140" y="740"/>
+      <p1 x="360" y="1380"/>
+      <p2 x="440" y="1380"/>
     </wire>
     <wire>
       <p1 x="1520" y="740"/>
       <p2 x="1540" y="740"/>
     </wire>
     <wire>
-      <p1 x="920" y="740"/>
-      <p2 x="940" y="740"/>
-    </wire>
-    <wire>
-      <p1 x="780" y="740"/>
-      <p2 x="800" y="740"/>
-    </wire>
-    <wire>
       <p1 x="1540" y="740"/>
       <p2 x="1680" y="740"/>
-    </wire>
-    <wire>
-      <p1 x="140" y="740"/>
-      <p2 x="180" y="740"/>
     </wire>
     <wire>
       <p1 x="560" y="2020"/>
@@ -3768,6 +3774,22 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="780" y="2020"/>
       <p2 x="800" y="2020"/>
+    </wire>
+    <wire>
+      <p1 x="140" y="1000"/>
+      <p2 x="180" y="1000"/>
+    </wire>
+    <wire>
+      <p1 x="720" y="1000"/>
+      <p2 x="740" y="1000"/>
+    </wire>
+    <wire>
+      <p1 x="860" y="1000"/>
+      <p2 x="880" y="1000"/>
+    </wire>
+    <wire>
+      <p1 x="1500" y="1000"/>
+      <p2 x="1540" y="1000"/>
     </wire>
     <wire>
       <p1 x="280" y="2280"/>
@@ -3798,10 +3820,6 @@ all other bits are unconnected</string>
       <p2 x="700" y="360"/>
     </wire>
     <wire>
-      <p1 x="1500" y="1000"/>
-      <p2 x="1540" y="1000"/>
-    </wire>
-    <wire>
       <p1 x="560" y="2540"/>
       <p2 x="580" y="2540"/>
     </wire>
@@ -3810,36 +3828,24 @@ all other bits are unconnected</string>
       <p2 x="800" y="2540"/>
     </wire>
     <wire>
-      <p1 x="540" y="1260"/>
-      <p2 x="560" y="1260"/>
-    </wire>
-    <wire>
-      <p1 x="280" y="1260"/>
-      <p2 x="360" y="1260"/>
-    </wire>
-    <wire>
       <p1 x="-20" y="-240"/>
       <p2 x="0" y="-240"/>
     </wire>
     <wire>
-      <p1 x="560" y="2160"/>
-      <p2 x="580" y="2160"/>
+      <p1 x="300" y="880"/>
+      <p2 x="340" y="880"/>
     </wire>
     <wire>
-      <p1 x="780" y="2160"/>
-      <p2 x="800" y="2160"/>
+      <p1 x="720" y="880"/>
+      <p2 x="740" y="880"/>
     </wire>
     <wire>
-      <p1 x="780" y="880"/>
-      <p2 x="800" y="880"/>
+      <p1 x="860" y="880"/>
+      <p2 x="880" y="880"/>
     </wire>
     <wire>
-      <p1 x="680" y="240"/>
-      <p2 x="700" y="240"/>
-    </wire>
-    <wire>
-      <p1 x="860" y="240"/>
-      <p2 x="880" y="240"/>
+      <p1 x="280" y="1520"/>
+      <p2 x="300" y="1520"/>
     </wire>
     <wire>
       <p1 x="-260" y="1520"/>
@@ -3858,12 +3864,44 @@ all other bits are unconnected</string>
       <p2 x="-580" y="1520"/>
     </wire>
     <wire>
+      <p1 x="560" y="2160"/>
+      <p2 x="580" y="2160"/>
+    </wire>
+    <wire>
+      <p1 x="780" y="2160"/>
+      <p2 x="800" y="2160"/>
+    </wire>
+    <wire>
+      <p1 x="680" y="240"/>
+      <p2 x="700" y="240"/>
+    </wire>
+    <wire>
+      <p1 x="860" y="240"/>
+      <p2 x="880" y="240"/>
+    </wire>
+    <wire>
       <p1 x="-300" y="500"/>
       <p2 x="-280" y="500"/>
     </wire>
     <wire>
       <p1 x="-20" y="-120"/>
       <p2 x="0" y="-120"/>
+    </wire>
+    <wire>
+      <p1 x="860" y="1400"/>
+      <p2 x="880" y="1400"/>
+    </wire>
+    <wire>
+      <p1 x="720" y="1400"/>
+      <p2 x="740" y="1400"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="1400"/>
+      <p2 x="300" y="1400"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="1400"/>
+      <p2 x="440" y="1400"/>
     </wire>
     <wire>
       <p1 x="560" y="2040"/>
@@ -3882,24 +3920,16 @@ all other bits are unconnected</string>
       <p2 x="800" y="2040"/>
     </wire>
     <wire>
-      <p1 x="200" y="1400"/>
-      <p2 x="220" y="1400"/>
-    </wire>
-    <wire>
-      <p1 x="360" y="760"/>
-      <p2 x="380" y="760"/>
-    </wire>
-    <wire>
-      <p1 x="220" y="760"/>
-      <p2 x="240" y="760"/>
-    </wire>
-    <wire>
-      <p1 x="780" y="760"/>
-      <p2 x="800" y="760"/>
-    </wire>
-    <wire>
       <p1 x="1420" y="760"/>
       <p2 x="1440" y="760"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="1020"/>
+      <p2 x="240" y="1020"/>
+    </wire>
+    <wire>
+      <p1 x="1400" y="1020"/>
+      <p2 x="1420" y="1020"/>
     </wire>
     <wire>
       <p1 x="280" y="2300"/>
@@ -3930,16 +3960,8 @@ all other bits are unconnected</string>
       <p2 x="-520" y="1660"/>
     </wire>
     <wire>
-      <p1 x="1400" y="1020"/>
-      <p2 x="1420" y="1020"/>
-    </wire>
-    <wire>
       <p1 x="960" y="260"/>
       <p2 x="960" y="280"/>
-    </wire>
-    <wire>
-      <p1 x="320" y="1380"/>
-      <p2 x="320" y="1420"/>
     </wire>
     <wire>
       <p1 x="-260" y="280"/>
@@ -3998,16 +4020,16 @@ all other bits are unconnected</string>
       <p2 x="1420" y="840"/>
     </wire>
     <wire>
-      <p1 x="140" y="740"/>
-      <p2 x="140" y="920"/>
+      <p1 x="140" y="840"/>
+      <p2 x="140" y="1000"/>
     </wire>
     <wire>
-      <p1 x="140" y="1240"/>
+      <p1 x="140" y="1300"/>
       <p2 x="140" y="1360"/>
     </wire>
     <wire>
-      <p1 x="140" y="920"/>
-      <p2 x="140" y="960"/>
+      <p1 x="140" y="1000"/>
+      <p2 x="140" y="1080"/>
     </wire>
     <wire>
       <p1 x="460" y="-80"/>
@@ -4030,6 +4052,10 @@ all other bits are unconnected</string>
       <p2 x="-400" y="480"/>
     </wire>
     <wire>
+      <p1 x="400" y="1500"/>
+      <p2 x="400" y="1540"/>
+    </wire>
+    <wire>
       <p1 x="1680" y="720"/>
       <p2 x="1680" y="740"/>
     </wire>
@@ -4046,16 +4072,16 @@ all other bits are unconnected</string>
       <p2 x="-20" y="-120"/>
     </wire>
     <wire>
-      <p1 x="340" y="1180"/>
-      <p2 x="340" y="1240"/>
-    </wire>
-    <wire>
-      <p1 x="340" y="740"/>
-      <p2 x="340" y="760"/>
+      <p1 x="340" y="880"/>
+      <p2 x="340" y="900"/>
     </wire>
     <wire>
       <p1 x="280" y="-80"/>
       <p2 x="280" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="220" y="1360"/>
+      <p2 x="220" y="1480"/>
     </wire>
     <wire>
       <p1 x="-480" y="1580"/>
@@ -4076,6 +4102,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="-420" y="1480"/>
       <p2 x="-420" y="1680"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="1300"/>
+      <p2 x="420" y="1360"/>
     </wire>
     <wire>
       <p1 x="1700" y="220"/>
@@ -4168,10 +4198,6 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="380" y="-80"/>
       <p2 x="380" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="1180"/>
-      <p2 x="60" y="1240"/>
     </wire>
     <wire>
       <p1 x="-320" y="1680"/>
