@@ -3,7 +3,7 @@ using Assembler.Ast;
 namespace Assembler.Assembly.V2;
 
 public class AssemblyContext {
-	private Dictionary<string, SymbolDefinition> m_Symbols = new();
+	private readonly Dictionary<string, SymbolDefinition> m_Symbols = new();
 	
 	public IMacroProvider MacroProvider { get; }
 	public IInstructionConverter InstructionConverter { get; }

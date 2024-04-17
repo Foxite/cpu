@@ -38,12 +38,12 @@ public class ProcAssemblyV2ParserTests {
 				"""
 				# fill RAM cells with their addresses.
 				
-				ldi %b, $0     # B = 0      #      ALU x=0 y=0 op=add write=B   ; 100 0 01 01 00000 010 ; 0x8502
-				next:          # instruction index 1               ;  
-				mov *b, %b     # *B = B     # Ax=B ALU x=B y=0 op=add write=*Ax ; 110 1 00 01 00000 100 ; 0xD104
-				add %b, %b, $1 # B = B + 1  #      ALU x=B y=1 op=add write=B   ; 100 1 00 10 00000 010 ; 0x9202
-				ldi %a, next   # A = next   # data 0x0001
-				jmp %a         # true JMP A #      JMP x=B op=true to=A         ; 10100 0000000 1 111   ; 0xA00F
+				ldi %b,  $0     # B = 0      #      ALU x=0 y=0 op=add write=B   ; 100 0 01 01 00000 010 ; 0x8502
+				next:           # instruction index 1               ;  
+				mov %mb, %b     # *B = B     # Ax=B ALU x=B y=0 op=add write=*Ax ; 110 1 00 01 00000 100 ; 0xD104
+				add %b,  %b, $1 # B = B + 1  #      ALU x=B y=1 op=add write=B   ; 100 1 00 10 00000 010 ; 0x9202
+				ldi %a,  next   # A = next   # data 0x0001
+				jmp %a          # true JMP A #      JMP x=B op=true to=A         ; 10100 0000000 1 111   ; 0xA00F
 				
 				""",
 				new ProgramAst(
@@ -52,7 +52,7 @@ public class ProcAssemblyV2ParserTests {
 						InstructionArgumentAst.Constant(0)
 					)),
 					new ProgramStatementAst("next", new InstructionAst("mov",
-						InstructionArgumentAst.StarRegister("b"),
+						InstructionArgumentAst.Register("mb"),
 						InstructionArgumentAst.Register("b")
 					)),
 					new ProgramStatementAst(null, new InstructionAst("add",
@@ -107,7 +107,7 @@ public class ProcAssemblyV2ParserTests {
 	[Test]
 	[TestCaseSource(nameof(ProgramTestCases))]
 	public void ParseDataWord(string sourceCode, IAssemblyAst expectedResult) {
-		ProgramAst ast = m_Parser.Parse(sourceCode);
+		ProgramAst ast = m_Parser.Parse("main", sourceCode);
 		
 		Assert.That(ast, Is.EqualTo(expectedResult), "Parse result does not match specification");
 	}

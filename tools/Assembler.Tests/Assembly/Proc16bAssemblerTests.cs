@@ -1,6 +1,5 @@
 using Assembler.Assembly;
 using Assembler.Ast;
-using IAT = Assembler.Ast.InstructionArgumentType;
 using IAA = Assembler.Ast.InstructionArgumentAst;
 
 namespace Assembler.Tests; 
@@ -86,9 +85,10 @@ public class Proc16bAssemblerTests {
 			new object[] { new InstructionAst("stb", IAA.Register("d"), IAA.Register("a")), 0b1011_1_011_000_00000u },
 			
 			// misc
-			new object[] { new InstructionAst("nop" ), 0b1110_0000_0000_0000u },
-			new object[] { new InstructionAst("noop"), 0b1110_0000_0000_0000u },
-			new object[] { new InstructionAst("brk" ), 0b1110_0000_0000_0001u },
+			new object[] { new InstructionAst("nop"  ), 0b1110_0000_0000_0000u },
+			new object[] { new InstructionAst("noop" ), 0b1110_0000_0000_0000u },
+			new object[] { new InstructionAst("brk"  ), 0b1110_0000_0000_0001u },
+			new object[] { new InstructionAst("break"), 0b1110_0000_0000_0001u },
 	};
 	
 	[Test]

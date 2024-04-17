@@ -132,6 +132,11 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	}
 
 	private record movInstruction() : Instruction {
+		[Validator]
+		protected InstructionSupport Validate(RegisterAst target, RegisterAst source) {
+			return IsStarRegister(target) && IsStarRegister(source) ? InstructionSupport.ParameterType : InstructionSupport.Supported;
+		}
+		
 		[Converter]
 		protected ushort Convert(RegisterAst target, RegisterAst source) {
 			// lhs = rhs + 0
@@ -173,8 +178,10 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	}
 
 	private record AluInstruction(int Opcode) : Instruction {
-		[Validator] protected InstructionSupport ValidateRegister(RegisterAst target, RegisterAst lhs, RegisterAst rhs) => Validate(target, lhs, rhs);
-		[Validator] protected InstructionSupport ValidateConstant(RegisterAst target, RegisterAst lhs, ConstantAst rhs) => Validate(target, lhs, rhs);
+		[Validator] protected InstructionSupport ValidateRR(RegisterAst target, RegisterAst lhs, RegisterAst rhs) => Validate(target, lhs, rhs);
+		[Validator] protected InstructionSupport ValidateRC(RegisterAst target, RegisterAst lhs, ConstantAst rhs) => Validate(target, lhs, rhs);
+		[Validator] protected InstructionSupport ValidateCR(RegisterAst target, ConstantAst lhs, RegisterAst rhs) => Validate(target, lhs, rhs);
+		[Validator] protected InstructionSupport ValidateCC(RegisterAst target, ConstantAst lhs, ConstantAst rhs) => Validate(target, lhs, rhs);
 		
 		protected InstructionSupport Validate(RegisterAst target, InstructionArgumentAst lhs, InstructionArgumentAst rhs) {
 			if (!OneDistinctStarRegister(out _, target, lhs, rhs)) {
@@ -406,7 +413,13 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	private record JumpInstruction(int CompareMode) : Instruction {
 		[Validator]
 		protected InstructionSupport Validate(RegisterAst target, RegisterAst lhs, ConstantAst rhs) {
-			return target.Value != lhs.Value && rhs.Value == 0 ? InstructionSupport.Supported : InstructionSupport.OtherError;
+			if (IsStarRegister(target) || IsStarRegister(lhs)) {
+				return InstructionSupport.ParameterType;
+			}
+			
+			return target.Value != lhs.Value && rhs.Value == 0
+			     ? InstructionSupport.Supported
+			     : InstructionSupport.OtherError;
 		}
 
 		[Converter]
@@ -433,8 +446,10 @@ public class Proc16aInstructionConverter : InstructionMapInstructionConverter {
 	private record jneInstruction() : JumpInstruction(0b101);
 	private record jleInstruction() : JumpInstruction(0b110);
 	
-	
 	private record jmpInstruction : Instruction {
+		[Validator]
+		protected InstructionSupport Validate(RegisterAst target) => IsStarRegister(target) ? InstructionSupport.ParameterType : InstructionSupport.Supported;
+		
 		[Converter]
 		protected ushort Convert(RegisterAst target) {
 			ushort ret = 0;
