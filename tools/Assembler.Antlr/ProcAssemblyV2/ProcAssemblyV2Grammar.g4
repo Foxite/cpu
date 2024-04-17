@@ -23,6 +23,19 @@ instruction
 instructionArgument
 	: SYMBOL
 	| IMMEDIATE
+	| EXPR_START constantExpression EXPR_END
 	| REGISTER
 	| STRING
 	;
+
+constantExpression
+    : nestedConstantExpression
+    | EXPRSYMBOL
+    | EXPRCONST
+    | unaryExpression=NOT constantExpression
+    | constantExpression binaryExpression=(MULTIPLY | DIVIDE) constantExpression
+    | constantExpression binaryExpression=(ADD | SUBTRACT) constantExpression
+    | constantExpression binaryExpression=(AND | OR | XOR | LSHIFT | RSHIFT) constantExpression
+    ;
+
+nestedConstantExpression : PARENL constantExpression PARENR ;

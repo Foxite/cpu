@@ -3,6 +3,11 @@ using Assembler.Ast;
 namespace Assembler.Assembly.V2;
 
 public record ExecutableInstruction(string File, int Line, string? Label, int Position, InstructionAst InstructionAst) : AssemblyInstruction(File, Line, Label, Position) {
+	/// <summary>
+	/// ONLY USE IN TESTS
+	/// </summary>
+	public ExecutableInstruction(string? label, int position, InstructionAst instructionAst) : this("TEST", -1, label, position, instructionAst) {}
+	
 	public override int GetWordCount(AssemblyContext context) => 1;
 	
 	public override IReadOnlyDictionary<string, InstructionArgumentAst>? GetDefinedSymbols(AssemblyContext context) => null;
@@ -25,4 +30,6 @@ public record ExecutableInstruction(string File, int Line, string? Label, int Po
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) => new[] { outerContext.InstructionConverter.ConvertInstruction(InstructionAst) };
 
 	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] {InstructionAst}";
+
+	public virtual bool Equals(ExecutableInstruction? other) => other != null && Position == other.Position && InstructionAst.Equals(other.InstructionAst);
 }

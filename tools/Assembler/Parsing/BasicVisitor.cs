@@ -53,6 +53,36 @@ public class BasicVisitor : ProcAssemblyV2GrammarBaseVisitor<IAssemblyAst> {
 			return new RegisterAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, registerName);
 		} else if (context.STRING() != null) {
 			return new StringAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, context.STRING().GetText()[1..^1]);
+		} else if (context.constantExpression() != null) {
+			return Visit(context.constantExpression());
+		} else {
+			throw new ParserException("Unable to recognize rule " + context);
+		}
+	}
+
+	public override IAssemblyAst VisitConstantExpression(ProcAssemblyV2Grammar.ConstantExpressionContext context) {
+		if (context.nestedConstantExpression() != null) {
+			return Visit(context.nestedConstantExpression().constantExpression());
+		} else if (context.EXPRSYMBOL() != null) {
+			return new SymbolAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, context.EXPRSYMBOL().GetText());
+		} else if (context.EXPRCONST() != null) {
+			return new ConstantAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, ParseNumber(context.EXPRCONST().GetText()));
+		} else if (context.binaryExpression != null) {
+			return new BinaryOpExpressionAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, (IExpressionElement) Visit(context.constantExpression(0)), context.binaryExpression.Text switch {
+				"+"  => BinaryExpressionOp.Add,
+				"-"  => BinaryExpressionOp.Subtract,
+				"*"  => BinaryExpressionOp.Multiply,
+				"/"  => BinaryExpressionOp.Divide,
+				"<<" => BinaryExpressionOp.LeftShift,
+				">>" => BinaryExpressionOp.RightShift,
+				"&"  => BinaryExpressionOp.And,
+				"|"  => BinaryExpressionOp.Or,
+				"^"  => BinaryExpressionOp.Xor,
+			}, (IExpressionElement) Visit(context.constantExpression(1)));
+		} else if (context.unaryExpression != null) {
+			return new UnaryOpExpressionAst(context.Start.TokenSource.SourceName, context.Start.Line, context.Start.Column, context.unaryExpression.Text switch {
+				"~"  => UnaryExpressionOp.Not,
+			}, (IExpressionElement) Visit(context.constantExpression(0)));
 		} else {
 			throw new ParserException("Unable to recognize rule " + context);
 		}

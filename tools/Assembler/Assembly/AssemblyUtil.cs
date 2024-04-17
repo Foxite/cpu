@@ -68,4 +68,26 @@ public static class AssemblyUtil {
 		arg4 = (T4) result[3];
 		return ret;
 	}
+
+	public static long EvaluateExpression(IExpressionElement expression, Func<string, long> getSymbol) {
+		return expression switch {
+			ConstantAst           constantAst           => constantAst.Value,
+			SymbolAst             symbolAst             => getSymbol(symbolAst.Value),
+			BinaryOpExpressionAst binaryOpExpressionAst => binaryOpExpressionAst.Operator switch {
+				BinaryExpressionOp.Add        => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) +  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.Subtract   => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) -  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.Multiply   => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) *  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.Divide     => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) /  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.LeftShift  => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) << (int) EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.RightShift => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) >> (int) EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.And        => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) &  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.Or         => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) |  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+				BinaryExpressionOp.Xor        => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) ^  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
+			},
+			UnaryOpExpressionAst  unaryOpExpressionAst => unaryOpExpressionAst.Operator switch {
+				UnaryExpressionOp.Not => ~EvaluateExpression(unaryOpExpressionAst.Operand, getSymbol),
+			},
+			_ => throw new ArgumentOutOfRangeException(nameof(expression)),
+		};
+	}
 }
