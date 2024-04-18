@@ -1,0 +1,59 @@
+# Computer design parameters
+.const screenWidth,  $64
+.const screenHeight, $64
+
+.const display,      $0x4000
+.const dev,          $0x6000
+.const devbutton,    [dev + 0]
+.const devframe,     [dev + 1]
+.const devmidi,      [dev + 2]
+
+
+
+# Global variable addresses
+.const leftPaddleY,  $0x10
+.const rightPaddleY, $0x11
+.const ballX,        $0x12
+.const ballY,        $0x13
+.const ballSpeedX,   $0x14
+.const ballSpeedY,   $0x15
+
+
+
+
+mainLoop:
+@call updateInputs, $0
+@call updateGame,   $0
+@call updateScreen, $0
+
+ldc %a, mainLoop
+jump %a
+
+
+
+
+
+updateInputs:
+@function $0
+
+@return
+
+
+
+
+
+updateGame:
+@function $0
+
+@return
+
+
+
+
+
+updateScreen:
+@function $0
+
+
+
+@return
