@@ -47,7 +47,9 @@ public class ProgramAssemblerv2 {
 		}
 
 		void LogIfNecessary(object obj) {
-			Console.WriteLine(new string('\t', context.NestLevel) + obj);
+			if (context.VerboseLogging) {
+				Console.WriteLine(new string('\t', context.NestLevel) + obj);
+			}
 		}
 		
 		LogIfNecessary("{");

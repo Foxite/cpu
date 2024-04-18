@@ -9,18 +9,21 @@ public class AssemblyContext {
 	public IInstructionConverter InstructionConverter { get; }
 	public ProgramAssemblerv2 Assembler { get; }
 	public int OutputOffset { get; }
-	public int NestLevel { get; }
+	public int NestLevel { get; set; } = 0;
+	public bool VerboseLogging { get; set; } = false;
 	
-	public AssemblyContext(IMacroProvider macroProvider, IInstructionConverter instructionConverter, ProgramAssemblerv2 assembler, int outputOffset, int nestLevel) {
+	public AssemblyContext(IMacroProvider macroProvider, IInstructionConverter instructionConverter, ProgramAssemblerv2 assembler, int outputOffset) {
 		MacroProvider = macroProvider;
 		InstructionConverter = instructionConverter;
 		Assembler = assembler;
 		OutputOffset = outputOffset;
-		NestLevel = nestLevel;
 	}
 
 	public AssemblyContext CreateScope(int outputOffset) {
-		var ret = new AssemblyContext(MacroProvider, InstructionConverter, Assembler, outputOffset, NestLevel + 1);
+		var ret = new AssemblyContext(MacroProvider, InstructionConverter, Assembler, outputOffset) {
+			NestLevel = NestLevel + 1,
+			VerboseLogging = VerboseLogging,
+		};
 
 		foreach ((string key, SymbolDefinition value) in m_Symbols) {
 			if (value.Imported) {

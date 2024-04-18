@@ -65,7 +65,7 @@ public class ConstantExpressionTests {
 	public void TestConvertInstruction(string source, AssemblyInstruction[] expectedResult) {
 		var parser = new ProcAssemblyParser();
 		var assembler = new ProgramAssemblerv2();
-		var context = new AssemblyContext(new DictionaryMacroProvider(parser), new Proc16bInstructionConverter(), assembler, 0, 0);
+		var context = new AssemblyContext(new DictionaryMacroProvider(parser), new Proc16bInstructionConverter(), assembler, 0);
 
 		ProgramAst ast = parser.Parse("test", source);
 		var assemblerProgram = new AssemblerProgram("test", "test", ast);
