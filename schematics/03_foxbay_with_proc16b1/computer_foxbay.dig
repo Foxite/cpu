@@ -349,7 +349,7 @@ TODO better address space layout</string>
           <string>bits 15-8 are 0
 
 7 6543210
-UDLRABXY</string>
+UDLRAZSX</string>
         </entry>
       </elementAttributes>
       <pos x="-740" y="1300"/>
@@ -2993,12 +2993,12 @@ all other bits are unconnected</string>
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>map region selector</string>
-        </entry>
-        <entry>
           <string>RectHeight</string>
           <int>25</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>map region selector</string>
         </entry>
         <entry>
           <string>RectWidth</string>
@@ -3011,12 +3011,12 @@ all other bits are unconnected</string>
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>device selector</string>
-        </entry>
-        <entry>
           <string>RectHeight</string>
           <int>22</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>device selector</string>
         </entry>
         <entry>
           <string>RectWidth</string>

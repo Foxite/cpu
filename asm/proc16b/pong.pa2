@@ -1,26 +1,61 @@
 # Computer design parameters
-.const screenWidth,  $64
-.const screenHeight, $64
+.const screenWidth,      $64
+.const screenHeight,     $64
 
-.const display,      $0x4000
-.const dev,          $0x6000
-.const devbutton,    [dev + 0]
-.const devframe,     [dev + 1]
-.const devmidi,      [dev + 2]
+.const display,          $0x4000
+.const displayEnd,       [display + screenWidth * screenHeight]
+.const _dev,             $0x6000
+.const devbutton,        [_dev + 0]
+.const devframe,         [_dev + 1]
+.const devmidi,          [_dev + 2]
 
+
+.const colorBlack,       $0
+.const colorWhite,       $1
+.const colorOrange,      $8
+.const colorPink,        $9
+#.const colorLightblue,   todo
+
+
+# button masks
+.const buttonLeftUp,     $0x7  # up arrow
+.const buttonLeftDown,   $0x6  # down arrow
+.const buttonRightUp,    $0x3  # top face
+.const buttonRightDown,  $0x0  # bottom face
+
+
+# Program parameters
+.const paddleHeight,     $8
+.const paddlePadding,    $8
+.const paddleLeftX,      paddlePadding
+.const colorBackground,  colorBlack
+.const colorPaddleLeft,  colorOrange
+.const colorPaddleRight, colorPink
+.const colorBall,        colorWhite
+
+.const paddleRightX,     [screenWidth - paddlePadding]
+.const paddleMaxY,       [screenHeight - paddleHeight]
+
+
+# misc constants
+.const nilPushValue,     $0xFFE
 
 
 # Global variable addresses
-.const leftPaddleY,  $0x10
-.const rightPaddleY, $0x11
-.const ballX,        $0x12
-.const ballY,        $0x13
-.const ballSpeedX,   $0x14
-.const ballSpeedY,   $0x15
+.const paddleLeftY,      $0x10
+.const paddleRightY,     $0x11
+.const ballX,            $0x12
+.const ballY,            $0x13
+.const ballSpeedX,       $0x14
+.const ballSpeedY,       $0x15
+
+.const inputLeftDir,     $0x16
+.const inputRightDir,    $0x17
 
 
 
 
+# --------------------------------------
 mainLoop:
 @call updateInputs, $0
 @call updateGame,   $0
@@ -32,28 +67,124 @@ jump %a
 
 
 
-
+# --------------------------------------
+# args: none
 updateInputs:
 @function $0
 
+
+
+@push_value nilPushValue
 @return
 
 
 
 
-
+# --------------------------------------
+# args: none
 updateGame:
 @function $0
 
+@push_value nilPushValue
 @return
 
 
 
 
-
+# --------------------------------------
+# TODO test
+# args: none
 updateScreen:
 @function $0
 
+@call clearScreen, $0
+
+@push_const paddleLeftX
+@push_mem_a paddleLeftY
+@call drawPaddle, $2
+
+@push_const paddleRightX
+@push_mem_a paddleRightY
+@call drawPaddle, $2
+
+@push_mem_a ballX
+@push_mem_a ballY
+@call drawBall, $2
 
 
+# TODO draw score
+# TODO draw midline
+
+
+@push_value nilPushValue
+@return
+
+
+
+
+# --------------------------------------
+# TODO test
+clearScreen:
+@function $0
+
+# %a = display
+# do {
+#   *a = colorBackground;
+#   %a = %a + 1;
+# } while (%a <= displayEnd);
+
+ldc %a, display
+ldc %b, displayEnd
+ldc %c, colorBackground
+# %d will be used for both $1 and the jump label
+
+clearScreen_loop1:
+stb %a, $c
+
+ldc %d, $1
+add %a, %a, %d
+
+ldc %d, clearScreen_loop1
+jle %d, %a, %b
+
+@push_value nilPushValue
+@return
+
+
+
+
+# --------------------------------------
+# args: X coordinate, Y coordinate of paddle top
+drawPaddle:
+@function $0
+
+# TODO
+
+@push_value nilPushValue
+@return
+
+
+
+
+# --------------------------------------
+# TODO test
+# args: X coordinate, Y coordinate
+drawBall:
+@function $0
+
+# %a = display + screenWidth * Y + X
+@push_arg $0
+@push_const display
+@push_const screenWidth
+@push_arg $1
+@mul
+@add
+@add
+@pop_reg %a
+
+ldc %b, colorBall
+
+stb %a, %b
+
+@push_value nilPushValue
 @return

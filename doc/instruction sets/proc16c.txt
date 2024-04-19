@@ -1,0 +1,4 @@
+Proc16c will be done in the future.
+
+proc16c:
+- ALU operations with constants for rhs
