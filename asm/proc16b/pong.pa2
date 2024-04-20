@@ -8,6 +8,7 @@
 .const devbutton,        [_dev + 0]
 .const devframe,         [_dev + 1]
 .const devmidi,          [_dev + 2]
+.const highZaddress,     $0xFFFF
 
 
 .const colorBlack,       $0
@@ -18,10 +19,10 @@
 
 
 # button masks
-.const buttonLeftUp,     $0x7  # up arrow
-.const buttonLeftDown,   $0x6  # down arrow
-.const buttonRightUp,    $0x3  # top face
-.const buttonRightDown,  $0x0  # bottom face
+.const buttonLeftUp,     [1 << 7]  # up arrow
+.const buttonLeftDown,   [1 << 6]  # down arrow
+.const buttonRightUp,    [1 << 3]  # top face
+.const buttonRightDown,  [1 << 0]  # bottom face
 
 
 # Program parameters
@@ -31,14 +32,9 @@
 .const colorBackground,  colorBlack
 .const colorPaddleLeft,  colorOrange
 .const colorPaddleRight, colorPink
-.const colorBall,        colorWhite
 
 .const paddleRightX,     [screenWidth - paddlePadding]
 .const paddleMaxY,       [screenHeight - paddleHeight]
-
-
-# misc constants
-.const nilPushValue,     $0xFFE
 
 
 # Global variable addresses
@@ -48,21 +44,102 @@
 .const ballY,            $0x13
 .const ballSpeedX,       $0x14
 .const ballSpeedY,       $0x15
+.const ballColor,        $0x16
 
-.const inputLeftDir,     $0x16
-.const inputRightDir,    $0x17
+.const scoreLeft,        $0x17
+.const scoreRight,       $0x18
+
+.const inputLeftDir,     $0x19
+.const inputRightDir,    $0x20
 
 
 
 
 # --------------------------------------
+@init_stack
+
+brk
+
+@call resetBall, $0
+
+brk
+
+ldc %b, [(screenHeight - paddlePadding) / 2]
+ldc %a, paddleLeftY
+stb %a, %b
+ldc %a, paddleRightY
+stb %a, %b
+
+
+
+
+
 mainLoop:
 @call updateInputs, $0
 @call updateGame,   $0
 @call updateScreen, $0
 
-ldc %a, mainLoop
+@ldc %a, mainLoop
 jump %a
+
+
+
+
+# --------------------------------------
+resetBall:
+@function $0
+
+ldc %a, ballColor
+ldc %b, colorWhite
+stb %a, %b
+
+ldc %a, ballX
+ldc %b, [screenWidth / 2]
+stb %a, %b
+
+ldc %a, ballY
+ldc %b, [screenHeight / 2]
+stb %a, %b
+
+# use high-Z memory address to determine paddle direction.
+# X speed = bit 0
+# Y speed = bit 1
+# 0 => speed = -1
+# 1 => speed = 1
+@ldc %a, highZaddress
+ldb %a, %a
+
+
+# (highZ & 0b01) * 2 - 1:
+#   bit0(highZ) == 0 => -1
+#   bit0(highZ) == 1 =>  1
+ldc %b, $0b01
+and %a, %a, %c
+
+ldc %b, $2
+mul %a, %a, %b
+
+ldc %b, $1
+sub %a, %a, %b
+
+ldc %b, ballSpeedX
+stb %b, %a
+
+
+# same for ballSpeedY (but use bit 1 instead of bit 0)
+ldc %b, $0b10
+and %a, %a, %c
+
+ldc %b, $2
+mul %a, %a, %b
+
+ldc %b, $1
+sub %a, %a, %b
+
+ldc %b, ballSpeedY
+stb %b, %a
+
+@return
 
 
 
@@ -72,9 +149,71 @@ jump %a
 updateInputs:
 @function $0
 
+# TODO we are using buttons to move the paddles up and down. What do you think of using a rotary encoder to determine its position? Like one of those truly old pong machines. It might even be simpler to code.
+
+# TODO read button device and set inputLeftDir and inputRightDir.
+# -1 => paddle moving UP (Y--)
+#  0 => paddle staying still
+#  1 => paddle moving DOWN (Y++)
+
+ldc %b, $0
+ldc %a, inputLeftDir
+stb %a, %b
+ldc %a, inputRightDir
+stb %a, %b
+
+# Highly simplified alternative to properly reading the buttons.
+@ldc %a, devbutton
+ldb %a, %a
+
+ldc %d, updateInputs_return
+
+ldc %b, buttonLeftUp
+ldc %c, updateInputs_leftUp
+jeq %b, %a, %c
+
+ldc %b, buttonLeftDown
+ldc %c, updateInputs_leftDown
+jeq %b, %a, %c
+
+ldc %b, buttonRightUp
+ldc %c, updateInputs_rightUp
+jeq %b, %a, %c
+
+ldc %b, buttonRightDown
+ldc %c, updateInputs_rightDown
+jeq %b, %a, %c
+
+ldc %a, updateInputs_return
+jmp %a
 
 
-@push_value nilPushValue
+updateInputs_leftUp:
+ldc %a, inputLeftDir
+@ldc %b, [0 - 1]
+stb %a, %b
+jmp %d
+
+updateInputs_leftDown:
+ldc %a, inputLeftDir
+@ldc %b, $1
+stb %a, %b
+jmp %d
+
+updateInputs_rightUp:
+ldc %a, inputRightDir
+@ldc %b, [0 - 1]
+stb %a, %b
+jmp %d
+
+updateInputs_rightDown:
+ldc %a, inputRightDir
+@ldc %b, $1
+stb %a, %b
+jmp %d
+
+
+updateInputs_return:
 @return
 
 
@@ -85,7 +224,29 @@ updateInputs:
 updateGame:
 @function $0
 
-@push_value nilPushValue
+# Move paddles according to inputLeftDir and inputRightDir
+@push_mem paddleLeftY
+@push_mem inputLeftDir
+@add
+@pop_mem_v paddleLeftY
+
+@push_mem paddleRightY
+@push_mem inputRightDir
+@add
+@pop_mem_v paddleRightY
+
+
+# TODO: move ball according to ballSpeedX and ballSpeedY
+
+# TODO: collide ball with paddles. On collision, invert X speed and set ballColor to the color of the paddle it hit.
+# TODO: collide ball with top/bottom walls. Invert Y speed.
+# TODO: collide ball with left/right walls. Call resetBall, and increment score.
+
+
+# WISHLIST FEATURE: need a clock device that we can use the move objects at a consistent speed.
+# It doesn't necessarily have to count seconds "outside the simulator", but it at least needs to count clock ticks independently of the CPU.
+# But until this is implemented, we can get away with tying the object speed to the clock speed, as the program's main loop *should* run in constant time, so we can just set the clock speed to directly determine the object speed.
+
 @return
 
 
@@ -101,22 +262,24 @@ updateScreen:
 
 @push_const paddleLeftX
 @push_mem_a paddleLeftY
-@call drawPaddle, $2
+@push_const colorPaddleLeft
+@call drawPaddle, $3
 
 @push_const paddleRightX
 @push_mem_a paddleRightY
-@call drawPaddle, $2
+@push_const colorPaddleRight
+@call drawPaddle, $3
 
 @push_mem_a ballX
 @push_mem_a ballY
-@call drawBall, $2
+@push_mem ballColor
+@call drawBall, $3
 
 
 # TODO draw score
 # TODO draw midline
 
 
-@push_value nilPushValue
 @return
 
 
@@ -133,13 +296,14 @@ clearScreen:
 #   %a = %a + 1;
 # } while (%a <= displayEnd);
 
-ldc %a, display
-ldc %b, displayEnd
+@ldc %a, display
+@ldc %b, displayEnd
 ldc %c, colorBackground
 # %d will be used for both $1 and the jump label
 
 clearScreen_loop1:
-stb %a, $c
+
+stb %a, %c
 
 ldc %d, $1
 add %a, %a, %d
@@ -147,20 +311,6 @@ add %a, %a, %d
 ldc %d, clearScreen_loop1
 jle %d, %a, %b
 
-@push_value nilPushValue
-@return
-
-
-
-
-# --------------------------------------
-# args: X coordinate, Y coordinate of paddle top
-drawPaddle:
-@function $0
-
-# TODO
-
-@push_value nilPushValue
 @return
 
 
@@ -168,7 +318,79 @@ drawPaddle:
 
 # --------------------------------------
 # TODO test
-# args: X coordinate, Y coordinate
+# args: X coordinate, Y coordinate of paddle top, color
+drawPaddle:
+@function $0
+
+@push_arg $0
+@push_arg $1
+@push_const paddleHeight
+@push_const $2
+
+@return
+
+
+
+
+# --------------------------------------
+# TODO test
+# args: X coordinate, Y coordinate of top, length in pixels, color
+drawVerticalLine:
+@function $2
+
+# pixel* position = display + y * screenWidth + x
+@push_arg $0
+@push_const display
+@push_arg $1
+@push_const screenWidth
+@mul
+@add
+@pop_local $0
+
+# endPosition = position + length * screenWidth
+@push_local $0
+@push_arg $2
+@push_const screenWidth
+@mul
+@add
+@pop_local $1
+
+# do {
+#   *position = color;
+#   position = position + screenWidth;
+# } while (position < endPosition);
+
+# position    = local 0
+# endPosition = local 1
+# color       = arg 2
+# screenWidth = constant
+
+drawVerticalLine_loop1:
+@push_arg $2
+@push_local $0
+@pop_mem_av
+
+@push_local $0
+@push_const screenWidth
+@add
+@pop_local $0
+
+@push_local $0
+@push_local $1
+
+@pop_reg %d # %d = endPosition
+@pop_reg %c # %c = position
+ldc %b, drawVerticalLine_loop1
+jlt %b, %c, %d
+
+@return
+
+
+
+
+# --------------------------------------
+# TODO test
+# args: X coordinate, Y coordinate, color
 drawBall:
 @function $0
 
@@ -180,11 +402,9 @@ drawBall:
 @mul
 @add
 @add
-@pop_reg %a
 
-ldc %b, colorBall
+@push_arg $2
 
-stb %a, %b
+@pop_mem_av
 
-@push_value nilPushValue
 @return

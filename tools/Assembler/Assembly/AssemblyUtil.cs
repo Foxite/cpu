@@ -69,10 +69,10 @@ public static class AssemblyUtil {
 		return ret;
 	}
 
-	public static long EvaluateExpression(IExpressionElement expression, Func<string, long> getSymbol) {
+	public static long EvaluateExpression(IExpressionElement expression, Func<string, IExpressionElement> getSymbol) {
 		return expression switch {
 			ConstantAst           constantAst           => constantAst.Value,
-			SymbolAst             symbolAst             => getSymbol(symbolAst.Value),
+			SymbolAst             symbolAst             => EvaluateExpression(getSymbol(symbolAst.Value), getSymbol),
 			BinaryOpExpressionAst binaryOpExpressionAst => binaryOpExpressionAst.Operator switch {
 				BinaryExpressionOp.Add        => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) +  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),
 				BinaryExpressionOp.Subtract   => EvaluateExpression(binaryOpExpressionAst.Left, getSymbol) -  EvaluateExpression(binaryOpExpressionAst.Right, getSymbol),

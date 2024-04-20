@@ -53,8 +53,17 @@ public class AssemblyContext {
 	public InstructionArgumentAst GetSymbolValue(string name, AssemblyInstruction instruction) {
 		InstructionArgumentAst ret = GetSymbol(name, instruction).Value;
 
-		while (ret is SymbolAst symbolAst) {
-			ret = GetSymbol(symbolAst.Value, instruction).Value;
+		while (ret is SymbolAst or ExpressionAst) {
+			if (ret is SymbolAst symbolAst) {
+				ret = GetSymbol(symbolAst.Value, instruction).Value;
+			} else if (ret is ExpressionAst expressionAst) {
+				ret = new ConstantAst(
+					expressionAst.File,
+					expressionAst.LineNumber,
+					expressionAst.Column,
+					AssemblyUtil.EvaluateExpression(expressionAst, innerName => (IExpressionElement) GetSymbolValue(innerName, instruction))
+				);
+			}
 		}
 
 		return ret;

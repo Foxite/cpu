@@ -9,6 +9,6 @@
 # store constant in **STACK_PTR
 # increment *STACK_PTR
 
-ldc %b, constantToPush
+@ldc %b, constantToPush
 
 @push_reg %b

@@ -8,5 +8,5 @@
 
 @pop_reg val
 
-ldc %b, addr
+@ldc %b, addr
 stb %b, val

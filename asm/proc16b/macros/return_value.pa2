@@ -1,0 +1,6 @@
+# return from a function body.
+
+# pop the return value and write it to FUNC_RETV.
+@pop_mem_v FUNC_RETV
+
+@return

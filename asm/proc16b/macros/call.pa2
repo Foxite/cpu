@@ -29,7 +29,7 @@
 @sub
 @pop_mem_v  FUNC_ARGS
 
-ldc %a, functionLabel
+@ldc %a, functionLabel
 jmp %a
 
 

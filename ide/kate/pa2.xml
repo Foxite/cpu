@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language
+[
+	<!ENTITY symbol "[A-Za-z_][A-Za-z_0-9]*">
+]>
+<language name="ProcAssembly v2" version="1" kateversion="5.79" section="Assembler" extensions="*.pa2" mimetype="text/procassemblyv2" license="MIT" author="Foxite">
+	<highlighting>
+		<contexts>
+			<context lineEndContext="#stay" name="LineStart">
+				<DetectChar attribute="Comment" context="Comment" char="#" />
+				<RegExpr attribute="Label" context="#stay" String="^\s&symbol;\:" />
+
+				<RegExpr attribute="Command"     context="Arguments" String="(^|\s|:)\.&symbol;" />
+				<RegExpr attribute="Macro"       context="Arguments" String="(^|\s|:)@&symbol;" />
+				<RegExpr attribute="Instruction" context="Arguments" String="(^|\s|:)&symbol;" />
+
+				<RegExpr attribute="Error"    context="#stay" String="\S" />
+			</context>
+
+			<context lineEndContext="LineStart" name="Arguments">
+				<DetectChar attribute="Comment"  context="Comment" char="#" />
+				<RegExpr    attribute="Symbol"   context="#stay" String="&symbol;" />
+				<RegExpr    attribute="Register" context="#stay" String="%&symbol;" />
+				<RegExpr    attribute="Hex"      context="#stay" String="\$0x[A-Fa-f0-9][A-Fa-f0-9_]*"/>
+				<RegExpr    attribute="Binary"   context="#stay" String="\$0b[01][01_]*"/>
+				<RegExpr    attribute="Decimal"  context="#stay" String="\$[0-9][0-9_]*"/>
+
+				<RegExpr    attribute="Error"    context="#stay" String="\%\d\S"/>
+				<RegExpr    attribute="Error"    context="#stay" String="\$\S+"/>
+				<RegExpr    attribute="Error"    context="#stay" String="0x[A-Fa-f0-9_]+"/>
+				<RegExpr    attribute="Error"    context="#stay" String="0b[01_]+"/>
+				<RegExpr    attribute="Error"    context="#stay" String="[0-9_]+"/>
+
+				<DetectChar attribute="String"   context="String" char="&quot;"/>
+
+				<DetectChar attribute="Bracket"  context="Expression" char="["/>
+			</context>
+
+			<context lineEndContext="#pop" name="Expression">
+				<DetectChar attribute="Error" context="Comment" char="#" />
+				<RegExpr attribute="Symbol"   context="#stay" String="&symbol;"/>
+				<RegExpr attribute="Hex"      context="#stay" String="0x[A-Fa-f0-9][A-Fa-f0-9_]*"/>
+				<RegExpr attribute="Binary"   context="#stay" String="0b[01][01_]*"/>
+				<RegExpr attribute="Decimal"  context="#stay" String="[0-9][0-9_]*"/>
+
+				<AnyChar attribute="Operator" context="#stay" String="+-*/()&amp;|^"/>
+				<String  attribute="Operator" context="#stay" String="&gt;&gt;"/>
+				<String  attribute="Operator" context="#stay" String="&lt;&lt;"/>
+
+				<DetectChar attribute="Bracket" context="#pop" char="]"/>
+
+				<RegExpr attribute="Error"    context="#stay" String="\S" />
+			</context>
+
+			<context lineEndContext="#pop" name="String">
+				<DetectChar context="StringEscapedChar" char="\" lookAhead="1"/>
+				<DetectChar attribute="String" context="#pop" char="&quot;"/>
+			</context>
+
+			<context attribute="Comment" lineEndContext="#pop" name="Comment">
+				<IncludeRules context="##Comments"/>
+			</context>
+		</contexts>
+
+		<itemDatas>
+			<itemData name="Label"        defStyleNum="dsNormal"/>
+			<itemData name="Instruction"  defStyleNum="dsFunction"     bold="1"/>
+			<itemData name="Command"      defStyleNum="dsControlFlow"  bold="1"/>
+			<itemData name="Macro"        defStyleNum="dsPreprocessor" bold="1"/>
+			<itemData name="Symbol"       defStyleNum="dsVariable"/>
+			<itemData name="Decimal"      defStyleNum="dsDecVal"/>
+			<itemData name="Binary"       defStyleNum="dsBaseN"/>
+			<itemData name="Hex"          defStyleNum="dsBaseN"/>
+			<itemData name="String"       defStyleNum="dsString"/>
+			<itemData name="Register"     defStyleNum="dsVariable"/>
+			<itemData name="Comment"      defStyleNum="dsComment"/>
+			<itemData name="Operator"     defStyleNum="dsOperator"/>
+			<itemData name="Bracket"      defStyleNum="dsOperator"/>
+			<itemData name="Error"        defStyleNum="dsError"/>
+		</itemDatas>
+	</highlighting>
+	<general>
+		<comments>
+			<comment name="singleLine" start="#"/>
+		</comments>
+		<keywords casesensitive="1"/>
+	</general>
+</language>

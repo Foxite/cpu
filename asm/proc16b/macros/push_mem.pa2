@@ -6,7 +6,7 @@
 .reg addr,   %b
 .reg value,  %b
 
-ldc addr, macro0
+@ldc addr, macro0
 ldb addr, value
 
 @push_reg value

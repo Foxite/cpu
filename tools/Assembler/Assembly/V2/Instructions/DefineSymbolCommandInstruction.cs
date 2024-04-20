@@ -20,7 +20,7 @@ public record DefineSymbolCommandInstruction(string File, int Line, string? Labe
 		return this with {
 			Value = Value switch {
 				SymbolAst valueSymbol    => context.GetSymbolValue(valueSymbol.Value, this),
-				ExpressionAst expression => new ConstantAst(Value.File, Value.LineNumber, Value.Column, AssemblyUtil.EvaluateExpression(expression, symbol => ((ConstantAst) context.GetSymbolValue(symbol, this)).Value)),
+				ExpressionAst expression => new ConstantAst(Value.File, Value.LineNumber, Value.Column, AssemblyUtil.EvaluateExpression(expression, symbol => (IExpressionElement) context.GetSymbolValue(symbol, this))),
 				_                        => Value,
 			},
 		};

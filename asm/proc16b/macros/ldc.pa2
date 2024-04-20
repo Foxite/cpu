@@ -1,0 +1,8 @@
+.reg   writeReg, macro0
+.const const,    macro1
+
+ldc %a, [const >> 12]
+ldc %b, $12
+shl %a, %a, %b
+ldc %b, [const & 0xFFF]
+or writeReg, %a, %b

@@ -16,7 +16,7 @@
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>20</int>
+          <int>1000</int>
         </entry>
       </elementAttributes>
       <pos x="-720" y="280"/>
@@ -108,7 +108,7 @@
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/dev/cpu/asm/proc16b/functiontest.out</file>
+          <file>/home/foxite/dev/cpu/asm/proc16b/pong.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
