@@ -4,7 +4,7 @@
 .reg rhs, %d
 .reg result, %d
 
-@pop_reg lhs
 @pop_reg rhs
+@pop_reg lhs
 mul result, lhs, rhs
 @push_reg result

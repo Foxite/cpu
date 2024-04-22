@@ -7,4 +7,3 @@ stb %a, %b
 @pop_reg %d
 
 jump %d
- 

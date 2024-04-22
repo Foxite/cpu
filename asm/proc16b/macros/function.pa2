@@ -18,16 +18,15 @@
 
 .const loccount, macro0
 
-.reg stackptrptr, %a
-.reg stackptr,    %b
-
 # *FUNC_LOCS = *STACK_PTR
-ldc stackptrptr, STACK_PTR
-ldb stackptrptr, stackptr
-ldc %c, FUNC_LOCS
-stb %c, stackptr
+ldc %a, STACK_PTR
+ldb %a, %a
+ldc %b, FUNC_LOCS
+stb %b, %a
 
 # *STACK_PTR = *STACK_PTR + loccount
+ldc %a, STACK_PTR
+ldb %a, %b
 ldc %c, loccount
-add stackptr, stackptr, %c
-stb stackptrptr, stackptr
+add %b, %b, %c
+stb %a, %b

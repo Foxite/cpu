@@ -1,0 +1,4 @@
+@pop_reg %d
+@pop_reg %c
+ceq %b, %c, %d
+@push_reg %b

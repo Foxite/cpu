@@ -3378,6 +3378,21 @@ all other bits are unconnected</string>
       </elementAttributes>
       <pos x="1660" y="980"/>
     </visualElement>
+    <visualElement>
+      <elementName>RS_FF_AS</elementName>
+      <elementAttributes/>
+      <pos x="-200" y="1640"/>
+    </visualElement>
+    <visualElement>
+      <elementName>LED</elementName>
+      <elementAttributes/>
+      <pos x="-80" y="1640"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Ground</elementName>
+      <elementAttributes/>
+      <pos x="-220" y="1700"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>
@@ -3893,6 +3908,14 @@ all other bits are unconnected</string>
       <p2 x="-500" y="1640"/>
     </wire>
     <wire>
+      <p1 x="-320" y="1640"/>
+      <p2 x="-200" y="1640"/>
+    </wire>
+    <wire>
+      <p1 x="-140" y="1640"/>
+      <p2 x="-80" y="1640"/>
+    </wire>
+    <wire>
       <p1 x="-720" y="360"/>
       <p2 x="-700" y="360"/>
     </wire>
@@ -3991,6 +4014,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="-540" y="1660"/>
       <p2 x="-520" y="1660"/>
+    </wire>
+    <wire>
+      <p1 x="-220" y="1660"/>
+      <p2 x="-200" y="1660"/>
     </wire>
     <wire>
       <p1 x="420" y="-640"/>
@@ -4717,6 +4744,10 @@ all other bits are unconnected</string>
       <p2 x="1720" y="960"/>
     </wire>
     <wire>
+      <p1 x="-320" y="1640"/>
+      <p2 x="-320" y="1680"/>
+    </wire>
+    <wire>
       <p1 x="-320" y="1680"/>
       <p2 x="-320" y="1700"/>
     </wire>
@@ -4783,6 +4814,10 @@ all other bits are unconnected</string>
     <wire>
       <p1 x="1620" y="-380"/>
       <p2 x="1620" y="-300"/>
+    </wire>
+    <wire>
+      <p1 x="-220" y="1660"/>
+      <p2 x="-220" y="1700"/>
     </wire>
     <wire>
       <p1 x="220" y="1360"/>

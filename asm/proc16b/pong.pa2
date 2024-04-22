@@ -142,81 +142,61 @@ stb %b, %a
 
 
 # --------------------------------------
+# read button device and set inputLeftDir and inputRightDir.
+# -1 => paddle moving UP (Y--)
+#  0 => paddle staying still
+#  1 => paddle moving DOWN (Y++)
 # args: none
 updateInputs:
 @function $0
 
 # TODO we are using buttons to move the paddles up and down. What do you think of using a rotary encoder to determine its position? Like one of those truly old pong machines. It might even be simpler to code.
 
-# TODO read button device and set inputLeftDir and inputRightDir.
-# -1 => paddle moving UP (Y--)
-#  0 => paddle staying still
-#  1 => paddle moving DOWN (Y++)
 
-ldc %b, $0
-ldc %a, inputLeftDir
-stb %a, %b
-ldc %a, inputRightDir
-stb %a, %b
+# inputLeftDir = readButton(state, buttonLeftDown) - readButton(state, buttonLeftUp)
+@push_const buttonLeftUp
+@call_value readButton, $1
 
-# Highly simplified alternative to properly reading the buttons.
-@ldc %a, devbutton
-ldb %a, %a
+@push_const buttonLeftDown
+@call_value readButton, $1
 
-ldc %d, updateInputs_return
+@sub
+@pop_mem_v inputLeftDir
 
-ldc %b, buttonLeftUp
-ldc %c, updateInputs_leftUp
-jeq %c, %a, %b
+# same but for right
+@push_const buttonRightUp
+@call_value readButton, $1
 
-ldc %b, buttonLeftDown
-ldc %c, updateInputs_leftDown
-jeq %c, %a, %b
+@push_const buttonRightDown
+@call_value readButton, $1
 
-ldc %b, buttonRightUp
-ldc %c, updateInputs_rightUp
-jeq %c, %a, %b
-
-ldc %b, buttonRightDown
-ldc %c, updateInputs_rightDown
-jeq %c, %a, %b
-
-jmp %d
+@sub
+@pop_mem_v inputRightDir
 
 
-updateInputs_leftUp:
-ldc %c, inputLeftDir
-#@ldc %b, [0 - 1]
-ldc %a, $0
-ldc %b, $1
-sub %b, %a, %b
-stb %c, %b
-jmp %d
-
-updateInputs_leftDown:
-ldc %c, inputLeftDir
-ldc %b, $1
-stb %c, %b
-jmp %d
-
-updateInputs_rightUp:
-ldc %c, inputRightDir
-#@ldc %b, [0 - 1]
-ldc %a, $0
-ldc %b, $1
-sub %b, %a, %b
-stb %c, %b
-jmp %d
-
-updateInputs_rightDown:
-ldc %c, inputRightDir
-ldc %b, $1
-stb %c, %b
-jmp %d
-
-
-updateInputs_return:
 @return
+
+
+
+
+# --------------------------------------
+# args: mask
+# returns: 0x0 or 0x1
+readButton:
+@function $0
+
+# return ((state & mask) > 0) & 1
+# where something > something returns 0x0000 or 0xFFFF
+
+@push_mem devbutton
+@push_arg $0
+@and
+@push_const $0
+@gt
+@push_const $1
+@and
+
+@return_value
 
 
 
@@ -399,7 +379,7 @@ drawVerticalLine_loop1:
 
 @pop_reg %d # %d = endPosition
 @pop_reg %c # %c = position
-ldc %b, drawVerticalLine_loop1
+@ldc %b, drawVerticalLine_loop1
 jlt %b, %c, %d
 
 @return

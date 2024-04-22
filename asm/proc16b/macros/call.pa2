@@ -44,6 +44,6 @@ ldb %d, %d
 @pop_mem_v FUNC_ARGS
 
 ldc %c, STACK_PTR
-ldb %c, %d
+stb %c, %d
 
 # doñe
