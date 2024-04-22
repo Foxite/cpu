@@ -33,4 +33,6 @@ public record DefineSymbolCommandInstruction(string File, int Line, string? Labe
 	public virtual bool Equals(DefineSymbolCommandInstruction? other) => other != null && Position == other.Position && Name == other.Name && Value.Equals(other.Value);
 
 	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] .define {Name}, {Value}";
+	
+	public override string ToShortString() => $".define {Name} {Value}";
 }

@@ -1,10 +1,8 @@
-# pop right-hand, pop left-hand, NOT them, and push the result.
+# pop a value, NOT it, and push the result.
 
-.reg lhs, %c
-.reg rhs, %d
+.reg operand, %c
 .reg result, %d
 
-@pop_reg lhs
-@pop_reg rhs
-not result, lhs, rhs
+@pop_reg operand
+not result, operand
 @push_reg result

@@ -15,7 +15,7 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 		
 		AddInstruction("and",   new aluInstruction(0b10000));
 		AddInstruction("or",    new aluInstruction(0b10001));
-		AddInstruction("not",   new aluInstruction(0b10010));
+		AddInstruction("not",   new unaryAluInstruction(0b10010));
 		// didn't miss one
 		AddInstruction("xor",   new aluInstruction(0b10100));
 		AddInstruction("xnor",  new aluInstruction(0b10101));
@@ -96,6 +96,21 @@ public class Proc16bInstructionConverter : InstructionMapInstructionConverter {
 			
 			ret |= (ushort) (RegisterToBits(lhs) << 12);
 			ret |= (ushort) (RegisterToBits(rhs) << 10);
+			ret |= (ushort) (RegisterToBits(target) << 8);
+			ret |= (ushort) (Opcode << 3);
+
+			return ret;
+		}
+	}
+
+	private record unaryAluInstruction(ushort Opcode) : Instruction {
+		[Converter]
+		protected ushort Convert(RegisterAst target, RegisterAst operand) {
+			ushort ret = 0;
+			SetInstructionBit(ref ret, 15, false);
+			SetInstructionBit(ref ret, 14, true);
+			
+			ret |= (ushort) (RegisterToBits(operand) << 12);
 			ret |= (ushort) (RegisterToBits(target) << 8);
 			ret |= (ushort) (Opcode << 3);
 

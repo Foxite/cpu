@@ -1,20 +1,10 @@
-.reg restoreRegister,      %c
-.reg returnInstructionPtr, %d
+# *STACK_PTR = *FUNC_LOCS
+ldc %b, FUNC_LOCS
+ldb %b, %b
+ldc %a, STACK_PTR
+stb %a, %b
 
+@pop_reg %d
 
-@pop_reg returnInstructionPtr
-
-# restore FUNC_LOCS
-@pop_mem_v FUNC_ARGS
-#@pop_reg restoreRegister
-#ldc %a, FUNC_LOCS
-#stb %a, restoreRegister
-
-# restore FUNC_ARGS
-@pop_mem_v FUNC_ARGS
-#@pop_reg restoreRegister
-#ldc %a, FUNC_ARGS
-#stb %a, restoreRegister
-
-jump returnInstructionPtr
+jump %d
  

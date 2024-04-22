@@ -10,8 +10,9 @@ public class AssemblyContext {
 	public ProgramAssemblerv2 Assembler { get; }
 	public int OutputOffset { get; }
 	public int NestLevel { get; set; } = 0;
-	public bool VerboseLogging { get; set; } = false;
-	
+	public bool TraceLogging { get; set; } = false;
+	public bool OutputLineMapping { get; set; } = false;
+
 	public AssemblyContext(IMacroProvider macroProvider, IInstructionConverter instructionConverter, ProgramAssemblerv2 assembler, int outputOffset) {
 		MacroProvider = macroProvider;
 		InstructionConverter = instructionConverter;
@@ -22,7 +23,8 @@ public class AssemblyContext {
 	public AssemblyContext CreateScope(int outputOffset) {
 		var ret = new AssemblyContext(MacroProvider, InstructionConverter, Assembler, outputOffset) {
 			NestLevel = NestLevel + 1,
-			VerboseLogging = VerboseLogging,
+			TraceLogging = TraceLogging,
+			OutputLineMapping = OutputLineMapping,
 		};
 
 		foreach ((string key, SymbolDefinition value) in m_Symbols) {

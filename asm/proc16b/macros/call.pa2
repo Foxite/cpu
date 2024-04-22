@@ -22,7 +22,7 @@
 # this is the current *STACK_PTR, minus the 3 values we just pushed, and minus the argument count.
 # overwrite *FUNC_ARGS with it.
 @push_mem   STACK_PTR
-#@push_const [$3 + argcount]
+#@push_const [3 + argcount]
 @push_const $3
 @push_const argcount
 @add
@@ -37,12 +37,13 @@ jmp %a
 # the return macro will jump to the 3rd value we pushed, which is right here.
 return:
 
-# to preserve the calling convention, we pop an amount of items equal to the argument count.
-# *STACK_PTR = *STACK_PTR - argcount
-ldc %a, STACK_PTR
-ldb %a, %b          # %b = *STACK_PTR
-ldc %d, argcount
-sub %b, %b, %d      # %b = *STACK_PTR - argcount
-stb %a, %b          # *STACK_PTR = %b
+ldc %d, FUNC_ARGS
+ldb %d, %d
+
+@pop_mem_v FUNC_LOCS
+@pop_mem_v FUNC_ARGS
+
+ldc %c, STACK_PTR
+ldb %c, %d
 
 # doñe

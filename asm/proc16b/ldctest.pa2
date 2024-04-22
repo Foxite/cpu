@@ -1,0 +1,6 @@
+@ldc %c, $0xFA01
+@ldc %d, $0x1
+
+brk
+stb %c, %d
+

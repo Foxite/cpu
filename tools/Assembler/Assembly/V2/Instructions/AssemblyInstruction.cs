@@ -10,4 +10,5 @@ public abstract record AssemblyInstruction(string File, int Line, string? Label,
 	public abstract IEnumerable<InvalidInstruction> Validate(AssemblyContext context);
 	public virtual IEnumerable<AssemblyInstruction> RenderInstructions(AssemblyContext context) => new[] { this };
 	public abstract IEnumerable<ushort> Assemble(AssemblyContext outerContext);
+	public abstract string ToShortString();
 }

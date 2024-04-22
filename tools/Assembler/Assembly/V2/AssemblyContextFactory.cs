@@ -13,9 +13,10 @@ public class AssemblyContextFactory {
 		m_InstructionConverter = instructionConverter;
 	}
 	
-	public AssemblyContext CreateContext(IReadOnlyDictionary<string, InstructionArgumentAst>? globalSymbols, ProgramAssemblerv2 assembler, int outputOffset, bool verboseLogging = false) {
+	public AssemblyContext CreateContext(IReadOnlyDictionary<string, InstructionArgumentAst>? globalSymbols, ProgramAssemblerv2 assembler, int outputOffset, bool traceLogging = false, bool outputLineMapping = false) {
 		var ret = new AssemblyContext(m_MacroProvider, m_InstructionConverter, assembler, outputOffset) {
-			VerboseLogging = verboseLogging
+			TraceLogging = traceLogging,
+			OutputLineMapping = outputLineMapping,
 		};
 
 		if (globalSymbols != null) {

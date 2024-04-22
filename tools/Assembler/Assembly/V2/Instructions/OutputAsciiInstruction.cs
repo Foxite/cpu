@@ -17,4 +17,6 @@ public record OutputAsciiInstruction(string File, int Line, string? Label, int P
 	}
 
 	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] .ascii \"{Ascii}\"";
+
+	public override string ToShortString() => $".ascii \"{Ascii}\"";
 }

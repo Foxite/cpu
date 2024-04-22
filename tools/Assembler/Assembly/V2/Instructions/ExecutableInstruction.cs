@@ -32,4 +32,6 @@ public record ExecutableInstruction(string File, int Line, string? Label, int Po
 	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] {InstructionAst}";
 
 	public virtual bool Equals(ExecutableInstruction? other) => other != null && Position == other.Position && InstructionAst.Equals(other.InstructionAst);
+
+	public override string ToShortString() => InstructionAst.ToString();
 }

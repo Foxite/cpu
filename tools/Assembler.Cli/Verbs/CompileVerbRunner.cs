@@ -12,8 +12,11 @@ public enum CompileOutputMode {
 
 [Verb("compile", HelpText = "Compile an assembly file.")]
 public class CompileOptions {
-	[Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages.")]
-	public bool Verbose { get; set; }
+	[Option('t', "trace", Required = false, HelpText = "Output trace logging messages.")]
+	public bool TraceLogging { get; set; }
+	
+	[Option('l', "lines", Required = false, HelpText = "For every instruction in the main source file, output a line that maps the instruction's line number to its position in the machine code output.")]
+	public bool LinePositions { get; set; }
 	
 	[Option('a', "arch", Required = true, HelpText = "Choose architecture")]
 	public string Architecture { get; set; }
@@ -63,7 +66,7 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		AssemblerProgram program;
 		try {
 			program = new AssemblerProgram("main", fullInputPath, parser.Parse(opts.Input, sourceCode));
-		} catch (ParserException e) {
+		} catch (ParserException) {
 			//Console.Error.WriteLine(e.ToString());
 			return ExitCode.CompileParseError;
 		}
@@ -82,12 +85,17 @@ public class CompileVerbRunner : VerbRunner<CompileOptions> {
 		try {
 			var assembler = new ProgramAssemblerv2();
 			var contextFactory = AssemblyContextFactory.CreateFactory(macroProvider, opts.Architecture);
-			var context = contextFactory.CreateContext(globalSymbols, assembler, 0, opts.Verbose);
+			var context = contextFactory.CreateContext(globalSymbols, assembler, 0, opts.TraceLogging, opts.LinePositions);
 			machineCode = assembler.AssembleAst(context, program);
 		} catch (InvalidProcAssemblyProgramException ex) {
+			Console.Error.WriteLine(ex.Instructions.Count);
+			if (ex.Instructions.Count == 0) {
+				throw;
+			}
+			
 			Console.Error.WriteLine("Unsupported statements:");
 			foreach (InvalidInstruction invalidInstruction in ex.Instructions) {
-				Console.WriteLine($"{invalidInstruction.Instruction.File}:{invalidInstruction.Instruction.LineNumber}:{invalidInstruction.Instruction.Column} {invalidInstruction.Instruction}: {invalidInstruction.Message}");
+				Console.Error.WriteLine($"{invalidInstruction.Instruction.File}:{invalidInstruction.Instruction.LineNumber}:{invalidInstruction.Instruction.Column} {invalidInstruction.Instruction}: {invalidInstruction.Message}");
 			}
 
 			return ExitCode.ProgramNotSupported;

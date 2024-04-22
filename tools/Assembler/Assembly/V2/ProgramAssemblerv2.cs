@@ -47,8 +47,8 @@ public class ProgramAssemblerv2 {
 		}
 
 		void LogIfNecessary(object obj) {
-			if (context.VerboseLogging) {
-				Console.WriteLine(new string('\t', context.NestLevel) + obj);
+			if (context.TraceLogging) {
+				Console.Error.WriteLine(new string('\t', context.NestLevel) + obj);
 			}
 		}
 		
@@ -101,6 +101,11 @@ public class ProgramAssemblerv2 {
 		var renderedInstructions = new List<AssemblyInstruction>();
 		
 		foreach (AssemblyInstruction instruction in validatedInstructions) {
+			if (context.OutputLineMapping) { //  && context.NestLevel == 0
+				Console.Write(new string('\t', context.NestLevel));
+				Console.Write($"{instruction.File}:{instruction.Line} == {instruction.Position} <{instruction.ToShortString()}>");
+				Console.WriteLine();
+			}
 			renderedInstructions.AddRange(instruction.RenderInstructions(context));
 		}
 

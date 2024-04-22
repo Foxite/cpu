@@ -1,0 +1,3 @@
+@call macro0, macro1
+
+@push_mem FUNC_RETV

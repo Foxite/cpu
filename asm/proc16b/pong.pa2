@@ -3,7 +3,8 @@
 .const screenHeight,     $64
 
 .const display,          $0x4000
-.const displayEnd,       [display + screenWidth * screenHeight]
+.const displaySize,      [screenWidth * screenHeight]
+.const displayEnd,       [display + displaySize]
 .const _dev,             $0x6000
 .const devbutton,        [_dev + 0]
 .const devframe,         [_dev + 1]
@@ -11,8 +12,8 @@
 .const highZaddress,     $0xFFFF
 
 
-.const colorBlack,       $0
-.const colorWhite,       $1
+.const colorBlack,       $1
+.const colorWhite,       $0
 .const colorOrange,      $8
 .const colorPink,        $9
 #.const colorLightblue,   todo
@@ -28,11 +29,12 @@
 # Program parameters
 .const paddleHeight,     $8
 .const paddlePadding,    $8
-.const paddleLeftX,      paddlePadding
 .const colorBackground,  colorBlack
 .const colorPaddleLeft,  colorOrange
 .const colorPaddleRight, colorPink
 
+
+.const paddleLeftX,      paddlePadding
 .const paddleRightX,     [screenWidth - paddlePadding]
 .const paddleMaxY,       [screenHeight - paddleHeight]
 
@@ -50,7 +52,7 @@
 .const scoreRight,       $0x18
 
 .const inputLeftDir,     $0x19
-.const inputRightDir,    $0x20
+.const inputRightDir,    $0x1A
 
 
 
@@ -58,18 +60,13 @@
 # --------------------------------------
 @init_stack
 
-brk
-
 @call resetBall, $0
-
-brk
 
 ldc %b, [(screenHeight - paddlePadding) / 2]
 ldc %a, paddleLeftY
 stb %a, %b
 ldc %a, paddleRightY
 stb %a, %b
-
 
 
 
@@ -114,7 +111,7 @@ ldb %a, %a
 #   bit0(highZ) == 0 => -1
 #   bit0(highZ) == 1 =>  1
 ldc %b, $0b01
-and %a, %a, %c
+and %a, %a, %b
 
 ldc %b, $2
 mul %a, %a, %b
@@ -128,7 +125,7 @@ stb %b, %a
 
 # same for ballSpeedY (but use bit 1 instead of bit 0)
 ldc %b, $0b10
-and %a, %a, %c
+and %a, %a, %b
 
 ldc %b, $2
 mul %a, %a, %b
@@ -170,46 +167,51 @@ ldc %d, updateInputs_return
 
 ldc %b, buttonLeftUp
 ldc %c, updateInputs_leftUp
-jeq %b, %a, %c
+jeq %c, %a, %b
 
 ldc %b, buttonLeftDown
 ldc %c, updateInputs_leftDown
-jeq %b, %a, %c
+jeq %c, %a, %b
 
 ldc %b, buttonRightUp
 ldc %c, updateInputs_rightUp
-jeq %b, %a, %c
+jeq %c, %a, %b
 
 ldc %b, buttonRightDown
 ldc %c, updateInputs_rightDown
-jeq %b, %a, %c
+jeq %c, %a, %b
 
-ldc %a, updateInputs_return
-jmp %a
+jmp %d
 
 
 updateInputs_leftUp:
-ldc %a, inputLeftDir
-@ldc %b, [0 - 1]
-stb %a, %b
+ldc %c, inputLeftDir
+#@ldc %b, [0 - 1]
+ldc %a, $0
+ldc %b, $1
+sub %b, %a, %b
+stb %c, %b
 jmp %d
 
 updateInputs_leftDown:
-ldc %a, inputLeftDir
-@ldc %b, $1
-stb %a, %b
+ldc %c, inputLeftDir
+ldc %b, $1
+stb %c, %b
 jmp %d
 
 updateInputs_rightUp:
-ldc %a, inputRightDir
-@ldc %b, [0 - 1]
-stb %a, %b
+ldc %c, inputRightDir
+#@ldc %b, [0 - 1]
+ldc %a, $0
+ldc %b, $1
+sub %b, %a, %b
+stb %c, %b
 jmp %d
 
 updateInputs_rightDown:
-ldc %a, inputRightDir
-@ldc %b, $1
-stb %a, %b
+ldc %c, inputRightDir
+ldc %b, $1
+stb %c, %b
 jmp %d
 
 
@@ -253,63 +255,79 @@ updateGame:
 
 
 # --------------------------------------
-# TODO test
 # args: none
 updateScreen:
 @function $0
 
 @call clearScreen, $0
 
-@push_const paddleLeftX
-@push_mem_a paddleLeftY
-@push_const colorPaddleLeft
-@call drawPaddle, $3
+@push_mem ballX
+@push_mem ballY
+#@push_mem ballColor
+@push_const colorWhite
+@call drawBall, $3
 
 @push_const paddleRightX
-@push_mem_a paddleRightY
+@push_mem   paddleRightY
 @push_const colorPaddleRight
 @call drawPaddle, $3
 
-@push_mem_a ballX
-@push_mem_a ballY
-@push_mem ballColor
-@call drawBall, $3
+@push_const paddleLeftX
+@push_mem   paddleLeftY
+@push_const colorPaddleLeft
+@call drawPaddle, $3
 
 
 # TODO draw score
 # TODO draw midline
 
 
+# Flip frame buffer
+@ldc %a, devframe
+ldb %a, %b
+not %b, %b
+
+ldc %c, $1
+and %b, %b, %c
+stb %a, %b
+
+
 @return
 
 
 
 
 # --------------------------------------
-# TODO test
 clearScreen:
 @function $0
 
-# %a = display
+# %c = &frameBuffer
+# displayEnd = %c + displaySize
 # do {
-#   *a = colorBackground;
-#   %a = %a + 1;
-# } while (%a <= displayEnd);
+#   *c = colorBackground;
+#   %c = %a + 1;
+# } while (%c <= displayEnd);
 
-@ldc %a, display
-@ldc %b, displayEnd
-ldc %c, colorBackground
-# %d will be used for both $1 and the jump label
+@call_value getFrameBuffer, $0
+@pop_reg %c
+
+# %b = displayEnd = %c + displaySize
+@ldc %b, displaySize
+add %d, %c, %b
+
+
+ldc %a, colorBackground
+# %b will be used for both $1 and the jump label
 
 clearScreen_loop1:
 
-stb %a, %c
+stb %c, %a
 
-ldc %d, $1
-add %a, %a, %d
+ldc %b, $1
+add %c, %c, %b
 
-ldc %d, clearScreen_loop1
-jle %d, %a, %b
+ldc %b, clearScreen_loop1
+jle %b, %c, %d
 
 @return
 
@@ -317,7 +335,6 @@ jle %d, %a, %b
 
 
 # --------------------------------------
-# TODO test
 # args: X coordinate, Y coordinate of paddle top, color
 drawPaddle:
 @function $0
@@ -325,7 +342,8 @@ drawPaddle:
 @push_arg $0
 @push_arg $1
 @push_const paddleHeight
-@push_const $2
+@push_arg $2
+@call drawVerticalLine, $4
 
 @return
 
@@ -333,17 +351,18 @@ drawPaddle:
 
 
 # --------------------------------------
-# TODO test
 # args: X coordinate, Y coordinate of top, length in pixels, color
 drawVerticalLine:
 @function $2
 
-# pixel* position = display + y * screenWidth + x
-@push_arg $0
-@push_const display
+# pixel* position = &frameBuffer + y * screenWidth + x
+@call_value getFrameBuffer, $0
+
 @push_arg $1
 @push_const screenWidth
 @mul
+@add
+@push_arg $0
 @add
 @pop_local $0
 
@@ -366,7 +385,7 @@ drawVerticalLine:
 # screenWidth = constant
 
 drawVerticalLine_loop1:
-@push_arg $2
+@push_arg $3
 @push_local $0
 @pop_mem_av
 
@@ -389,22 +408,42 @@ jlt %b, %c, %d
 
 
 # --------------------------------------
-# TODO test
 # args: X coordinate, Y coordinate, color
 drawBall:
 @function $0
 
-# %a = display + screenWidth * Y + X
-@push_arg $0
-@push_const display
+# pixel = &frameBuffer + screenWidth * Y + X
+@call_value getFrameBuffer, $0
 @push_const screenWidth
 @push_arg $1
 @mul
 @add
+@push_arg $0
 @add
 
+# *pixel = color
 @push_arg $2
-
-@pop_mem_av
+@pop_mem_va
 
 @return
+
+
+
+
+# --------------------------------------
+# args: none
+# returns: current framebuffer pointer
+getFrameBuffer:
+@function $0
+
+@push_const display
+@push_const devframe
+@push_mem_a
+@not
+@push_const $1
+@and
+@push_const displaySize
+@mul
+@add
+
+@return_value

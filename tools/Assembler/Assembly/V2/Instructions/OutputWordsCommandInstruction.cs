@@ -20,4 +20,6 @@ public record OutputWordsCommandInstruction(string File, int Line, string? Label
 	}
 
 	public override string ToString() => $"{File}:{Line} ({Position})  [{Label}] .words {string.Join(", ", Words)}";
+
+	public override string ToShortString() => $".words {string.Join(", ", Words)}";
 }
