@@ -210,6 +210,7 @@ updateGame:
 @function $0
 
 # Move paddles according to inputLeftDir and inputRightDir
+# TODO limit paddle Y coordinates to [0, screenHeight - paddleHeight]
 @push_mem paddleLeftY
 @push_mem inputLeftDir
 @add
