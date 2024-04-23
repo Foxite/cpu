@@ -8,7 +8,7 @@
 		<contexts>
 			<context lineEndContext="#stay" name="LineStart">
 				<DetectChar attribute="Comment" context="Comment" char="#" />
-				<RegExpr attribute="Label" context="#stay" String="^\s&symbol;\:" />
+				<RegExpr attribute="Label" context="#stay" String="(^|\s)&symbol;\:" />
 
 				<RegExpr attribute="Command"     context="Arguments" String="(^|\s|:)\.&symbol;" />
 				<RegExpr attribute="Macro"       context="Arguments" String="(^|\s|:)@&symbol;" />
@@ -43,9 +43,10 @@
 				<RegExpr attribute="Binary"   context="#stay" String="0b[01][01_]*"/>
 				<RegExpr attribute="Decimal"  context="#stay" String="[0-9][0-9_]*"/>
 
+				
+				<StringDetect attribute="Operator" context="#stay" String="&gt;&gt;"/>
+				<StringDetect attribute="Operator" context="#stay" String="&lt;&lt;"/>
 				<AnyChar attribute="Operator" context="#stay" String="+-*/()&amp;|^"/>
-				<String  attribute="Operator" context="#stay" String="&gt;&gt;"/>
-				<String  attribute="Operator" context="#stay" String="&lt;&lt;"/>
 
 				<DetectChar attribute="Bracket" context="#pop" char="]"/>
 

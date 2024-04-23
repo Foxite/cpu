@@ -27,6 +27,7 @@
 
 
 # Program parameters
+.const paddleSpeed,      $2
 .const paddleHeight,     $8
 .const paddlePadding,    $8
 .const colorBackground,  colorBlack
@@ -210,15 +211,29 @@ updateGame:
 @function $0
 
 # Move paddles according to inputLeftDir and inputRightDir
-# TODO limit paddle Y coordinates to [0, screenHeight - paddleHeight]
+# limit paddle Y coordinates to [0, screenHeight - paddleHeight]
+
+# *paddleLeftY = clamp(*paddleLeftY + (*inputLeftDir * paddleSpeed), 0, screenHeight - paddleHeight)
 @push_mem paddleLeftY
 @push_mem inputLeftDir
+@push_const paddleSpeed
+@mul
 @add
+@push_const $0
+@max
+@push_const [screenHeight - paddleHeight]
+@min
 @pop_mem_v paddleLeftY
 
 @push_mem paddleRightY
 @push_mem inputRightDir
+@push_const paddleSpeed
+@mul
 @add
+@push_const $0
+@max
+@push_const [screenHeight - paddleHeight]
+@min
 @pop_mem_v paddleRightY
 
 
@@ -234,12 +249,13 @@ updateGame:
 @pop_mem_v ballY
 
 
-# TODO: collide ball with paddles. On collision, invert X speed and set ballColor to the color of the paddle it hit.
 
+
+# collide ball with paddles. On collision, invert X speed and set ballColor to the color of the paddle it hit.
 # if ballX == paddleLeftX && ballY >= paddleLeftY && ballY <= (paddleLeftY + paddleHeight):
-#   ballX = paddleLeftX + 1
+#   ballX = paddleLeftX + 2
 #   ballSpeedX = 0 - ballSpeedX
-
+#   ballColor = colorPaddleLeft
 @push_mem ballX
 @push_const paddleLeftX
 @eq
@@ -256,9 +272,8 @@ updateGame:
 
 @and
 @and
-@if updateGame_flipBallX1
-
-    @push_const [paddleLeftX + 1]
+@if updateGame_flipBallXLeft
+    @push_const [paddleLeftX + 2]
     @pop_mem_v ballX
     
     @push_const $0
@@ -268,10 +283,41 @@ updateGame:
     
     @push_const colorPaddleLeft
     @pop_mem_v ballColor
+updateGame_flipBallXLeft:
 
-updateGame_flipBallX1:
 
-# TODO same for right
+# same for right
+@push_mem ballX
+@push_const paddleRightX
+@eq
+
+@push_mem ballY
+@push_mem paddleRightY
+@gte
+
+@push_mem ballY
+@push_mem paddleRightY
+@push_const paddleHeight
+@add
+@lte
+
+@and
+@and
+@if updateGame_flipBallXRight
+    @push_const [paddleRightX - 2]
+    @pop_mem_v ballX
+    
+    @push_const $0
+    @push_mem ballSpeedX
+    @sub
+    @pop_mem_v ballSpeedX
+    
+    @push_const colorPaddleRight
+    @pop_mem_v ballColor
+updateGame_flipBallXRight:
+
+
+
 
 
 
@@ -282,17 +328,16 @@ updateGame_flipBallX1:
 @push_mem ballY
 @push_const $0
 @lte
-@if updateGame_flipBallY1
-
+@if updateGame_flipBallYTop
     @push_const $0
+    brk
     @pop_mem_v ballY
 
     @push_const $0
     @push_mem ballSpeedY
     @sub
     @pop_mem_v ballSpeedY
-
-updateGame_flipBallY1:
+updateGame_flipBallYTop:
 
 # if ballY >= screenHeight:
 #   ballY = screenHeight - 1
@@ -300,17 +345,16 @@ updateGame_flipBallY1:
 @push_mem ballY
 @push_const screenHeight
 @gte
-@if updateGame_flipBallY2
-
+@if updateGame_flipBallYBottom
     @push_const [screenHeight - 2]
+    brk
     @pop_mem_v ballY
 
     @push_const $0
     @push_mem ballSpeedY
     @sub
     @pop_mem_v ballSpeedY
-
-updateGame_flipBallY2:
+updateGame_flipBallYBottom:
 
 
 # TODO: collide ball with left/right walls. Call resetBall, and increment score.
@@ -334,8 +378,7 @@ updateScreen:
 
 @push_mem ballX
 @push_mem ballY
-#@push_mem ballColor
-@push_const colorWhite
+@push_mem ballColor
 @call drawBall, $3
 
 @push_const paddleRightX

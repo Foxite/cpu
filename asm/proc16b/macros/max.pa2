@@ -1,0 +1,18 @@
+# pop 2 numbers and push the biggest one.
+
+@pop_reg %c
+@pop_reg %d
+
+@ldc %a, maxC
+jgt %a, %c, %d
+
+maxD:
+@push_reg %d
+@ldc %a, return
+jump %a
+
+maxC:
+@push_reg %c
+
+return:
+noop
