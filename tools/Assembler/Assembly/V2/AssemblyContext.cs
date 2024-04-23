@@ -53,13 +53,15 @@ public class AssemblyContext {
 	}
 
 	public InstructionArgumentAst GetSymbolValue(string name, AssemblyInstruction instruction) {
-		InstructionArgumentAst ret = GetSymbol(name, instruction).Value;
+		return GetSymbolValue(GetSymbol(name, instruction).Value, instruction);
+	}
 
-		while (ret is SymbolAst or ExpressionAst) {
-			if (ret is SymbolAst symbolAst) {
-				ret = GetSymbol(symbolAst.Value, instruction).Value;
-			} else if (ret is ExpressionAst expressionAst) {
-				ret = new ConstantAst(
+	public InstructionArgumentAst GetSymbolValue(InstructionArgumentAst potentialSymbol, AssemblyInstruction instruction) {
+		while (potentialSymbol is SymbolAst or ExpressionAst) {
+			if (potentialSymbol is SymbolAst symbolAst) {
+				potentialSymbol = GetSymbol(symbolAst.Value, instruction).Value;
+			} else if (potentialSymbol is ExpressionAst expressionAst) {
+				potentialSymbol = new ConstantAst(
 					expressionAst.File,
 					expressionAst.LineNumber,
 					expressionAst.Column,
@@ -68,7 +70,7 @@ public class AssemblyContext {
 			}
 		}
 
-		return ret;
+		return potentialSymbol;
 	}
 
 	public void SetSymbol(SymbolDefinition symbolDefinition) {

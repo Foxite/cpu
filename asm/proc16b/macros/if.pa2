@@ -1,0 +1,10 @@
+# args: jump label if condition is false
+# pop a value, if it's equal to zero, jump to the label. otherwise, proceed.
+# essentially, this executes the code after the macro if the condition is true. the jump label is after your if block.
+
+.const jumpLabel, macro0
+
+@pop_reg %c
+@ldc %b, jumpLabel
+ldc %a, $0
+jeq %b, %c, %a

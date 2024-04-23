@@ -8,8 +8,8 @@ public record MacroInstruction(string File, int Line, string? Label, int Positio
 		
 		for (int i = 0; i < Arguments.Count; i++) {
 			var argument = Arguments[i];
-			if (resolveSymbols && argument is SymbolAst symbolArgument) {
-				argument = outerContext.GetSymbolValue(symbolArgument.Value, this);
+			if (resolveSymbols) {
+				argument = outerContext.GetSymbolValue(argument, this);
 			}
 			
 			innerContext.SetSymbol(new SymbolDefinition($"macro{i}", false, argument));
@@ -39,20 +39,7 @@ public record MacroInstruction(string File, int Line, string? Label, int Positio
 	
 	public override IEnumerable<InvalidInstruction> Validate(AssemblyContext context) => context.Assembler.ValidateInstructions(ScopeContext(context, true), Instructions);
 
-	public override IEnumerable<AssemblyInstruction> RenderInstructions(AssemblyContext outerContext) {
-		var innerContext = ScopeContext(outerContext, true);
-		
-		foreach (var renderedInstruction in outerContext.Assembler.RenderInstructions(innerContext, Instructions)) {
-			/*
-			if (innerContext.OutputLineMapping) {
-				Console.Write(new string('\t', innerContext.NestLevel));
-				Console.Write($"{innerContext.NestLevel} {renderedInstruction.Line}:{renderedInstruction.Position} {renderedInstruction}");
-				Console.WriteLine();
-			}
-			*/
-			yield return renderedInstruction;
-		}
-	}
+	public override IEnumerable<AssemblyInstruction> RenderInstructions(AssemblyContext outerContext) => outerContext.Assembler.RenderInstructions(ScopeContext(outerContext, true), Instructions);
 
 	public override IEnumerable<ushort> Assemble(AssemblyContext outerContext) => outerContext.Assembler.AssembleMachineCode(ScopeContext(outerContext, true), Instructions);
 

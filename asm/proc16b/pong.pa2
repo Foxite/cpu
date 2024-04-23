@@ -95,44 +95,46 @@ ldc %b, [screenWidth / 2]
 stb %a, %b
 
 ldc %a, ballY
-ldc %b, [screenHeight / 2]
+ldc %b, [screenHeight - 10] #[screenHeight / 2] TODO temporary dev thing
 stb %a, %b
 
 # use high-Z memory address to determine paddle direction.
+# TODO use proper RNG device
 # X speed = bit 0
 # Y speed = bit 1
 # 0 => speed = -1
 # 1 => speed = 1
-@ldc %a, highZaddress
-ldb %a, %a
+@ldc %c, highZaddress
+ldb %c, %c
 
 
 # (highZ & 0b01) * 2 - 1:
 #   bit0(highZ) == 0 => -1
 #   bit0(highZ) == 1 =>  1
+ldc %d, $1
 ldc %b, $0b01
-and %a, %a, %b
+and %a, %c, %b
 
 ldc %b, $2
 mul %a, %a, %b
 
-ldc %b, $1
-sub %a, %a, %b
+sub %a, %a, %d
 
 ldc %b, ballSpeedX
 stb %b, %a
 
 
-# same for ballSpeedY (but use bit 1 instead of bit 0)
+# same for ballSpeedY (but use bit 1 instead of bit 0 - so need to shr it as well)
 ldc %b, $0b10
-and %a, %a, %b
+and %a, %c, %b
+shr %a, %a, %d
 
 ldc %b, $2
 mul %a, %a, %b
 
-ldc %b, $1
-sub %a, %a, %b
+sub %a, %a, %d
 
+@ldc %a, $1 # TODO temporary dev thing
 ldc %b, ballSpeedY
 stb %b, %a
 
@@ -153,21 +155,22 @@ updateInputs:
 # TODO we are using buttons to move the paddles up and down. What do you think of using a rotary encoder to determine its position? Like one of those truly old pong machines. It might even be simpler to code.
 
 
-# inputLeftDir = readButton(state, buttonLeftDown) - readButton(state, buttonLeftUp)
-@push_const buttonLeftUp
+# *inputLeftDir = readButton(state, buttonLeftDown) - readButton(state, buttonLeftUp)
+# so that pushing down makes it 1, pushing up makes it -1, and pushing both or none makes it 0.
+@push_const buttonLeftDown
 @call_value readButton, $1
 
-@push_const buttonLeftDown
+@push_const buttonLeftUp
 @call_value readButton, $1
 
 @sub
 @pop_mem_v inputLeftDir
 
 # same but for right
-@push_const buttonRightUp
+@push_const buttonRightDown
 @call_value readButton, $1
 
-@push_const buttonRightDown
+@push_const buttonRightUp
 @call_value readButton, $1
 
 @sub
@@ -218,10 +221,59 @@ updateGame:
 @pop_mem_v paddleRightY
 
 
-# TODO: move ball according to ballSpeedX and ballSpeedY
+# move ball according to ballSpeedX and ballSpeedY
+@push_mem ballX
+@push_mem ballSpeedX
+@add
+@pop_mem_v ballX
+
+@push_mem ballY
+@push_mem ballSpeedY
+@add
+@pop_mem_v ballY
+
 
 # TODO: collide ball with paddles. On collision, invert X speed and set ballColor to the color of the paddle it hit.
-# TODO: collide ball with top/bottom walls. Invert Y speed.
+
+
+# collide ball with top/bottom walls. Invert Y speed.
+# if ballY <= 0:
+#   ballY = 0
+#   ballSpeedY = 0 - ballSpeedY
+@push_mem ballY
+@push_const $0
+@lte
+@if updateGame_flipBallY1
+
+    @push_const $0
+    @pop_mem_v ballY
+
+    @push_const $0
+    @push_mem ballSpeedY
+    @sub
+    @pop_mem_v ballSpeedY
+
+updateGame_flipBallY1:
+
+# if ballY >= screenHeight:
+#   ballY = screenHeight - 1
+#   ballSpeedY = 0 - ballSpeedY
+@push_mem ballY
+@push_const screenHeight
+@gte
+@if updateGame_flipBallY2
+
+    @push_const [screenHeight - 1]
+    @pop_mem_v ballY
+
+    @push_const $0
+    @push_mem ballSpeedY
+    @sub
+    @pop_mem_v ballSpeedY
+
+updateGame_flipBallY2:
+
+
 # TODO: collide ball with left/right walls. Call resetBall, and increment score.
 
 
