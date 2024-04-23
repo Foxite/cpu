@@ -21,13 +21,20 @@
 # compute the position of the arguments array, and push it.
 # this is the current *STACK_PTR, minus the 3 values we just pushed, and minus the argument count.
 # overwrite *FUNC_ARGS with it.
-@push_mem   STACK_PTR
+ldc %a, STACK_PTR
+ldb %a, %c
+ldc %b, [3 + argcount]
+sub %c, %c, %b
+ldc %a, FUNC_ARGS
+stb %a, %c
+
+#@push_mem   STACK_PTR
 #@push_const [3 + argcount]
-@push_const $3
-@push_const argcount
-@add
-@sub
-@pop_mem_v  FUNC_ARGS
+#@push_const $3
+#@push_const argcount
+#@add
+#@sub
+#@pop_mem_v  FUNC_ARGS
 
 @ldc %a, functionLabel
 jmp %a

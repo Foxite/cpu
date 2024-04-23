@@ -263,7 +263,7 @@ updateGame_flipBallY1:
 @gte
 @if updateGame_flipBallY2
 
-    @push_const [screenHeight - 1]
+    @push_const [screenHeight - 2]
     @pop_mem_v ballY
 
     @push_const $0
