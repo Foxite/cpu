@@ -1,4 +1,6 @@
 Proc16c will be done in the future.
 
-proc16c:
+wishlist features:
 - ALU operations with constants for rhs
+- definedly signed/unsigned comparison/arithmetic operations
+- break instruction with "display value" feature; set the address bus to some value in a register or constant

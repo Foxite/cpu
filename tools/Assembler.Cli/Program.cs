@@ -12,6 +12,7 @@ public class Program {
 			settings.CaseInsensitiveEnumValues = true;
 		});
 
+		
 		try {
 			return (int) commandParser.ParseArguments<CompileOptions, ListArchitectureOptions>(args)
 				.MapResult(

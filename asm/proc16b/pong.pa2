@@ -1,23 +1,23 @@
 # Computer design parameters
+#.const ram,              $0x0000
+.const display,          $0x4000
+.const _dev,             $0x8000
+.const programMemory,    $0xC000
+
 .const screenWidth,      $64
 .const screenHeight,     $64
-
-.const display,          $0x4000
 .const displaySize,      [screenWidth * screenHeight]
 .const displayEnd,       [display + displaySize]
-.const _dev,             $0x6000
-.const devbutton,        [_dev + 0]
-.const devframe,         [_dev + 1]
-.const devmidi,          [_dev + 2]
-.const highZaddress,     $0xFFFF
-
 
 .const colorBlack,       $1
 .const colorWhite,       $0
 .const colorOrange,      $8
 .const colorPink,        $9
-#.const colorLightblue,   todo
 
+.const devbutton,        [_dev + 0]
+.const devframe,         [_dev + 1]
+.const devmidi,          [_dev + 2]
+.const devrng,           [_dev + 0x3FFF] # TODO proper RNG, this is just an unconnected, floating cell
 
 # button masks
 .const buttonLeftUp,     [1 << 7]  # up arrow
@@ -38,6 +38,7 @@
 .const paddleLeftX,      paddlePadding
 .const paddleRightX,     [screenWidth - paddlePadding]
 .const paddleMaxY,       [screenHeight - paddleHeight]
+.const fontArray,        [programMemory + fontArrayInProgramMemory]
 
 
 # Global variable addresses
@@ -99,13 +100,12 @@ ldc %a, ballY
 ldc %b, [screenHeight - 10] #[screenHeight / 2] TODO temporary dev thing
 stb %a, %b
 
-# use high-Z memory address to determine paddle direction.
-# TODO use proper RNG device
+# use RNG to determine paddle direction.
 # X speed = bit 0
 # Y speed = bit 1
 # 0 => speed = -1
 # 1 => speed = 1
-@ldc %c, highZaddress
+@ldc %c, devrng
 ldb %c, %c
 
 
@@ -330,7 +330,6 @@ updateGame_flipBallXRight:
 @lte
 @if updateGame_flipBallYTop
     @push_const $0
-    brk
     @pop_mem_v ballY
 
     @push_const $0
@@ -347,7 +346,6 @@ updateGame_flipBallYTop:
 @gte
 @if updateGame_flipBallYBottom
     @push_const [screenHeight - 2]
-    brk
     @pop_mem_v ballY
 
     @push_const $0
@@ -357,7 +355,32 @@ updateGame_flipBallYTop:
 updateGame_flipBallYBottom:
 
 
-# TODO: collide ball with left/right walls. Call resetBall, and increment score.
+# collide ball with left/right walls. Call resetBall, and increment score.
+@push_mem ballX
+@push_const $0
+@lte
+@if updateGame_ballWallLeft
+    @push_mem scoreRight
+    @push_const $1
+    @add
+    @pop_mem_v scoreRight
+    
+    @call resetBall, $0
+updateGame_ballWallLeft:
+
+
+@push_mem ballX
+@push_const screenWidth
+@gte
+@if updateGame_ballWallRight
+    @push_mem scoreLeft
+    @push_const $1
+    @add
+    @pop_mem_v scoreLeft
+    
+    @call resetBall, $0
+updateGame_ballWallRight:
+
 
 
 # WISHLIST FEATURE: need a clock device that we can use the move objects at a consistent speed.
@@ -393,6 +416,9 @@ updateScreen:
 
 
 # TODO draw score
+
+
+
 # TODO draw midline
 
 
@@ -561,3 +587,51 @@ getFrameBuffer:
 @add
 
 @return_value
+
+
+
+
+# --------------------------------------
+# args: x position, y position, horizontal alignment, string pointer, string length
+# alignment: 0 for x position == start (left alignment), 1 for x position == end (right alignment)
+drawString:
+@function $0
+# TODO call drawCharacter in a loop
+
+@return
+
+
+
+# --------------------------------------
+# args: x position, y position, character index, color
+drawCharacter:
+@function $0
+# TODO
+# int characterFont = font[characterIndex];
+# for (int y = 0; y < 5; y++) {
+#   for (int x = 0; x < 3; x++) {
+#     pixelColor = characterFont & 1 > 0 ? color : backgroundColor;
+#     setPixel(x, y, pixelColor);
+#     characterFont = characterFont >> 1;
+#   }
+# }
+@return
+
+
+
+
+# --------------------------------------
+fontArrayInProgramMemory:
+# Font is 3 pixels wide and 5 pixels tall.
+# Every group of 3 bits, right to left, is a row, which are drawn top to bottom.
+# Bits in a group are drawn LSB left, MSB right.
+digit0: .words $0b111_101_101_101_111
+digit1: .words $0b111_010_010_011_010
+digit2: .words $0b111_001_111_100_111
+digit3: .words $0b111_100_111_100_111
+digit4: .words $0b100_100_111_101_101
+digit5: .words $0b111_100_111_001_111
+digit6: .words $0b111_101_111_001_111
+digit7: .words $0b100_100_100_100_111
+digit8: .words $0b111_101_111_101_111
+digit9: .words $0b111_100_111_101_111
