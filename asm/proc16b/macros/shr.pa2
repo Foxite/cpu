@@ -1,0 +1,6 @@
+# pop lhs, push lhs >> macro0.
+
+@pop_reg %c
+@ldc %d, macro0
+shr %c, %c, %d
+@push_reg %c

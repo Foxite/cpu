@@ -14,6 +14,9 @@
 .const colorOrange,      $8
 .const colorPink,        $9
 
+.const colorMinGray,     $32
+.const colorMaxGray,     $63
+
 .const devbutton,        [_dev + 0]
 .const devframe,         [_dev + 1]
 .const devmidi,          [_dev + 2]
@@ -33,12 +36,20 @@
 .const colorBackground,  colorBlack
 .const colorPaddleLeft,  colorOrange
 .const colorPaddleRight, colorPink
+.const colorMidline,     [colorMinGray + (colorMaxGray - colorMinGray) * 75 / 100]
 
 
 .const paddleLeftX,      paddlePadding
 .const paddleRightX,     [screenWidth - paddlePadding]
 .const paddleMaxY,       [screenHeight - paddleHeight]
+
+.const fontWidth,        $3
+.const fontHeight,       $5
 .const fontArray,        [programMemory + fontArrayInProgramMemory]
+
+.const scoreLeftX,       [screenWidth / 2 - 4 - fontWidth]
+.const scoreRightX,      [screenWidth / 2 + 4]
+.const scoreY,           $4
 
 
 # Global variable addresses
@@ -62,6 +73,36 @@
 # --------------------------------------
 @init_stack
 
+#@push_const $0 # x pos
+#@push_const $0 # y pos
+#@push_const $0 # character index
+#@push_const colorOrange
+#@call drawCharacter, $4
+
+
+#@push_const $5 # x pos
+#@push_const $20 # y pos
+#@push_const $1 # character index
+#@push_const colorPink
+#@call drawCharacter, $4
+
+
+#@push_const $10 # x pos
+#@push_const $8 # y pos
+#@push_const $9 # character index
+#@push_const colorWhite
+#@call drawCharacter, $4
+
+
+
+
+
+#ldc %a, hang12
+#hang12:
+#jmp %a
+
+
+#@call clearScreen, $0
 @call resetBall, $0
 
 ldc %b, [(screenHeight - paddlePadding) / 2]
@@ -399,11 +440,6 @@ updateScreen:
 
 @call clearScreen, $0
 
-@push_mem ballX
-@push_mem ballY
-@push_mem ballColor
-@call drawBall, $3
-
 @push_const paddleRightX
 @push_mem   paddleRightY
 @push_const colorPaddleRight
@@ -415,11 +451,27 @@ updateScreen:
 @call drawPaddle, $3
 
 
-# TODO draw score
+# draw score
+@push_const scoreLeftX       # x pos
+@push_const scoreY           # y pos
+@push_mem   scoreLeft        # character index
+@push_const colorPaddleLeft  # color
+@call drawCharacter, $4
+
+@push_const scoreRightX      # x pos
+@push_const scoreY           # y pos
+@push_mem   scoreRight       # character index
+@push_const colorPaddleRight # color
+@call drawCharacter, $4
 
 
+@call drawMidline, $0
 
-# TODO draw midline
+
+@push_mem ballX
+@push_mem ballY
+@push_mem ballColor
+@call drawBall, $3
 
 
 # Flip frame buffer
@@ -575,10 +627,9 @@ drawBall:
 # returns: current framebuffer pointer
 getFrameBuffer:
 @function $0
-
+# display + (*devframe & 1) * displaySize
 @push_const display
-@push_const devframe
-@push_mem_a
+@push_mem devframe
 @not
 @push_const $1
 @and
@@ -592,29 +643,188 @@ getFrameBuffer:
 
 
 # --------------------------------------
-# args: x position, y position, horizontal alignment, string pointer, string length
-# alignment: 0 for x position == start (left alignment), 1 for x position == end (right alignment)
-drawString:
-@function $0
-# TODO call drawCharacter in a loop
+# args: x position, y position, character index, color
+.const drawCharacter_arg_xPos,      $0
+.const drawCharacter_arg_yPos,      $1
+.const drawCharacter_arg_charIndex, $2
+.const drawCharacter_arg_color,     $3
+
+# locals: character bitmap, pixel pointer, y loop, x loop
+.const drawCharacter_loc_charBmp,   $0
+.const drawCharacter_loc_pixelPtr,  $1
+.const drawCharacter_loc_yLoop,     $2
+.const drawCharacter_loc_xLoop,     $3
+drawCharacter:
+@function $4
+# int characterFont = font[characterIndex];
+# color* pixel = &frameBuffer + screenWidth * yPos + xPos
+# for (int y = 0; y <= fontHeight; y++) {
+#   for (int x = 0; x <= fontWidth; x++) {
+#     pixelColor = characterFont & 1 > 0 ? color : colorBackground;
+#     setPixel(x, y, pixelColor);
+#     characterFont = characterFont >> 1;
+#     pixel = pixel + 1
+#   }
+#   pixel = pixel + (screenWidth - fontWidth)
+# }
+
+# characterFont
+@push_const fontArray
+@push_arg drawCharacter_arg_charIndex
+@add
+@push_mem_a
+@pop_local drawCharacter_loc_charBmp
+
+# pixel pointer
+@call_value getFrameBuffer, $0
+@push_const screenWidth
+@push_arg drawCharacter_arg_yPos
+@mul
+@add
+@push_arg drawCharacter_arg_xPos
+@add
+@pop_local drawCharacter_loc_pixelPtr
+
+# loop variables
+@push_const $0
+@pop_local drawCharacter_loc_yLoop
+
+drawCharacter_yLoop:
+    @push_const $0
+    @pop_local drawCharacter_loc_xLoop
+    drawCharacter_xLoop:
+        # pixelColor
+        @push_local drawCharacter_loc_charBmp
+        @push_const $1
+        @and
+        @push_const $0
+        @gt
+        @if drawCharacter_pushBackground
+        drawCharacter_pushForeground:
+            @push_arg drawCharacter_arg_color
+            @ldc %b, drawCharacter_endif1
+            jump %b
+        drawCharacter_pushBackground:
+            @push_const colorBackground
+        drawCharacter_endif1:
+
+        # setPixel
+        @push_local drawCharacter_loc_pixelPtr
+        @pop_mem_av
+
+        # shift bitmap
+        @push_local drawCharacter_loc_charBmp
+        @shr $1 # TODO shr, shr_n, shl, shl_n macros
+        @pop_local drawCharacter_loc_charBmp
+
+        # pixel = pixel + 1
+        @push_local drawCharacter_loc_pixelPtr
+        @push_const $1
+        @add
+        @pop_local drawCharacter_loc_pixelPtr
+
+
+        # x++
+        @push_local drawCharacter_loc_xLoop
+        @push_const $1
+        @add
+        @pop_local drawCharacter_loc_xLoop
+
+        # jump to xLoop if x < fontWidth
+        @push_local drawCharacter_loc_xLoop
+        @pop_reg %c
+        @ldc %a, drawCharacter_xLoop
+        ldc %b, fontWidth
+        jlt %a, %c, %b
+
+    # pixel += screenWidth - fontWidth - 1
+    # - 1 because we already incremented pixel last xLoop
+    @push_local drawCharacter_loc_pixelPtr
+    @push_const [screenWidth - fontWidth]
+    @add
+    @pop_local drawCharacter_loc_pixelPtr
+    
+    # y++
+    @push_local drawCharacter_loc_yLoop
+    @push_const $1
+    @add
+    @pop_local drawCharacter_loc_yLoop
+
+    # jump to yLoop if y < fontHeight
+    @push_local drawCharacter_loc_yLoop
+    @pop_reg %c
+    @ldc %a, drawCharacter_yLoop
+    ldc %b, fontHeight
+    jlt %a, %c, %b
 
 @return
 
 
 
+
 # --------------------------------------
-# args: x position, y position, character index, color
-drawCharacter:
-@function $0
-# TODO
-# int characterFont = font[characterIndex];
-# for (int y = 0; y < 5; y++) {
-#   for (int x = 0; x < 3; x++) {
-#     pixelColor = characterFont & 1 > 0 ? color : backgroundColor;
-#     setPixel(x, y, pixelColor);
-#     characterFont = characterFont >> 1;
-#   }
-# }
+drawMidline:
+.const drawMidline_loc_pixel,     $0
+.const drawMidline_loc_lastPixel, $1
+.const drawMidline_loc_y,         $2
+@function $3
+# color* pixel = &frameBuffer + screenWidth / 2
+# color* lastPixel = pixel + displaySize
+# int y = 0
+# do {
+#   *pixel = y & 0b100 == 0 ? colorBackground : colorMidline
+#   pixel += screenWidth
+#   y++
+# } while (pixel < lastPixel)
+
+@call_value getFrameBuffer, $0
+@push_const [screenWidth / 2]
+@add
+@pop_local drawMidline_loc_pixel
+
+
+@push_local drawMidline_loc_pixel
+@push_const displaySize
+@add
+@pop_local drawMidline_loc_lastPixel
+
+
+@push_const $2
+@pop_local drawMidline_loc_y
+
+
+drawMidline_startLoop:
+    @push_local drawMidline_loc_y
+    @push_const $0b100
+    @and
+    @push_const $0
+    @eq
+    @if drawMidline_pushColorMidline
+        @push_const colorBackground
+        @ldc %a, drawMidline_endif1
+        jump %a
+    drawMidline_pushColorMidline:
+        @push_const colorMidline
+    drawMidline_endif1:
+    
+    @push_local drawMidline_loc_pixel
+    @pop_mem_av
+    
+    @push_local drawMidline_loc_pixel
+    @push_const screenWidth
+    @add
+    @pop_local drawMidline_loc_pixel
+    
+    @push_local drawMidline_loc_y
+    @push_const $1
+    @add
+    @pop_local drawMidline_loc_y
+
+    @push_local drawMidline_loc_pixel
+    @push_local drawMidline_loc_lastPixel
+    @gte
+    @if drawMidline_startLoop
+
 @return
 
 
@@ -625,13 +835,13 @@ fontArrayInProgramMemory:
 # Font is 3 pixels wide and 5 pixels tall.
 # Every group of 3 bits, right to left, is a row, which are drawn top to bottom.
 # Bits in a group are drawn LSB left, MSB right.
-digit0: .words $0b111_101_101_101_111
-digit1: .words $0b111_010_010_011_010
-digit2: .words $0b111_001_111_100_111
-digit3: .words $0b111_100_111_100_111
-digit4: .words $0b100_100_111_101_101
-digit5: .words $0b111_100_111_001_111
-digit6: .words $0b111_101_111_001_111
-digit7: .words $0b100_100_100_100_111
-digit8: .words $0b111_101_111_101_111
-digit9: .words $0b111_100_111_101_111
+.words $0b111_101_101_101_111 # digit 0
+.words $0b111_010_010_011_010 # digit 1
+.words $0b111_001_111_100_111 # digit 2
+.words $0b111_100_111_100_111 # digit 3
+.words $0b100_100_111_101_101 # digit 4
+.words $0b111_100_111_001_111 # digit 5
+.words $0b111_101_111_001_111 # digit 6
+.words $0b100_100_100_100_111 # digit 7
+.words $0b111_101_111_101_111 # digit 8
+.words $0b111_100_111_101_111 # digit 9

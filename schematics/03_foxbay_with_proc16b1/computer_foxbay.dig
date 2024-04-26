@@ -16,7 +16,7 @@
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>50000</int>
+          <int>75000</int>
         </entry>
       </elementAttributes>
       <pos x="-580" y="280"/>
@@ -3095,6 +3095,10 @@ all other bits are unconnected</string>
     <visualElement>
       <elementName>DipSwitch</elementName>
       <elementAttributes>
+        <entry>
+          <string>dipDefault</string>
+          <boolean>true</boolean>
+        </entry>
         <entry>
           <string>Label</string>
           <string>run clock</string>

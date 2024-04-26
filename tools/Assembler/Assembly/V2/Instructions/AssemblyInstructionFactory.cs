@@ -21,7 +21,7 @@ public class AssemblyInstructionFactory {
 			"const"  => new DefineSymbolCommandInstruction(statement.File, statement.LineNumber, statement.Label, -1, ((SymbolAst) statement.Instruction.Arguments[0]).Value, statement.Instruction.Arguments[1]),
 			"reg"    => new DefineSymbolCommandInstruction(statement.File, statement.LineNumber, statement.Label, -1, ((SymbolAst) statement.Instruction.Arguments[0]).Value, statement.Instruction.Arguments[1]),
 			"define" => new DefineSymbolCommandInstruction(statement.File, statement.LineNumber, statement.Label, -1, ((SymbolAst) statement.Instruction.Arguments[0]).Value, statement.Instruction.Arguments[1]),
-			"bytes"  => new OutputWordsCommandInstruction(statement.File, statement.LineNumber, statement.Label, -1, statement.Instruction.Arguments),
+			"words"  => new OutputWordsCommandInstruction(statement.File, statement.LineNumber, statement.Label, -1, statement.Instruction.Arguments),
 			"ascii"  => new OutputAsciiInstruction(statement.File, statement.LineNumber, statement.Label, -1, ((StringAst) statement.Instruction.Arguments[0]).Value),
 		};
 	}
