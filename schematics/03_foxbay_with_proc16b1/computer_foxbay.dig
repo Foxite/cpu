@@ -16,7 +16,7 @@
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>75000</int>
+          <int>150000</int>
         </entry>
       </elementAttributes>
       <pos x="-580" y="280"/>
@@ -887,7 +887,7 @@ UDLRAZSX</string>
         </entry>
         <entry>
           <string>graphicWidth</string>
-          <int>64</int>
+          <int>96</int>
         </entry>
         <entry>
           <string>Bits</string>
@@ -1153,7 +1153,7 @@ all other bits are unconnected</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
-          <string>13,3</string>
+          <string>14,2</string>
         </entry>
       </elementAttributes>
       <pos x="1620" y="780"/>

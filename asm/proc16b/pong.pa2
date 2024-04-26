@@ -4,7 +4,7 @@
 .const _dev,             $0x8000
 .const programMemory,    $0xC000
 
-.const screenWidth,      $64
+.const screenWidth,      $96
 .const screenHeight,     $64
 .const displaySize,      [screenWidth * screenHeight]
 .const displayEnd,       [display + displaySize]
@@ -72,35 +72,6 @@
 
 # --------------------------------------
 @init_stack
-
-#@push_const $0 # x pos
-#@push_const $0 # y pos
-#@push_const $0 # character index
-#@push_const colorOrange
-#@call drawCharacter, $4
-
-
-#@push_const $5 # x pos
-#@push_const $20 # y pos
-#@push_const $1 # character index
-#@push_const colorPink
-#@call drawCharacter, $4
-
-
-#@push_const $10 # x pos
-#@push_const $8 # y pos
-#@push_const $9 # character index
-#@push_const colorWhite
-#@call drawCharacter, $4
-
-
-
-
-
-#ldc %a, hang12
-#hang12:
-#jmp %a
-
 
 #@call clearScreen, $0
 @call resetBall, $0
@@ -324,6 +295,8 @@ updateGame:
     
     @push_const colorPaddleLeft
     @pop_mem_v ballColor
+    
+    # TODO play sound
 updateGame_flipBallXLeft:
 
 
@@ -355,6 +328,8 @@ updateGame_flipBallXLeft:
     
     @push_const colorPaddleRight
     @pop_mem_v ballColor
+    
+    # TODO play sound
 updateGame_flipBallXRight:
 
 
@@ -377,6 +352,8 @@ updateGame_flipBallXRight:
     @push_mem ballSpeedY
     @sub
     @pop_mem_v ballSpeedY
+    
+    # TODO play sound
 updateGame_flipBallYTop:
 
 # if ballY >= screenHeight:
@@ -393,6 +370,8 @@ updateGame_flipBallYTop:
     @push_mem ballSpeedY
     @sub
     @pop_mem_v ballSpeedY
+    
+    # TODO play sound
 updateGame_flipBallYBottom:
 
 
@@ -407,6 +386,8 @@ updateGame_flipBallYBottom:
     @pop_mem_v scoreRight
     
     @call resetBall, $0
+    
+    # TODO play sound
 updateGame_ballWallLeft:
 
 
@@ -420,6 +401,8 @@ updateGame_ballWallLeft:
     @pop_mem_v scoreLeft
     
     @call resetBall, $0
+    
+    # TODO play sound
 updateGame_ballWallRight:
 
 
@@ -438,6 +421,10 @@ updateGame_ballWallRight:
 updateScreen:
 @function $0
 
+# TODO rather than clearing the entire screen every frame (which is very slow), only clear the parts of the screen that we're going to "undraw".
+# ie clear the position of the ball, update the ball, draw the ball again.
+# maybe write a "updateScreenPreGame" function that does this for every object.
+# the score and midline don't need to be cleared as they don't move.
 @call clearScreen, $0
 
 @push_const paddleRightX
@@ -452,6 +439,8 @@ updateScreen:
 
 
 # draw score
+# bug: overread when score > 9
+# this probably doesn't result in any memory corruption or incorrect behaviour.
 @push_const scoreLeftX       # x pos
 @push_const scoreY           # y pos
 @push_mem   scoreLeft        # character index
