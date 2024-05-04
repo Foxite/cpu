@@ -1,8 +1,13 @@
 # cpu
 This is a homemade cpu. Or something.
 
-There is currently one CPU architecture, the 16-bit "proc16a" and two designs that implement this architecture (proc16a1 and proc16a2). Different cpu architectures that I may add in the future would be named "proc16b" etc.
+Two 16-bit instruction sets (proc16a and proc16b) have been designed and a few computer designs that implement these instruction sets.
 
-Documentation is in the doc folder. Schematics to be used with [Digital](https://github.com/hneemann/digital) are in the schematics folder. Assembler and emulator are in the tools folder.
+Directories:
+- asm: assembly files
+- doc: documentation
+- ide: IDE related configuration
+- schematics: hardware designs for [Digital](https://github.com/hneemann/digital)
+- tools: source code for assembler
 
 A high-level language (or even full C support) may be added.

@@ -3,7 +3,7 @@ Proc16c will be done in the future.
 # proposed features
 not all of these may be implemented into proc16c.
 
-obviously, there will be more registers, there's nothing to elaborate on there. i think we'll to 8 general purpose registers this time.
+obviously, there will be more registers, there's nothing to elaborate on there. i think we'll go to 8 general purpose registers this time.
 
 ## addressing modes (and getting rid of jgt)
 i did some reading on wikipedia and it seems a lot of modern cpu's (actually not just modern ones) have something called addressing modes. in proc16b there are no instruction overloads; they each have a fixed set of argument types. most take only registers, ldc takes a constant, etc
