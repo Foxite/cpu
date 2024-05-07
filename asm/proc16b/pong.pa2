@@ -1,3 +1,6 @@
+# idea for optimization: remove most functions and replace them with macros
+# function calls seem to be a lot heavier than i thought
+
 # Computer design parameters
 #.const ram,              $0x0000
 .const display,          $0x4000
