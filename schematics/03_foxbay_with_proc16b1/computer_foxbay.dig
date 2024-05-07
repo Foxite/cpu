@@ -2876,7 +2876,7 @@ all other bits are unconnected</string>
           <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="300" y="20"/>
+      <pos x="300" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Const</elementName>
@@ -2890,46 +2890,12 @@ all other bits are unconnected</string>
           <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="280" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Const</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Value</string>
-          <long>512</long>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-      </elementAttributes>
-      <pos x="260" y="-40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Comparator</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-      </elementAttributes>
-      <pos x="300" y="-60"/>
+      <pos x="280" y="-20"/>
     </visualElement>
     <visualElement>
       <elementName>Break</elementName>
       <elementAttributes/>
       <pos x="580" y="-20"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Or</elementName>
-      <elementAttributes>
-        <entry>
-          <string>wideShape</string>
-          <boolean>true</boolean>
-        </entry>
-      </elementAttributes>
-      <pos x="440" y="-20"/>
     </visualElement>
     <visualElement>
       <elementName>ButtonLED</elementName>
@@ -3116,7 +3082,7 @@ all other bits are unconnected</string>
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>stack corrupted</string>
+          <string>stack underflow</string>
         </entry>
       </elementAttributes>
       <pos x="660" y="20"/>
@@ -3504,7 +3470,12 @@ all other bits are unconnected</string>
     </visualElement>
     <visualElement>
       <elementName>Button</elementName>
-      <elementAttributes/>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>reset stack underflow led</string>
+        </entry>
+      </elementAttributes>
       <pos x="540" y="60"/>
     </visualElement>
   </visualElements>
@@ -3518,7 +3489,7 @@ all other bits are unconnected</string>
       <p2 x="800" y="2560"/>
     </wire>
     <wire>
-      <p1 x="520" y="0"/>
+      <p1 x="360" y="0"/>
       <p2 x="560" y="0"/>
     </wire>
     <wire>
@@ -3590,28 +3561,20 @@ all other bits are unconnected</string>
       <p2 x="340" y="1040"/>
     </wire>
     <wire>
-      <p1 x="420" y="-20"/>
-      <p2 x="440" y="-20"/>
-    </wire>
-    <wire>
       <p1 x="560" y="-20"/>
       <p2 x="580" y="-20"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="-20"/>
+      <p2 x="300" y="-20"/>
     </wire>
     <wire>
       <p1 x="640" y="20"/>
       <p2 x="660" y="20"/>
     </wire>
     <wire>
-      <p1 x="420" y="20"/>
-      <p2 x="440" y="20"/>
-    </wire>
-    <wire>
       <p1 x="560" y="20"/>
       <p2 x="580" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="180" y="20"/>
-      <p2 x="300" y="20"/>
     </wire>
     <wire>
       <p1 x="20" y="20"/>
@@ -3702,16 +3665,12 @@ all other bits are unconnected</string>
       <p2 x="800" y="2340"/>
     </wire>
     <wire>
-      <p1 x="260" y="-40"/>
+      <p1 x="180" y="-40"/>
       <p2 x="300" y="-40"/>
     </wire>
     <wire>
       <p1 x="20" y="-40"/>
       <p2 x="40" y="-40"/>
-    </wire>
-    <wire>
-      <p1 x="280" y="40"/>
-      <p2 x="300" y="40"/>
     </wire>
     <wire>
       <p1 x="560" y="40"/>
@@ -3810,20 +3769,8 @@ all other bits are unconnected</string>
       <p2 x="800" y="2360"/>
     </wire>
     <wire>
-      <p1 x="180" y="-60"/>
-      <p2 x="300" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="360" y="-60"/>
-      <p2 x="420" y="-60"/>
-    </wire>
-    <wire>
       <p1 x="20" y="-60"/>
       <p2 x="40" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="360" y="60"/>
-      <p2 x="420" y="60"/>
     </wire>
     <wire>
       <p1 x="540" y="60"/>
@@ -4786,14 +4733,6 @@ all other bits are unconnected</string>
       <p2 x="420" y="1360"/>
     </wire>
     <wire>
-      <p1 x="420" y="20"/>
-      <p2 x="420" y="60"/>
-    </wire>
-    <wire>
-      <p1 x="420" y="-60"/>
-      <p2 x="420" y="-20"/>
-    </wire>
-    <wire>
       <p1 x="1700" y="220"/>
       <p2 x="1700" y="300"/>
     </wire>
@@ -4859,15 +4798,11 @@ all other bits are unconnected</string>
     </wire>
     <wire>
       <p1 x="180" y="-120"/>
-      <p2 x="180" y="-60"/>
+      <p2 x="180" y="-40"/>
     </wire>
     <wire>
       <p1 x="180" y="860"/>
       <p2 x="180" y="1020"/>
-    </wire>
-    <wire>
-      <p1 x="180" y="-60"/>
-      <p2 x="180" y="20"/>
     </wire>
     <wire>
       <p1 x="1460" y="-280"/>
