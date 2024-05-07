@@ -10,4 +10,7 @@ dotnet run --project /home/foxite/dev/cpu/tools/Assembler.Cli -- compile \
 	-- "$1" > /home/foxite/dev/cpu/asm/proc16b/output.txt
 #	--verbose \
 
+result=$?
+
 echo done 1>&2
+exit $result
