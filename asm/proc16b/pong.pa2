@@ -73,7 +73,8 @@
 # --------------------------------------
 @init_stack
 
-#@call clearScreen, $0
+@call clearScreen, $0
+
 @call resetBall, $0
 
 ldc %b, [(screenHeight - paddlePadding) / 2]
@@ -86,6 +87,7 @@ stb %a, %b
 
 
 mainLoop:
+@call undrawScreen, $0
 @call updateInputs, $0
 @call updateGame,   $0
 @call updateScreen, $0
@@ -213,6 +215,46 @@ readButton:
 @and
 
 @return_value
+
+
+
+
+# --------------------------------------
+# args: none
+undrawScreen:
+@function $0
+
+@push_const paddleRightX
+@push_mem   paddleRightY
+@push_const colorBackground
+@call drawPaddle, $3
+
+@push_const paddleLeftX
+@push_mem   paddleLeftY
+@push_const colorBackground
+@call drawPaddle, $3
+
+
+# undraw score
+@push_const scoreLeftX      # x pos
+@push_const scoreY          # y pos
+@push_mem   scoreLeft       # character index
+@push_const colorBackground # color
+@call drawCharacter, $4
+
+@push_const scoreRightX     # x pos
+@push_const scoreY          # y pos
+@push_mem   scoreRight      # character index
+@push_const colorBackground # color
+@call drawCharacter, $4
+
+
+@push_mem ballX
+@push_mem ballY
+@push_mem colorBackground
+@call drawBall, $3
+
+@return
 
 
 
@@ -425,7 +467,7 @@ updateScreen:
 # ie clear the position of the ball, update the ball, draw the ball again.
 # maybe write a "updateScreenPreGame" function that does this for every object.
 # the score and midline don't need to be cleared as they don't move.
-@call clearScreen, $0
+#@call clearScreen, $0
 
 @push_const paddleRightX
 @push_mem   paddleRightY
@@ -464,13 +506,13 @@ updateScreen:
 
 
 # Flip frame buffer
-@ldc %a, devframe
-ldb %a, %b
-not %b, %b
+#@ldc %a, devframe
+#ldb %a, %b
+#not %b, %b
 
-ldc %c, $1
-and %b, %b, %c
-stb %a, %b
+#ldc %c, $1
+#and %b, %b, %c
+#stb %a, %b
 
 
 @return
@@ -507,7 +549,7 @@ stb %c, %a
 ldc %b, $1
 add %c, %c, %b
 
-ldc %b, clearScreen_loop1
+@ldc %b, clearScreen_loop1
 jle %b, %c, %d
 
 @return
@@ -616,6 +658,9 @@ drawBall:
 # returns: current framebuffer pointer
 getFrameBuffer:
 @function $0
+@push_const display
+@return_value
+
 # display + (*devframe & 1) * displaySize
 @push_const display
 @push_mem devframe
