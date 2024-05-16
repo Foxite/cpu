@@ -13,14 +13,16 @@ as such, using 00010 in place of a 5-bit refers to r2. using 10110 means the con
 
 
 # instructions
+the most significant bits of an instruction word determine what it is. the rest of the bits are its arguments, and the layout of those arguments depend on the instruction.
+
 instructions, from bit 15:
-- 0: ldc
-- 10: ALU
-- 1100: mov
-- 1101: bus
-- 1110: jump
-- 111100: noop/break
-- 111101: lde
+- 0: [ldc](#ldc)
+- 10: [alu](#alu)
+- 1100: [mov](#mov)
+- 1101: [bus](#bus)
+- 1110: [jump](#jump)
+- 111100: [noop/break](#noopbreak)
+- 111101: [lde](#lde)
 
 
 
@@ -35,6 +37,10 @@ to write bigger constants, use this in conjunction with lde.
 
 
 ## alu
+use the ALU for an arithmetic, bitwise, comparison or logic operation.
+
+the ALU only has binary operations and no unary operations such as NOT. to get the result of (NOT X), compute (X XNOR 0).
+
 - 15-14: instruction prefix (always 10)
 - 13-11: write register (3-bit)
 - 10-08: lhs (3-bit)
@@ -63,15 +69,19 @@ to write bigger constants, use this in conjunction with lde.
 
 
 ## mov
+write the value of one register to another.
+
 - 15-12: prefix (1100)
 - 11-09: write register (3-bit)
-- 08-06: read register (3-bit)
+- 08-00: read register. corresponds to the register index; not a 3-bit or a 9-bit.
 
-remaining bits unused
+if we add more registers beyond the general purpose ones, they can be read from using the mov instructions and the address space of the read register argument will be defined further.
 
 
 ## bus
 ### ldb
+read from the data bus and write to a register.
+
 - 15-11: prefix (11010)
 - 10-08: address register (3-bit)
 - 07-05: value register (3-bit)
@@ -79,12 +89,16 @@ remaining bits unused
 remaining bits unused
 
 ### stb
+write data from a register to the data bus.
+
 - 15-11: prefix (11011)
 - 10-08: address register (3-bit)
 - 07-00: value (8-bit)
 
 
 ## jump
+(conditionally) change the value of the program counter.
+
 - 15-12: prefix (1110)
 - 11-10: condition
  - 00: always jump
@@ -96,11 +110,13 @@ remaining bits unused
 
 
 ## noop/break
+do nothing, set the address bus to some value, and optionally set the BRK pin to 1.
+
+bus input will be unused. used for diagnostic purposes.
+
 - 15-08: prefix (111100)
 - 09: BRK pin value (0: noop, 1: break)
 - 08-00: address to read (9-bit)
-
-bus input will be unused. used for diagnostic purposes.
 
 
 ## lde
@@ -109,6 +125,7 @@ load extended constant.
 read a register, left shift by 4 and then OR with an unsigned 4-bit constant, write back to the same register.
 
 use in conjunction with ldc to load 16-bit constants in 2 instructions.
+
 - 15-09: prefix (111101)
 - 08-06: register (3-bit)
 - 03-00: value (unsigned 4-bit constant)
