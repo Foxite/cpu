@@ -48,18 +48,18 @@ to write bigger constants, use this in conjunction with lde.
 | 0001 | sub      | signed subtract                  |
 | 0010 | mul      | signed multiply                  |
 | 0010 | div      | signed divide                    |
-| 0100 | shl      | bitwise (unsigned) shift left    |
-| 0101 | shr      | bitwise (unsigned) shift right   |
+| 0100 | shl      | bitwise signed shift left        |
+| 0101 | shr      | bitwise signed shift right       |
 | 0110 | neq      | output 1 if lhs != rhs           |
 | 0111 | eq       | output 1 if lhs == rhs           |
-| 1100 | and      | AND                              |
-| 1101 | or       | OR                               |
-| 1110 | xor      | XOR                              |
-| 1111 | xnor     | XNOR (NOT: operand XNOR 0)       |
 | 1000 | gtu      | output 1 if lhs > rhs (unsigned) |
 | 1001 | ltu      | output 1 if lhs < rhs (unsigned) |
 | 1010 | gt       | output 1 if lhs > rhs (signed)   |
 | 1011 | lt       | output 1 if lhs < rhs (signed)   |
+| 1100 | and      | AND                              |
+| 1101 | or       | OR                               |
+| 1110 | xor      | XOR                              |
+| 1111 | xnor     | XNOR (NOT: operand XNOR 0)       |
 
 
 ## mov
