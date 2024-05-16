@@ -3295,7 +3295,7 @@ all other bits are unconnected</string>
         </entry>
         <entry>
           <string>lastDataFile</string>
-          <file>/home/foxite/dev/cpu/asm/proc16b/pong.out</file>
+          <file>/home/foxite/dev/cpu/asm/proc16b/pong-undraw.out</file>
         </entry>
         <entry>
           <string>autoReload</string>
