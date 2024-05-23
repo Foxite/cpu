@@ -6,8 +6,8 @@ proc16c has 8 general-purpose registers: r0 through r7.
 when this document speaks of a "3-bit", it's the register index.
 
 when this document speaks of a "4-bit" or a "5-bit" or anything bigger, then it's a value where the MSB determines what the rest means.
-- 0: value is a register index
-- 1: value is an unsigned constant
+- 0: value is an unsigned constant
+- 1: value is a register index
 
 as such, using 00010 in place of a 5-bit refers to r2. using 10110 means the constant 6. when referring to a register, value bits more significant than bit 2 must be 0, otherwise the behavior is undefined.
 
@@ -84,7 +84,7 @@ read from the data bus and write to a register.
 
 - 15-11: prefix (11010)
 - 10-08: address register (3-bit)
-- 07-05: value register (3-bit)
+- 02-00: value register (3-bit)
 
 remaining bits unused
 
@@ -114,7 +114,7 @@ do nothing, set the address bus to some value, and optionally set the BRK pin to
 
 bus input will be unused. used for diagnostic purposes.
 
-- 15-08: prefix (111100)
+- 15-10: prefix (111100)
 - 09: BRK pin value (0: noop, 1: break)
 - 08-00: address to read (9-bit)
 
@@ -126,6 +126,6 @@ read a register, left shift by 4 and then OR with an unsigned 4-bit constant, wr
 
 use in conjunction with ldc to load 16-bit constants in 2 instructions.
 
-- 15-09: prefix (111101)
-- 08-06: register (3-bit)
+- 15-10: prefix (111101)
+- 09-07: register (3-bit)
 - 03-00: value (unsigned 4-bit constant)
